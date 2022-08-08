@@ -1,0 +1,13 @@
+pickCD: -1;
+stayFloor: 35,50;
+miniMapSize: 175,82;
+hikikae: 55,115;
+skilloption:
+    buff_200_200_5-5_200-500,
+    spotlight_200_100_4-4_200-500,
+    ribbon_60_100_PGD-PGD_300-1000,
+    blackhole_60_100_G-G_200-500,
+    normal_0_100_C-C-Z_200-200-400,
+    downFloor_0_0_Z_400,
+    upFloor_0_0_X_1200
+    ;

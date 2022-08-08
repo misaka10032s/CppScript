@@ -1,0 +1,23 @@
+pickCD: 180;
+stayFloor: 35,50;
+miniMapSize: 175,82;
+hikikae: 55,115;
+skilloption:
+    buff_200_200_5-4-\_1000-1000-1000,
+    cycle_300_100_DEL-DEL_300-1000,
+    arrow_60_100_<-<_500-500,
+    spider_240_200_9-9_500-800,
+    supernova_35_200_0-0_500-800,
+    knight_145_200_8-8_500-1500,
+    sakura_145_200_1-1_500-1000,
+    senpuu_220_100_C-C-X-V-V_150-200-400-200-1000,
+    angryangel_12_100_C-C-X-RSHIFT-RSHIFT_100-200-120-200-500,
+    javelin_7_100_C-C-X-PGD-PGD_150-200-420-200-950,
+    normal_0_100_C-C-X_100-200-600,
+    downFloor_0_0_X_400,
+    upFloor_0_0_C-C-X_200-100-400
+    ;
+skillbind:
+    knight_sakura_101,
+    sakura_knight_61
+    ;

@@ -1,0 +1,13 @@
+play voice in c++
+https://stackoverflow.com/questions/22253074/how-to-play-or-open-mp3-or-wav-sound-file-in-c-program
+
+https://docs.microsoft.com/en-us/previous-versions//dd743680(v=vs.85)?redirectedfrom=MSDN
+
+https://www.itread01.com/content/1549529664.html
+
+mysql
+https://www.1ju.org/mysql/install-mysql
+
+
+window form
+MonoDevelpop
