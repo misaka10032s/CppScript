@@ -1,4 +1,4 @@
 *.exe
 *.jpg
-MSscript V1.6/ringRECORD/*
-MSscript V1.7/ringRECORD/*
+MSscript V1.6/ringRECORD/*.jpg
+MSscript V1.7/ringRECORD/*.jpg
