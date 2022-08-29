@@ -1,0 +1,38 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "C/C++: g++ 建置使用中檔案",
+			"command": "/bin/g++",
+			"args": [
+				"-g",
+				"${file}",
+				"-o",
+				"${fileDirname}/${fileBasenameNoExtension}",
+				"-lssl",
+				"-lcrypto",
+				"-lpthread",
+				"-lopencv_core",
+				"-lopencv_highgui",
+				"-lX11",
+				"-lxdo",
+				"-lopencv_imgproc",
+				"-lopencv_videoio",
+				"-lopencv_imgcodecs",
+				"-lopencv_objdetect"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"detail": "編譯器: /bin/g++"
+		}
+	]
+}
