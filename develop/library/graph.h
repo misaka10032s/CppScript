@@ -1,6 +1,6 @@
-#include <cstring>
+#include <string>
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 #ifndef LIB_GRAPH_H_
 #define LIB_GRAPH_H_
@@ -20,8 +20,9 @@ struct GRAPH {
     void addEdge(std::string P0, std::string P1, int W);
     void addEdge(EDGE newEdge);
 
-    int cost;
+    int cost, vertexNum;
     std::vector<EDGE> edges;
+    std::unordered_map<std::string, bool> vertices;
 };
 
 GRAPH MST_P(std::vector<EDGE> links);

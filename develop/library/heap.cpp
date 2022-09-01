@@ -1,6 +1,8 @@
 #include <string>
 #include <iostream>
 #include <cmath>
+#include <functional>
+
 #include "heap.h"
 using namespace std;
 
@@ -56,6 +58,9 @@ HEAP::HEAP(){
     this->htype = 0;
     this->minmaxMultiply = 1;
 }
+HEAP::~HEAP(){
+    if(this->rootHeap != nullptr) delete this->rootHeap;
+}
 
 void HEAP::push(std::string key, int weight){
     if(key == "") return;
@@ -99,7 +104,7 @@ NODE HEAP::pop(){
     if(this->rootHeap->key == "") return rtn;
 
     NODE* tmpHeap = this->rootHeap;
-    int extremeV, extremeIdx;
+    int extremeV, extremeIdx = -1;
 
     while(getChildrenLength(*tmpHeap)){
         extremeV = 2147483647 * this->minmaxMultiply;
@@ -116,9 +121,15 @@ NODE HEAP::pop(){
 
         tmpHeap = tmpHeap->children[extremeIdx];
     }
+
     if(tmpHeap->parent != nullptr) {
         free(tmpHeap->parent->children[extremeIdx]);
         tmpHeap->parent->children[extremeIdx] = nullptr;
+    }
+
+    if(extremeIdx == -1){
+        tmpHeap->key = "";
+        tmpHeap->weight = 0;
     }
 
     return rtn;
@@ -138,6 +149,9 @@ void HEAP::list(NODE *tmpHeap){
 
 // ######################## class SMMH ########################
 SMMH::SMMH(){}
+SMMH::~SMMH(){
+    if(this->rootHeap != nullptr) delete this->rootHeap;
+}
 
 NODE* SMMH::getValue(NODE *nodeList[2], int index){
     index = index ? 1 : 0;
@@ -239,11 +253,11 @@ NODE SMMH::pop(int popIdx){
 }
 
 NODE SMMH::popMin(){
-    return  this->pop(0);
+    return this->pop(0);
 }
 
 NODE SMMH::popMax(){
-    return  this->pop(1);
+    return this->pop(1);
 }
 
 NODE SMMH::getMin(){

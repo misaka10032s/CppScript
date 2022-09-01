@@ -1,8 +1,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include <map>
-#include <sys/param.h>
+#include <unordered_map>
 using namespace std;
 
 #include "heap.h"
@@ -24,25 +23,42 @@ EDGE::EDGE(std::string fromV, std::string toV, int weight){
 // ######################## struct GRAPH ########################
 GRAPH::GRAPH(){
     this->cost = 0;
+    this->vertexNum = 0;
 }
 
 void GRAPH::addEdge(std::string P0, std::string P1, int W){
     this->edges.push_back(*(new EDGE(P0, P1, W)));
     this->cost += W;
+    if(this->vertices.find(P0) == this->vertices.end()){
+        this->vertices.emplace(P0, 1);
+        this->vertexNum++;
+    }
+    if(this->vertices.find(P1) == this->vertices.end()){
+        this->vertices.emplace(P1, 1);
+        this->vertexNum++;
+    }
 }
 
 void GRAPH::addEdge(EDGE newEdge){
     this->edges.push_back(newEdge);
     this->cost += newEdge.weight;
+    if(this->vertices.find(newEdge.fromV) == this->vertices.end()){
+        this->vertices.emplace(newEdge.fromV, 1);
+        this->vertexNum++;
+    }
+    if(this->vertices.find(newEdge.toV) == this->vertices.end()){
+        this->vertices.emplace(newEdge.toV, 1);
+        this->vertexNum++;
+    }
 }
 
 // ######################## MST Prim's algorithm ########################
 GRAPH MST_P(std::vector<EDGE> links){
     int vertexNum = 0, edgeNum = links.size();
-    std::map<std::string, std::string> vertexLinked;
-    std::map<std::string, int> vertexMinWeight;
-    std::map<std::string, bool> vertexIsVisited;
-    std::map<std::string, std::map<std::string, int>> vertexTo;
+    std::unordered_map<std::string, std::string> vertexLinked;
+    std::unordered_map<std::string, int> vertexMinWeight;
+    std::unordered_map<std::string, bool> vertexIsVisited;
+    std::unordered_map<std::string, std::unordered_map<std::string, int>> vertexTo;
     std::string nowVertex;
     GRAPH *forest = new GRAPH();
     HEAP *minHEAP = new HEAP(0);
@@ -59,7 +75,7 @@ GRAPH MST_P(std::vector<EDGE> links){
                 vertexTo[links[i].fromV].emplace(links[i].toV, links[i].weight);
             }
             else{
-                vertexTo[links[i].fromV].emplace(links[i].toV, MIN(vertexTo[links[i].fromV][links[i].toV], links[i].weight));
+                vertexTo[links[i].fromV].emplace(links[i].toV, std::min(vertexTo[links[i].fromV][links[i].toV], links[i].weight));
             }
         }
 
@@ -72,7 +88,7 @@ GRAPH MST_P(std::vector<EDGE> links){
                 vertexTo[links[i].toV].emplace(links[i].fromV, links[i].weight);
             }
             else{
-                vertexTo[links[i].toV].emplace(links[i].fromV, MIN(vertexTo[links[i].toV][links[i].fromV], links[i].weight));
+                vertexTo[links[i].toV].emplace(links[i].fromV, std::min(vertexTo[links[i].toV][links[i].fromV], links[i].weight));
             }
         }
 
@@ -112,6 +128,14 @@ GRAPH MST_P(std::vector<EDGE> links){
 
         do{
             tmpEdge = minHEAP->pop();
+            if(tmpEdge.key == ""){
+                for(auto [key, visited] : vertexIsVisited){
+                    if(!visited){
+                        tmpEdge.key = key;
+                        break;
+                    }
+                }
+            }
         }
         while(vertexIsVisited[tmpEdge.key]);
 
@@ -125,7 +149,7 @@ GRAPH MST_P(std::vector<EDGE> links){
         nowVertex = minDest;
     }
 
-    free(minHEAP);
+    // free(minHEAP);
     return *forest;
 };
 
@@ -133,8 +157,8 @@ GRAPH MST_P(std::vector<EDGE> links){
 // ######################## MST Kruskal's algorithm ########################
 GRAPH MST_K(std::vector<EDGE> links){
     int vertexNum = 0, edgeNum = links.size(), groupKeyTmp;
-    std::map<std::string, int> vertexBelong;
-    std::map<int, std::vector<std::string>> vertexGroup;
+    std::unordered_map<std::string, int> vertexBelong;
+    std::unordered_map<int, std::vector<std::string>> vertexGroup;
     std::vector<std::string> linksSorted;
     GRAPH *forest = new GRAPH();
     HEAP *minHEAP = new HEAP(0);
@@ -191,6 +215,6 @@ GRAPH MST_K(std::vector<EDGE> links){
         }
     }
 
-    free(minHEAP);
+    // free(minHEAP);
     return *forest;
 }

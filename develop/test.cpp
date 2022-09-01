@@ -24,14 +24,18 @@ int* test(int *i[2]){
     return *i;
 }
 
+bool cpInt(int a, int b){
+    return a<b;
+}
+
 int main(){
     int x=1, y=1;
     int* a[2] = {&x, &y};
     test(a)[0] *= 7;
     cout<<(*a)[0]<<", "<<(*a)[1]<<"\n";
 
-    // HEAP myHeap(1);
-    SMMH myHeap;
+    HEAP myHeap(1);
+    // SMMH myHeap;
     myHeap.push("A", 5);
     myHeap.push("B", 8);
     myHeap.push("C", 4);
@@ -43,9 +47,20 @@ int main(){
     // myHeap.list(nullptr);cout<<"------------------\n";
 
     // CAGEFBD
-    for(int i=0; i<7; i++){
-        cout<< myHeap.popMin().key<<"\n";
+    for(int i=0; i<8; i++){
+        cout<< myHeap.pop().key<<"\n";
+        // cout<< myHeap.popMin().key<<"\n";
     }
+
+    listHEAP<int> mylistHEAP(&cpInt);
+    mylistHEAP.push(5);
+    mylistHEAP.push(8);
+    mylistHEAP.push(4);
+    mylistHEAP.push(10);
+    mylistHEAP.push(6);
+    mylistHEAP.push(7);
+    mylistHEAP.push(5);
+    for(int i=0; i<7; i++) cout<< mylistHEAP.pop()<<"\n";
 
     std::vector<EDGE> links;
     string vtx[21][2] = {{"a", "b"}, {"a", "c"}, {"a", "d"}, {"b", "c"}, {"b", "f"}, {"b", "g"}, {"c", "d"}, {"c", "e"}, {"c", "f"}, {"d", "e"}, {"d", "i"}, {"e", "i"}, {"e", "f"}, {"f", "i"}, {"f", "h"}, {"f", "g"}, {"g", "h"}, {"g", "j"}, {"h", "i"}, {"h", "j"}, {"i", "j"}};
