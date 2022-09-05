@@ -70,8 +70,7 @@ void HEAP::push(std::string key, int weight){
     }
     else{
         NODE* tmpHeap = this->rootHeap;
-        int chn[2], insertIdx, iTmp;
-        string sTmp;
+        int chn[2], insertIdx;
 
         while(getChildrenLength(*tmpHeap) == 2){
             chn[0] = tmpHeap->childrenNum[0];
@@ -163,8 +162,7 @@ void SMMH::push(std::string key, int weight){
     if(key == "") return;
 
     NODE* tmpHeap = this->rootHeap;
-    int chn[2], insertIdx, iTmp;
-    string sTmp;
+    int chn[2], insertIdx;
 
     while(getChildrenLength(*tmpHeap) == 2){
         chn[0] = tmpHeap->childrenNum[0];
@@ -190,7 +188,7 @@ void SMMH::push(std::string key, int weight){
         tmpHeap = tmpHeap->parent->children[insertIdx?0:1];
     }
 
-    while(tmpHeap->parent->parent != nullptr && (tmpHeap->weight < tmpHeap->parent->parent->children[0]->weight || tmpHeap->parent->parent->children[1] != nullptr && tmpHeap->weight > tmpHeap->parent->parent->children[1]->weight)){
+    while(tmpHeap->parent->parent != nullptr && (tmpHeap->weight < tmpHeap->parent->parent->children[0]->weight || (tmpHeap->parent->parent->children[1] != nullptr && tmpHeap->weight > tmpHeap->parent->parent->children[1]->weight))){
         if(tmpHeap->weight < tmpHeap->parent->parent->children[0]->weight){
             swapNODE(tmpHeap, tmpHeap->parent->parent->children[0]);
             tmpHeap = tmpHeap->parent->parent->children[0];

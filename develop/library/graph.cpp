@@ -156,7 +156,7 @@ GRAPH MST_P(std::vector<EDGE> links){
 
 // ######################## MST Kruskal's algorithm ########################
 GRAPH MST_K(std::vector<EDGE> links){
-    int vertexNum = 0, edgeNum = links.size(), groupKeyTmp;
+    int vertexNum = 0, groupKeyTmp;
     std::unordered_map<std::string, int> vertexBelong;
     std::unordered_map<int, std::vector<std::string>> vertexGroup;
     std::vector<std::string> linksSorted;

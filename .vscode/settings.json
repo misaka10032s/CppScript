@@ -1,6 +1,6 @@
 {
     "files.defaultLanguage": "cpp", 
-    "editor.formatOnType": true, 
+    "editor.formatOnType": false, 
     "editor.snippetSuggestions": "top",
     "code-runner.runInTerminal": true,
     "code-runner.executorMap": {
@@ -10,7 +10,7 @@
     "code-runner.saveFileBeforeRun": true, 
     "code-runner.preserveFocus": true, 
     "code-runner.clearPreviousOutput": false, 
-    "C_Cpp.clang_format_sortIncludes": true,
+    "C_Cpp.clang_format_sortIncludes": false,
     "C_Cpp.intelliSenseEngine": "Default", 
     "C_Cpp.errorSquiggles": "Disabled", 
     "C_Cpp.autocomplete": "Disabled",

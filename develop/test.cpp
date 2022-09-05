@@ -13,6 +13,7 @@
 
 #include "library/heap.h"
 #include "library/graph.h"
+#include "library/number.h"
 
 using namespace std;
 
@@ -69,6 +70,20 @@ int main(){
     cout<<MST_P(links).cost<<"\n";
     cout<<MST_K(links).cost<<"\n";
 
-    // system("pause");
+    std::cout << "Float Range" << std::numeric_limits<float>::min() << " / " << std::numeric_limits<float>::max() << '\n';
+    BIGNUM X = 100.7, Y = 1234567890;
+    std::cout << X <<"\n";
+    std::cout << Y <<"\n";
+    std::cout << (BIGNUM)1.023 <<"\n";
+    std::cout << (BIGNUM)1.45 <<"\n";
+    std::cout << ((BIGNUM)0 == 0) <<"\n";
+    std::cout << ((BIGNUM)0 == 1) <<"\n";
+    std::cout << ((BIGNUM)8 >= 0) <<"\n";
+    std::cout << ((BIGNUM)8 <= 1.5) <<"\n";
+    std::cout << (BIGNUM)1234560789 + (BIGNUM)2076543210 <<"\n";
+    std::cout << (BIGNUM)1234560789 * (BIGNUM)2076543210 <<"\n"; // 2563618823730193000
+    std::cout << (BIGNUM)1234560789.654654 * (BIGNUM)2076543210.123123 <<"\n"; // 2563618823730193000
+
+    system("pause");
     return 0;
 }
