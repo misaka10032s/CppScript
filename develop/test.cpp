@@ -72,8 +72,11 @@ int main(){
 
     std::cout << "Float Range" << std::numeric_limits<float>::min() << " / " << std::numeric_limits<float>::max() << '\n';
     BIGNUM X = 100.7, Y = 1234567890;
+    std::cout << (-8)%7 <<"\n";
     std::cout << X <<"\n";
     std::cout << Y <<"\n";
+    X *= Y;
+    std::cout << X <<"\n";
     std::cout << (BIGNUM)1.023 <<"\n";
     std::cout << (BIGNUM)1.45 <<"\n";
     std::cout << ((BIGNUM)0 == 0) <<"\n";
@@ -81,8 +84,23 @@ int main(){
     std::cout << ((BIGNUM)8 >= 0) <<"\n";
     std::cout << ((BIGNUM)8 <= 1.5) <<"\n";
     std::cout << (BIGNUM)1234560789 + (BIGNUM)2076543210 <<"\n";
-    std::cout << (BIGNUM)1234560789 * (BIGNUM)2076543210 <<"\n"; // 2563618823730193000
-    std::cout << (BIGNUM)1234560789.654654 * (BIGNUM)2076543210.123123 <<"\n"; // 2563618823730193000
+    std::cout << (BIGNUM)1234560789 * (BIGNUM)2076543210 <<"\n"; // 2563618823730192690
+    std::cout << (BIGNUM)1234560789.654654 * (BIGNUM)2076543210.123123 <<"\n"; // 2563618825241612836.
+    std::cout << (BIGNUM)"-1234560789.654654" * (BIGNUM)"2076543210.123123"<<"\n";
+    std::cout << (BIGNUM)"1234560789.654654" * (BIGNUM)"2076543210.123123" <<"\n";
+    std::cout << (BIGNUM)1234560789.654654 <<"\n";
+    std::cout << (BIGNUM)2076543210.123123 <<"\n";
+    std::cout << (BIGNUM)"9999999999999999999999999999999999999999999999" * (BIGNUM)"9999999999999999999999999999999999999999999999" <<"\n";
+    std::cout << (BIGNUM)"123456789101112" * (BIGNUM)"0.01" <<"\n";
+    std::cout << (BIGNUM)"0.0000000001" <<"\n";
+    std::cout << "---------------------------------------------------------" <<"\n";
+    std::cout << (BIGNUM)"9876543210" - (BIGNUM)"1239012" <<"\n"; // 9875304198
+    std::cout << (BIGNUM)"9876543210" - (BIGNUM)"123456789012" <<"\n"; // -113580245802
+    std::cout << "---------------------------------------------------------" <<"\n";
+    std::cout << (BIGNUM)"123456789101112" * (BIGNUM)"0.0000000001" <<"\n";
+    std::cout << (BIGNUM)"123456" / (BIGNUM)"987" <<"\n"; // 125.08206686930092
+    std::cout << (BIGNUM)"100000" / (BIGNUM)"8" <<"\n"; // 12500
+    std::cout << (BIGNUM)"123456789101112" / (BIGNUM)"0.0000000001" <<"\n";
 
     system("pause");
     return 0;

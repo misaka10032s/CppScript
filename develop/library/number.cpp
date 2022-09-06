@@ -3,6 +3,7 @@
 #include <vector>
 #include <unordered_map>
 #include <cmath>
+// #include <stdexcept>
 
 #include "number.h"
 
@@ -118,6 +119,48 @@ BIGNUM::BIGNUM(double x){
         this->FLT[i] = F[i];
     }
 };
+BIGNUM::BIGNUM(std::string x){
+    std::string n, f;
+    int c, idx;
+
+    this->sign = x.substr(0,1) == (std::string)"-";
+    for(idx=this->sign; idx<x.length(); idx++){
+        c = x[idx];
+        if(48 <= c && c <= 57) n += x[idx];
+        else if(c == 46) break;
+    }
+    for(; idx<x.length(); idx++){
+        c = x[idx];
+        if(48 <= c && c <= 57) f += x[idx];
+    }
+    this->INT.resize(std::max(((int)n.length() - 1)/DIGITNUM + 1, 1));
+    this->FLT.resize(std::max(((int)f.length() - 1)/DIGITNUM + 1, 1));
+
+    this->INT[this->INT.size()-1] = std::stoi(n.substr(0, ((int)n.length() - 1) % DIGITNUM + 1));
+    for(int i=(int)this->INT.size()-2; i>=0; i--) this->INT[i] = std::stoi(n.substr((int)n.length() % DIGITNUM + i * DIGITNUM, DIGITNUM));
+
+    if(!f.length()) return;
+    for(int i=0; i<(int)this->FLT.size()-1; i++) this->FLT[i] = std::stoi(f.substr(i * DIGITNUM, DIGITNUM));
+    this->FLT[this->FLT.size()-1] = std::stoi(f.substr((this->FLT.size()-1) * DIGITNUM, ((int)f.length() - 1) % DIGITNUM + 1)) * pow(10, DIGITNUM - (int)f.length() % DIGITNUM);
+}
+
+int BIGNUM::degree(){
+    int d =  DIGITNUM * (this->INT.size()-1), tmp = 1;
+    while(tmp <= this->INT.back()){
+        d++;
+        tmp *= 10;
+    }
+    if(d == 0 && this->INT[0] == 0) d -= this->subdegree();
+    return d;
+};
+int BIGNUM::subdegree(){
+    int d =  DIGITNUM * (this->FLT.size()-1), tmp = DIGIT10;
+    while(tmp > this->FLT.back()){
+        d++;
+        tmp /= 10;
+    }
+    return d;
+};
 
 std::ostream& operator<<(std::ostream &os, const BIGNUM &m){
     int digitFix;
@@ -200,6 +243,11 @@ BIGNUM BIGNUM::operator + (BIGNUM NUM1){
 }
 BIGNUM BIGNUM::operator - (BIGNUM NUM1){
     BIGNUM res;
+    if(NUM1 > *this) {
+        res = NUM1 - *this;
+        res.sign ^= 1;
+        return res;
+    }
     if(this->sign != NUM1.sign) {
         res = NUM1;
         res.sign ^= 1;
@@ -217,18 +265,18 @@ BIGNUM BIGNUM::operator - (BIGNUM NUM1){
 
     for(int i=digitFlt-1; i>=0; i--){
         if(NUM1.FLT.size() <= i || this->FLT.size() <= i) continue;
-        res.FLT[i] = NUM1.FLT[i] - this->FLT[i] - isCarry;
+        res.FLT[i] = this->FLT[i] - NUM1.FLT[i] - isCarry;
         isCarry = (res.FLT[i] < 0);
         if(isCarry) res.FLT[i] += DIGIT10;
     }
     for(int i=0; i<digitInt; i++){
         if(NUM1.INT.size() <= i || this->INT.size() <= i) continue;
-        res.INT[i] = NUM1.INT[i] - this->INT[i] - isCarry;
+        res.INT[i] = this->INT[i] - NUM1.INT[i] - isCarry;
         isCarry = (res.INT[i] < 0);
-        res.INT[i] += DIGIT10;
+        if(isCarry) res.INT[i] += DIGIT10;
     }
     if(isCarry){
-        res.INT.resize(digitInt - 1);
+        res.INT.resize(std::max(digitInt - 1, 1));
         res.sign ^= 1;
     }
     for(int i=digitFlt-1; i>=0; i--){
@@ -239,8 +287,8 @@ BIGNUM BIGNUM::operator - (BIGNUM NUM1){
 }
 BIGNUM BIGNUM::operator * (BIGNUM NUM1){
     BIGNUM res;
-    int digitInt, digitFlt, digitFill;
-    float tmp;
+    int digitInt, digitFlt, fltZero;
+    long long int tmp;
 
     res.sign = this->sign ^ NUM1.sign;
 
@@ -253,33 +301,26 @@ BIGNUM BIGNUM::operator * (BIGNUM NUM1){
     for(int i=0; i<res.INT.size(); i++) res.INT[i] = 0;
     for(int i=0; i<res.FLT.size(); i++) res.FLT[i] = 0;
 
-std::cout<<"@@ "<<this->INT.size()<<", "<<this->FLT.size()<<"\n";
-std::cout<<"@@ "<<NUM1.INT.size()<<", "<<NUM1.FLT.size()<<"\n";
-std::cout<<"@@ "<<-1 * (int)this->FLT.size()<<"\n";
-std::cout<<"@@ "<<-1 * (int)NUM1.FLT.size()<<"\n";
-
-    for(int i=-1 * (int)this->FLT.size(); i<this->INT.size(); i++){
-std::cout<<"i "<<i<<"\n";
-        for(int j=-1 * (int)NUM1.FLT.size(); j<NUM1.INT.size(); j++){
-std::cout<<"ij "<<i<<", "<<j<<"\n";
-            tmp = (float)(i >= 0 ? this->INT[i] : this->FLT[-1 * i - 1]) * (float)(j >= 0 ? NUM1.INT[j] : NUM1.FLT[-1 * j - 1]);
-            digitFill = i + j;
-            if(digitFill >= 0){
-                res.INT[i + j] += std::fmod(tmp, DIGIT10);
+    for(int i=-1 * (int)this->FLT.size(); i<(int)this->INT.size(); i++){
+        for(int j=-1 * (int)NUM1.FLT.size(); j<(int)NUM1.INT.size(); j++){
+            tmp = (long long int)(i >= 0 ? this->INT[i] : this->FLT[-1 * i - 1]) * (long long int)(j >= 0 ? NUM1.INT[j] : NUM1.FLT[-1 * j - 1]);
+            
+            if(i + j >= 0){
+                res.INT[i + j] += tmp % DIGIT10;
                 res.INT[i + j + 1] += floor(tmp / DIGIT10);
 
                 res.INT[i + j + 1] += res.INT[i + j] / DIGIT10;
                 res.INT[i + j] %= DIGIT10;
             }
-            else if(digitFill == -1){
-                res.FLT[-1 * (i + j) - 1] += std::fmod(tmp, DIGIT10);
+            else if(i + j == -1){
+                res.FLT[-1 * (i + j) - 1] += tmp % DIGIT10;
                 res.INT[i + j + 1] += floor(tmp / DIGIT10);
 
                 res.INT[i + j + 1] += res.FLT[-1 * (i + j) - 1] / DIGIT10;
                 res.FLT[-1 * (i + j) - 1] %= DIGIT10;
             }
             else{
-                res.FLT[-1 * (i + j) - 1] += std::fmod(tmp, DIGIT10);
+                res.FLT[-1 * (i + j) - 1] += tmp % DIGIT10;
                 res.FLT[-1 * (i + j + 1) - 1] += floor(tmp / DIGIT10);
 
                 res.FLT[-1 * (i + j + 1) - 1] += res.FLT[-1 * (i + j) - 1] / DIGIT10;
@@ -288,15 +329,75 @@ std::cout<<"ij "<<i<<", "<<j<<"\n";
         }
     }
 
-    if(res.INT.back() == 0) res.INT.resize(std::max(digitInt, 1));
+    fltZero = 0;
+    for(int i=digitInt-1; i>=0; i--){
+        if(res.INT[i] == 0) fltZero++;
+    }
+    res.INT.resize(std::max(digitInt - fltZero, 1));
+
+    fltZero = 0;
+    for(int i=digitFlt-1; i>=0; i--){
+        if(res.FLT[i] == 0) fltZero++;
+    }
+    res.FLT.resize(std::max(digitFlt-fltZero, 1));
 
     return res;
 }
 BIGNUM BIGNUM::operator / (BIGNUM NUM1){ // @@@@
-    return (BIGNUM)0;
+    // if(NUM1 == 0) throw std::invalid_argument("division by zero");
+    BIGNUM NUM0 = *this, res;
+    int digitNUM0, digitNUM1, digitExact, nowDigit;
+    std::string digitShift;
+
+    digitNUM0 = NUM0.degree();
+    digitNUM1 = NUM1.degree();
+    nowDigit = digitNUM0 - digitNUM1;
+    digitExact = abs(digitNUM0) + abs(digitNUM1);
+
+    if(digitNUM0 > digitNUM1){
+        digitShift = "1";
+        for(int i=0; i<digitNUM0 - digitNUM1; i++) digitShift += "0";
+    }
+    else if(digitNUM0 < digitNUM1){
+        digitShift = "0.";
+        for(int i=0; i<digitNUM1 - digitNUM0; i++) digitShift += "0";
+        digitShift += "1";
+    }
+
+    res.INT.resize(std::max((nowDigit - 1)/DIGITNUM + 1, 1));
+    res.FLT.resize(std::max((digitExact - 1)/DIGITNUM + 1, 1));
+    for(int i=0; i<res.INT.size(); i++) res.INT[i] = 0;
+    for(int i=0; i<res.FLT.size(); i++) res.FLT[i] = 0;
+
+    NUM1 *= (BIGNUM)digitShift;
+// std::cout<<"digitExact "<<digitNUM0<<", "<<digitNUM1<<", "<<nowDigit<<", "<<digitExact<<", "<<digitShift<<", "<<NUM1<<"\n";
+    while(nowDigit*(-1) < digitExact && NUM0 != 0){
+        for(int i=1; i<10; i++){
+// std::cout<<"NUMa "<<NUM0<<", "<<NUM1<<"\n";
+            if(NUM1 * i > NUM0){
+                if(nowDigit >= 0){
+                    res.INT[nowDigit/DIGITNUM] += (i-1) * pow(10, nowDigit % DIGITNUM);
+                }
+                else{
+                    res.FLT[-(nowDigit+1)/DIGITNUM] += (i-1) * pow(10, DIGITNUM + nowDigit % DIGITNUM);
+                }
+// std::cout<<"NUMx "<<NUM1 * (i-1)<<"\n";
+                NUM0 -= NUM1 * (i-1);
+// std::cout<<"NUMb "<<NUM0<<", "<<NUM1<<"\n";
+                NUM1 *= (BIGNUM)"0.1";
+                break;
+            }
+        }
+// std::cout<<"NUMc "<<NUM0<<", "<<NUM1<<"\n";
+        nowDigit--;
+    }
+
+    return res;
 }
 BIGNUM BIGNUM::operator % (BIGNUM NUM1){ // @@@@
-    return (BIGNUM)0;
+    // if(NUM1 == 0) throw std::invalid_argument("division by zero");
+    BIGNUM NUM0 = *this, res;
+    return res;
 }
 BIGNUM BIGNUM::operator = (BIGNUM NUM1){
     this->INT.resize(NUM1.INT.size());
@@ -337,6 +438,9 @@ bool BIGNUM::operator == (BIGNUM NUM1){
     for(int i=0; i<this->FLT.size(); i++) if(this->FLT[i] != NUM1.FLT[i]) return 0;
     return 1;
 }
+bool BIGNUM::operator != (BIGNUM NUM1){
+    return !(*this==NUM1);
+}
 // @@@@
 bool BIGNUM::operator >= (BIGNUM NUM1){
     return (*this == NUM1 || *this > NUM1);
@@ -351,6 +455,13 @@ BIGNUM BIGNUM::operator += (BIGNUM NUM1){
 }
 BIGNUM BIGNUM::operator -= (BIGNUM NUM1){
     BIGNUM res = *this - NUM1;
+// std::cout<<"-= "<<*this<<"\n";
+// std::cout<<"-= "<<this->INT.size()<<", "<<this->FLT.size()<<"\n";
+// std::cout<<"-= "<<NUM1<<"\n";
+// std::cout<<"-= "<<NUM1.INT.size()<<", "<<NUM1.FLT.size()<<"\n";
+// std::cout<<"-= "<<&res<<"\n";
+// std::cout<<"-= "<<res.INT.size()<<", "<<res.FLT.size()<<"\n";
+// std::cout<<"-= "<<res<<"\n";
     *this = res;
     return res;
 }
@@ -398,6 +509,9 @@ bool BIGNUM::operator < (int NUM1){
 }
 bool BIGNUM::operator == (int NUM1){
     return *this == *(new BIGNUM(NUM1));
+}
+bool BIGNUM::operator != (int NUM1){
+    return !(*this == *(new BIGNUM(NUM1)));
 }
 bool BIGNUM::operator >= (int NUM1){
     return *this >= *(new BIGNUM(NUM1));
@@ -460,6 +574,9 @@ bool BIGNUM::operator < (float NUM1){
 bool BIGNUM::operator == (float NUM1){
     return *this == *(new BIGNUM(NUM1));
 }
+bool BIGNUM::operator != (float NUM1){
+    return !(*this == *(new BIGNUM(NUM1)));
+}
 bool BIGNUM::operator >= (float NUM1){
     return *this >= *(new BIGNUM(NUM1));
 }
@@ -520,6 +637,9 @@ bool BIGNUM::operator < (double NUM1){
 }
 bool BIGNUM::operator == (double NUM1){
     return *this == *(new BIGNUM(NUM1));
+}
+bool BIGNUM::operator != (double NUM1){
+    return !(*this == *(new BIGNUM(NUM1)));
 }
 bool BIGNUM::operator >= (double NUM1){
     return *this >= *(new BIGNUM(NUM1));

@@ -19,6 +19,10 @@ class BIGNUM{
         BIGNUM(int x);
         BIGNUM(float x);
         BIGNUM(double x);
+        BIGNUM(std::string x);
+
+        int degree();
+        int subdegree();
 
         friend std::ostream& operator<<(std::ostream &os, const BIGNUM &m);
 
@@ -31,6 +35,7 @@ class BIGNUM{
         bool operator > (BIGNUM NUM1);
         bool operator < (BIGNUM NUM1);
         bool operator == (BIGNUM NUM1);
+        bool operator != (BIGNUM NUM1);
         bool operator >= (BIGNUM NUM1);
         bool operator <= (BIGNUM NUM1);
         BIGNUM operator += (BIGNUM NUM1);
@@ -48,6 +53,7 @@ class BIGNUM{
         bool operator > (int NUM1);
         bool operator < (int NUM1);
         bool operator == (int NUM1);
+        bool operator != (int NUM1);
         bool operator >= (int NUM1);
         bool operator <= (int NUM1);
         BIGNUM operator += (int NUM1);
@@ -65,6 +71,7 @@ class BIGNUM{
         bool operator > (float NUM1);
         bool operator < (float NUM1);
         bool operator == (float NUM1);
+        bool operator != (float NUM1);
         bool operator >= (float NUM1);
         bool operator <= (float NUM1);
         BIGNUM operator += (float NUM1);
@@ -82,6 +89,7 @@ class BIGNUM{
         bool operator > (double NUM1);
         bool operator < (double NUM1);
         bool operator == (double NUM1);
+        bool operator != (double NUM1);
         bool operator >= (double NUM1);
         bool operator <= (double NUM1);
         BIGNUM operator += (double NUM1);
