@@ -6,14 +6,16 @@
 #ifndef LIB_NUMBER_H_
 #define LIB_NUMBER_H_
 
+#define DIGITDATATYPE int
 // BIGNUM
 
 class BIGNUM{
     private:
 
     public:
-        bool sign;
-        std::vector<int> INT, FLT;
+        bool sign, isInf;
+        std::vector<int> value;
+        DIGITDATATYPE point;
 
         BIGNUM();
         BIGNUM(int x);
@@ -21,28 +23,35 @@ class BIGNUM{
         BIGNUM(double x);
         BIGNUM(std::string x);
 
-        int degree();
-        int subdegree();
+        int degree(BIGNUM const &NUM0);
+        int firstDigit(BIGNUM const &NUM0);
+        int firstDigit2(BIGNUM const &NUM0);
+        void const retract();
 
         friend std::ostream& operator<<(std::ostream &os, const BIGNUM &m);
 
-        BIGNUM operator + (BIGNUM NUM1);
-        BIGNUM operator - (BIGNUM NUM1);
-        BIGNUM operator * (BIGNUM NUM1);
+        BIGNUM operator << (DIGITDATATYPE NUM1);
+        BIGNUM operator >> (DIGITDATATYPE NUM1);
+        BIGNUM operator <<= (DIGITDATATYPE NUM1);
+        BIGNUM operator >>= (DIGITDATATYPE NUM1);
+
+        BIGNUM operator + (BIGNUM const &NUM1);
+        BIGNUM operator - (BIGNUM const &NUM1);
+        BIGNUM operator * (BIGNUM const &NUM1);
         BIGNUM operator / (BIGNUM NUM1);
-        BIGNUM operator % (BIGNUM NUM1);
-        BIGNUM operator = (BIGNUM NUM1);
-        bool operator > (BIGNUM NUM1);
-        bool operator < (BIGNUM NUM1);
-        bool operator == (BIGNUM NUM1);
-        bool operator != (BIGNUM NUM1);
-        bool operator >= (BIGNUM NUM1);
-        bool operator <= (BIGNUM NUM1);
-        BIGNUM operator += (BIGNUM NUM1);
-        BIGNUM operator -= (BIGNUM NUM1);
-        BIGNUM operator *= (BIGNUM NUM1);
-        BIGNUM operator /= (BIGNUM NUM1);
-        BIGNUM operator %= (BIGNUM NUM1);
+        BIGNUM operator % (BIGNUM const &NUM1);
+        BIGNUM operator = (BIGNUM const &NUM1);
+        bool operator > (BIGNUM const &NUM1);
+        bool operator < (BIGNUM const &NUM1);
+        bool operator == (BIGNUM const &NUM1);
+        bool operator != (BIGNUM const &NUM1);
+        bool operator >= (BIGNUM const &NUM1);
+        bool operator <= (BIGNUM const &NUM1);
+        BIGNUM operator += (BIGNUM const &NUM1);
+        BIGNUM operator -= (BIGNUM const &NUM1);
+        BIGNUM operator *= (BIGNUM const &NUM1);
+        BIGNUM operator /= (BIGNUM const &NUM1);
+        BIGNUM operator %= (BIGNUM const &NUM1);
 
         BIGNUM operator + (int NUM1);
         BIGNUM operator - (int NUM1);
