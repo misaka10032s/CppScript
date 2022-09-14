@@ -23,7 +23,7 @@ class BIGNUM{
         BIGNUM(double x);
         BIGNUM(std::string x);
 
-        int degree(BIGNUM const &NUM0);
+        inline int degree(BIGNUM const &NUM0);
         int firstDigit(BIGNUM const &NUM0);
         int firstDigit2(BIGNUM const &NUM0);
         void const retract();

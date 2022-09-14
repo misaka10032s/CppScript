@@ -1,3 +1,7 @@
+// #define SYS_LINUX
+#define SYS_WINDOWS
+#include "library/systemS.h"
+
 #include <iostream>
 #define _USE_MATH_DEFINES
 #include <cmath> 
@@ -73,13 +77,20 @@ int main(){
 
     std::cout << "Float Range" << std::numeric_limits<float>::min() << " / " << std::numeric_limits<float>::max() << '\n';
 
-    BIGNUM X = 100.7, Y = 1234567890, Z = (std::string)"123456789";
+    BIGNUM X = 100.7, Y = (std::string)"456000", Z = (std::string)"123456789";
     // std::cout << (-8)%7 <<"\n";
     // std::cout << X <<"\n";
     // std::cout << Y <<"\n";
     // X *= Y;
     // std::cout << X <<"\n";
+    std::cout << (Y>>3) <<"\n";
+    Y >>= 3;
+    std::cout << Y <<"\n";
+    std::cout << (Z<<3) <<"\n";
+    Z <<= 3;
+    std::cout << Z <<"\n";
     std::cout << ((BIGNUM)1.5) <<"\n";
+    std::cout << ((BIGNUM)4000 > 4000) <<"\n"; // 0
     std::cout << ((BIGNUM)0 == 0) <<"\n"; // 1
     std::cout << ((BIGNUM)0 == 0) <<"\n"; // 1
     std::cout << ((BIGNUM)0 == 1) <<"\n"; // 0
@@ -91,7 +102,7 @@ int main(){
     std::cout << (BIGNUM)0.0054658885 <<"\n";
     std::cout << (BIGNUM)54658885 <<"\n";
     std::cout << (BIGNUM)"0.0054658885" <<"\n";
-    std::cout << (BIGNUM)"0.000000000000000054658885" <<"\n"; // 16個0 0.0000000000000000000000000
+    std::cout << (BIGNUM)"0.000000000000000054658885" <<"\n"; // 16個0 0.0000000000000000000000000+ digitShift
     std::cout << (BIGNUM)"546588850000000000000000" <<"\n"; // 16個0
     std::cout << (BIGNUM)"0054658885.0054658885" <<"\n";
     std::cout << (BIGNUM)"0.0054658885000" <<"\n";
@@ -146,87 +157,80 @@ int main(){
     std::cout << (BIGNUM)"123456" / (BIGNUM)"987" <<"\n"; // 125.08206686930092
     std::cout << (BIGNUM)"100000" / (BIGNUM)"8" <<"\n"; // 12500
     std::cout << (BIGNUM)"123456789101112" / (BIGNUM)"0.0000000001" <<"\n"; // 1234567891011120000000000
-    std::cout << (BIGNUM)"18446744073709551616" / (BIGNUM)"548894" <<"\n"; // 33607115533617.695
+    std::cout << (BIGNUM)"18446744073709551616" / (BIGNUM)"548894" <<"\n"; // 33607115533617.69597772976203055599077417
     std::cout << "---------------------------------------------------------" <<"\n";
     std::cout << (BIGNUM)"987654321" % (BIGNUM)"159" <<"\n"; // 63
     std::cout << (BIGNUM)"18446744073709551616" % (BIGNUM)"548894" <<"\n"; // 382018
     std::cout << (BIGNUM)"18446744073709551616" % (BIGNUM)"98744.1158" <<"\n"; // 98524.0954
-    // std::cout << "---------------------------------------------------------" <<"\n";
-    // std::cout << (BIGNUM)1.023 <<"\n";
-    // std::cout << (BIGNUM)1.45 <<"\n";
-    // std::cout << ((BIGNUM)0 == 0) <<"\n";
-    // std::cout << ((BIGNUM)0 == 1) <<"\n";
-    // std::cout << ((BIGNUM)8 >= 0) <<"\n";
-    // std::cout << ((BIGNUM)8 <= 1.5) <<"\n";
-    // std::cout << (BIGNUM)1234560789 + (BIGNUM)2076543210 <<"\n";
-    // std::cout << (BIGNUM)1234560789 * (BIGNUM)2076543210 <<"\n"; // 2563618823730192690
-    // std::cout << (BIGNUM)1234560789.654654 * (BIGNUM)2076543210.123123 <<"\n"; // 2563618825241612836.
-    // std::cout << (BIGNUM)"-1234560789.654654" * (BIGNUM)"2076543210.123123"<<"\n";
-    // std::cout << (BIGNUM)"1234560789.654654" * (BIGNUM)"2076543210.123123" <<"\n";
-    // std::cout << (BIGNUM)1234560789.654654 <<"\n";
-    // std::cout << (BIGNUM)2076543210.123123 <<"\n";
-    // std::cout << (BIGNUM)"0.0000000001" <<"\n";
-    // std::cout << "---------------------------------------------------------" <<"\n";
-    // std::cout << (BIGNUM)"9876543210" - (BIGNUM)"1239012" <<"\n"; // 9875304198
-    // std::cout << (BIGNUM)"9876543210" - (BIGNUM)"123456789012" <<"\n"; // -113580245802
-    // std::cout << "---------------------------------------------------------" <<"\n";
-    // std::cout << (BIGNUM)"-123.456" + (BIGNUM)"98744.1158" <<"\n"; // 98620.6598
-    // std::cout << "---------------------------------------------------------" <<"\n";
-    // std::cout << ((BIGNUM)"0.0000000000000006").firstDigit2() <<"\n";
-    // std::cout << ((BIGNUM)"18446744173709551616").firstDigit2() <<"\n";
-    // std::cout << ((BIGNUM)"0.0018446744173709551616").firstDigit2() <<"\n";
-    // std::cout << ((BIGNUM)"0.0000000000000006").firstDigit2() <<"\n";
-    // std::cout << ((BIGNUM)"7").firstDigit2() <<"\n";
-    // std::cout << ((BIGNUM)"0.7").firstDigit2() <<"\n";
-    // std::cout << ((BIGNUM)"123.456").firstDigit2() <<"\n";
+    std::cout << "---------------------------------------------------------" <<"\n";
+    std::cout << (BIGNUM)1.023 <<"\n";
+    std::cout << (BIGNUM)1.45 <<"\n";
+    std::cout << ((BIGNUM)0 == 0) <<"\n";
+    std::cout << ((BIGNUM)0 == 1) <<"\n";
+    std::cout << ((BIGNUM)8 >= 0) <<"\n";
+    std::cout << ((BIGNUM)8 <= 1.5) <<"\n";
+    std::cout << (BIGNUM)1234560789 + (BIGNUM)2076543210 <<"\n";
+    std::cout << (BIGNUM)1234560789 * (BIGNUM)2076543210 <<"\n"; // 2563618823730192690
+    std::cout << (BIGNUM)1234560789.654654 * (BIGNUM)2076543210.123123 <<"\n"; // 2563618825241612836.
+    std::cout << (BIGNUM)"-1234560789.654654" * (BIGNUM)"2076543210.123123"<<"\n";
+    std::cout << (BIGNUM)"1234560789.654654" * (BIGNUM)"2076543210.123123" <<"\n";
+    std::cout << (BIGNUM)1234560789.654654 <<"\n";
+    std::cout << (BIGNUM)2076543210.123123 <<"\n";
+    std::cout << (BIGNUM)"0.0000000001" <<"\n";
+    std::cout << "---------------------------------------------------------" <<"\n";
+    std::cout << (BIGNUM)"9876543210" - (BIGNUM)"1239012" <<"\n"; // 9875304198
+    std::cout << (BIGNUM)"9876543210" - (BIGNUM)"123456789012" <<"\n"; // -113580245802
+    std::cout << "---------------------------------------------------------" <<"\n";
+    std::cout << (BIGNUM)"-123.456" + (BIGNUM)"98744.1158" <<"\n"; // 98620.6598
+    std::cout << "---------------------------------------------------------" <<"\n";
 
 
-// BIGNUM BNUM0 = (BIGNUM)"18446744173709551616.1", BNUM1 = (BIGNUM)"98198298.1";
+BIGNUM BNUM0 = (BIGNUM)"18446744173709551616.1", BNUM1 = (BIGNUM)"98198298.1";
 
 
-// auto st = std::chrono::high_resolution_clock::now();
-// for(int i=0; i<10000000; i++) {
-//     BNUM0 + BNUM1;
-// }
-// auto ed = std::chrono::high_resolution_clock::now();
-// auto duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
-// std::cout<<"c:"<<duration.count()<<"\n";
-
-// st = std::chrono::high_resolution_clock::now();
-// for(int i=0; i<10000000; i++) {
-//     BNUM0 * BNUM1;
-// }
-// ed = std::chrono::high_resolution_clock::now();
-// duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
-// std::cout<<"c:"<<duration.count()<<"\n";
+auto st = std::chrono::high_resolution_clock::now();
+for(int i=0; i<10000000; i++) {
+    BNUM0 + BNUM1;
+}
+auto ed = std::chrono::high_resolution_clock::now();
+auto duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
+std::cout<<"c:"<<duration.count()<<"\n";
 
 
-// st = std::chrono::high_resolution_clock::now();
-// for(int i=0; i<10000000; i++){
-//     BNUM0 - BNUM1;
-// }
-// ed = std::chrono::high_resolution_clock::now();
-// duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
-// std::cout<<"c:"<<duration.count()<<"\n";
+st = std::chrono::high_resolution_clock::now();
+for(int i=0; i<10000000; i++){
+    BNUM0 - BNUM1;
+}
+ed = std::chrono::high_resolution_clock::now();
+duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
+std::cout<<"c:"<<duration.count()<<"\n";
 
 
-// st = std::chrono::high_resolution_clock::now();
-// for(int i=0; i<100000; i++) {
-//     BNUM0 / BNUM1;
-// }
-// ed = std::chrono::high_resolution_clock::now();
-// duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
-// std::cout<<"c:"<<duration.count()<<"\n";
+st = std::chrono::high_resolution_clock::now();
+for(int i=0; i<10000000; i++) {
+    BNUM0 * BNUM1;
+}
+ed = std::chrono::high_resolution_clock::now();
+duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
+std::cout<<"c:"<<duration.count()<<"\n";
 
 
-// st = std::chrono::high_resolution_clock::now();
-// for(int i=0; i<100000; i++){
-//     BNUM0 % BNUM1;
-// }
-// ed = std::chrono::high_resolution_clock::now();
-// duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
-// std::cout<<"c:"<<duration.count()<<"\n";
+st = std::chrono::high_resolution_clock::now();
+for(int i=0; i<100000; i++) {
+    BNUM0 / BNUM1;
+}
+ed = std::chrono::high_resolution_clock::now();
+duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
+std::cout<<"c:"<<duration.count()<<"\n";
 
-    // system("pause");
+
+st = std::chrono::high_resolution_clock::now();
+for(int i=0; i<100000; i++){
+    BNUM0 % BNUM1;
+}
+ed = std::chrono::high_resolution_clock::now();
+duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
+std::cout<<"c:"<<duration.count()<<"\n";
+
     return 0;
 }
