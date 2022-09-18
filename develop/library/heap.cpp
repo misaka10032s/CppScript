@@ -62,6 +62,10 @@ HEAP::~HEAP(){
     if(this->rootHeap != nullptr) delete this->rootHeap;
 }
 
+void HEAP::push(int key, int weight){
+    this->push(std::to_string(key), weight);
+}
+
 void HEAP::push(std::string key, int weight){
     if(key == "") return;
 
@@ -156,6 +160,10 @@ NODE* SMMH::getValue(NODE *nodeList[2], int index){
     index = index ? 1 : 0;
     if(nodeList[index] == nullptr) return nodeList[!index];
     return nodeList[index];
+}
+
+void SMMH::push(int key, int weight){
+    this->push(std::to_string(key), weight);
 }
 
 void SMMH::push(std::string key, int weight){

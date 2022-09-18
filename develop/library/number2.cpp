@@ -21,12 +21,6 @@ BIGNUM abs(BIGNUM NUM0){
     return NUM0;
 }
 
-bool isZero(BIGNUM const &NUM0){
-    if(NUM0.isInf) return 0;
-    for(int i=NUM0.value.size()-1; i>=0; i--) if(NUM0.value[i]) return 0;
-    return 1;
-}
-
 inline int getDig(int const &NUM0){
     int dig0 = 0;
     for(int i=1; i<DIGIT10; i*=10){
@@ -42,11 +36,113 @@ inline int getDig(BIGNUM const &NUM0){
             dig0 = DIGITNUM * i;
             for(int j=1; j<DIGIT10; j*=10){
                 if(NUM0.value[i]>=j) dig0++;
+                else break;
             }
             break;
         }
     }
     return dig0;
+}
+
+int pow10List[10] = {
+    1, 10, 100, 1000, 10000, 
+    100000, 1000000, 10000000, 100000000, 1000000000
+};
+inline int quick_pow10(int n){
+    return pow10List[n];
+}
+
+inline int modulus(int NUM0, int NUM1){
+    return NUM0 - NUM1 * (NUM0 / NUM1);
+}
+inline long long int modulus(long long int NUM0, int NUM1){
+    return NUM0 - (long long int)NUM1 * (NUM0 / (long long int)NUM1);
+}
+
+void simpleMinus(BIGNUM &NUM0, BIGNUM &NUM1, int mul){
+    int digit, tmpNUM0, tmpNUM1;
+    int size0, size1;
+    int pointDiff, nextNum;
+    int modNUM0, modNUM1, pointOver0, pointOver1;
+    long long int tmp, nextSlotValue = 0;
+
+    pointDiff = (NUM0.point - NUM1.point) % DIGITNUM;
+
+    modNUM0 = quick_pow10(pointDiff < 0 ? DIGITNUM + pointDiff : DIGITNUM);
+    modNUM1 = quick_pow10(pointDiff > 0 ? DIGITNUM - pointDiff : DIGITNUM);
+
+    if(NUM0.point - NUM1.point < 0){
+        pointOver0 = (NUM1.point - NUM0.point) / DIGITNUM;
+        pointOver1 = 0;
+    }
+    else{
+        pointOver0 = 0;
+        pointOver1 = (NUM0.point - NUM1.point) / DIGITNUM;
+    }
+
+    size0 = (getDig(NUM0) - 1) / DIGITNUM + 1;
+    size1 = (getDig(NUM1) - 1) / DIGITNUM + 1;
+    digit = std::max(size0, size1);
+
+    NUM0.point = std::max(NUM0.point, NUM1.point);
+    if(!(NUM0.value.size() > digit)) NUM0.value.resize(digit + 1);
+
+    for(int i=0; i<digit; i++){
+        tmpNUM0 = i + pointOver0 < size0 ? NUM0.value[i + pointOver0] : 0;
+        tmpNUM1 = i + pointOver1 < size1 ? NUM1.value[i + pointOver1] : 0;
+
+        tmp = (long long int)((tmpNUM0 % modNUM0) * (DIGIT10 / modNUM0)) - (long long int)((tmpNUM1 % modNUM1) * (DIGIT10 / modNUM1)) * mul + nextSlotValue;
+        nextNum = (tmp < 0 ? -(tmp) / DIGIT10 + 1 : 0);
+        nextSlotValue = (tmpNUM0 / modNUM0) - (tmpNUM1 / modNUM1) * mul - nextNum;
+        NUM0.value[i] = tmp + (long long int)(nextNum * DIGIT10);
+    }
+}
+
+bool isZero(BIGNUM const &NUM0){
+    if(NUM0.isInf) return 0;
+    for(int i=NUM0.value.size()-1; i>=0; i--) if(NUM0.value[i]) return 0;
+    return 1;
+}
+
+bool compareAbs(BIGNUM const &NUM0, BIGNUM const &NUM1){
+    if(NUM0.isInf) return 0;
+
+    int dig0 = getDig(NUM0), dig1 = getDig(NUM1), tmp;
+    if(dig0 - NUM0.point != dig1 - NUM1.point) return dig0 - NUM0.point < dig1 - NUM1.point;
+
+    bool rev = 0;
+    int pointDiff = (NUM0.point - NUM1.point) % DIGITNUM, pointOver = abs(NUM0.point - NUM1.point) / DIGITNUM;
+    int modNUM0, modNUM1, tmpNUM0, tmpNUM1;
+    int idx0, idx1;
+    BIGNUM const *_NUM0, *_NUM1;
+    if(pointDiff < 0){
+        _NUM0 = &NUM0;
+        _NUM1 = &NUM1;
+    }
+    else{
+        _NUM0 = &NUM1;
+        _NUM1 = &NUM0;
+        tmp = dig0;
+        dig0 = dig1;
+        dig1 = tmp;
+        rev = 1;
+    }
+
+    idx0 = (dig0-1)/DIGITNUM + 1;
+    idx1 = (dig1-1)/DIGITNUM + 1;
+    modNUM1 = quick_pow10(abs(pointDiff));
+    modNUM0 = (DIGIT10/modNUM1);
+    
+    for(int i=std::max(idx0, idx1) - 1; i>=0; i--){
+        tmpNUM0 = i < idx0 ? _NUM0->value[i] % modNUM0 : 0;
+        tmpNUM1 = (0 <= i - pointOver && i - pointOver < idx1) ? _NUM1->value[i - pointOver] / modNUM1 : 0;
+        if(tmpNUM0 != tmpNUM1) return(tmpNUM0 < tmpNUM1) ^ rev;
+        
+        tmpNUM0 = (0 <= i - 1 && i - 1 < idx0) ? _NUM0->value[i - 1] / modNUM0 : 0;
+        tmpNUM1 = (0 <= i - pointOver && i - pointOver < idx1) ? _NUM1->value[i - pointOver] % modNUM1 : 0;
+        if(tmpNUM0 != tmpNUM1) return(tmpNUM0 < tmpNUM1) ^ rev;
+    }
+    return NUM0.point != NUM1.point ? (NUM0.point < NUM1.point) ^ rev : 0;
 }
 
 inline int BIGNUM::degree(BIGNUM const &NUM0){
@@ -56,6 +152,7 @@ inline int BIGNUM::degree(BIGNUM const &NUM0){
             dig0 = DIGITNUM * i - NUM0.point;
             for(int j=1; j<DIGIT10; j*=10){
                 if(NUM0.value[i]>=j) dig0++;
+                else break;
             }
             break;
         }
@@ -92,47 +189,6 @@ int BIGNUM::firstDigit2(BIGNUM const &NUM0){
     while(x >= 100) x /= 10;
     return x;
 };
-
-bool compareAbs(BIGNUM const &NUM0, BIGNUM const &NUM1){
-    if(NUM0.isInf) return 0;
-
-    int dig0 = getDig(NUM0), dig1 = getDig(NUM1), tmp;
-    if(dig0 - NUM0.point != dig1 - NUM1.point) return dig0 - NUM0.point < dig1 - NUM1.point;
-
-    bool rev = 0;
-    int pointDiff = (NUM0.point - NUM1.point) % DIGITNUM, pointOver = abs(NUM0.point - NUM1.point) / DIGITNUM;
-    int modNUM0, modNUM1, tmpNUM0, tmpNUM1;
-    int idx0, idx1;
-    BIGNUM const *_NUM0, *_NUM1;
-    if(pointDiff < 0){
-        _NUM0 = &NUM0;
-        _NUM1 = &NUM1;
-    }
-    else{
-        _NUM0 = &NUM1;
-        _NUM1 = &NUM0;
-        tmp = dig0;
-        dig0 = dig1;
-        dig1 = tmp;
-        rev = 1;
-    }
-
-    idx0 = (dig0-1)/DIGITNUM + 1;
-    idx1 = (dig1-1)/DIGITNUM + 1;
-    modNUM1 = pow(10, abs(pointDiff));
-    modNUM0 = (DIGIT10/modNUM1);
-    
-    for(int i=std::max(idx0, idx1) - 1; i>=0; i--){
-        tmpNUM0 = i < idx0 ? _NUM0->value[i] % modNUM0 : 0;
-        tmpNUM1 = (0 <= i - pointOver && i - pointOver < idx1) ? _NUM1->value[i - pointOver] / modNUM1 : 0;
-        if(tmpNUM0 != tmpNUM1) return(tmpNUM0 < tmpNUM1) ^ rev;
-        
-        tmpNUM0 = (0 <= i - 1 && i - 1 < idx0) ? _NUM0->value[i - 1] / modNUM0 : 0;
-        tmpNUM1 = (0 <= i - pointOver && i - pointOver < idx1) ? _NUM1->value[i - pointOver] % modNUM1 : 0;
-        if(tmpNUM0 != tmpNUM1) return(tmpNUM0 < tmpNUM1) ^ rev;
-    }
-    return NUM0.point != NUM1.point ? (NUM0.point < NUM1.point) ^ rev : 0;
-}
 
 
 BIGNUM::BIGNUM(){
@@ -354,14 +410,14 @@ BIGNUM BIGNUM::operator << (DIGITDATATYPE NUM1){
     digitUnit = NUM1 % DIGITNUM;
     digitShift = digitSet + (digitUnit ? 1 : 0);
     idx = (getDig(*this) - 1) / DIGITNUM + 1;
-    multiple = pow(10, (DIGITNUM - digitUnit) % DIGITNUM);
+    multiple = quick_pow10((DIGITNUM - digitUnit) % DIGITNUM);
 
     res.value.resize(idx + digitShift);
     for(int i=0; i<idx; i++) res.value[i] = 0;
 
     for(int i=(int)res.value.size()-1; i>=0; i--){
         res.value[i] = (0 <= i-digitShift && i-digitShift < origSize) ? this->value[i-digitShift] / multiple : 0;
-        res.value[i] += (0 <= i-digitShift+1 && i-digitShift+1 < origSize) ? (this->value[i-digitShift+1] % multiple) * (DIGIT10 / multiple) : 0;
+        res.value[i] += (0 <= i-digitShift+1 && i-digitShift+1 < origSize) ? modulus(this->value[i-digitShift+1], multiple) * (DIGIT10 / multiple) : 0;
     }
 
     return res;
@@ -394,14 +450,14 @@ BIGNUM BIGNUM::operator >> (DIGITDATATYPE NUM1){
     digitUnit = zero % DIGITNUM;
     digitShift = digitSet + (digitUnit ? 1 : 0);
     idx = (getDig(*this) - NUM1 + zero - 1) / DIGITNUM + 1;
-    multiple = pow(10, DIGITNUM - digitUnit);
+    multiple = quick_pow10(DIGITNUM - digitUnit);
 
     res.value.resize(idx);
     for(int i=0; i<idx; i++) res.value[i] = 0;
 
     for(int i=0; i<origSize; i++){
         res.value[i] = i+digitShift-1 < (int)this->value.size() ? this->value[i+digitShift-1] / (DIGIT10 / multiple) : 0;
-        res.value[i] += i+digitShift < (int)this->value.size() ? (this->value[i+digitShift] % (DIGIT10 / multiple)) * multiple : 0;
+        res.value[i] += i+digitShift < (int)this->value.size() ? modulus(this->value[i+digitShift], (DIGIT10 / multiple)) * multiple : 0;
     }
 
     return res;
@@ -426,14 +482,14 @@ BIGNUM BIGNUM::operator <<= (DIGITDATATYPE NUM1){
     digitUnit = NUM1 % DIGITNUM;
     digitShift = digitSet + (digitUnit ? 1 : 0);
     idx = (getDig(*this) - 1) / DIGITNUM + 1;
-    multiple = pow(10, (DIGITNUM - digitUnit) % DIGITNUM);
+    multiple = quick_pow10((DIGITNUM - digitUnit) % DIGITNUM);
 
     if(origSize < idx + digitShift) this->value.resize(idx + digitShift);
     for(int i=origSize; i<idx + digitShift; i++) this->value[i] = 0;
 
     for(int i=(int)this->value.size()-1; i>=0; i--){
         tmp = (0 <= i-digitShift && i-digitShift < origSize) ? this->value[i-digitShift] / multiple : 0;
-        tmp += (0 <= i-digitShift+1 && i-digitShift+1 < origSize) ? (this->value[i-digitShift+1] % multiple) * (DIGIT10 / multiple) : 0;
+        tmp += (0 <= i-digitShift+1 && i-digitShift+1 < origSize) ? modulus(this->value[i-digitShift+1], multiple) * (DIGIT10 / multiple) : 0;
         this->value[i] = tmp;
     }
     return *this;
@@ -461,11 +517,11 @@ BIGNUM BIGNUM::operator >>= (DIGITDATATYPE NUM1){
     digitUnit = zero % DIGITNUM;
     digitShift = digitSet + (digitUnit ? 1 : 0);
     idx = (getDig(*this) - NUM1 + zero - 1) / DIGITNUM + 1;
-    multiple = pow(10, DIGITNUM - digitUnit);
+    multiple = quick_pow10(DIGITNUM - digitUnit);
 
     for(int i=0; i<origSize; i++){
         this->value[i] = i+digitShift-1 < (int)this->value.size() ? this->value[i+digitShift-1] / (DIGIT10 / multiple) : 0;
-        this->value[i] += i+digitShift < (int)this->value.size() ? (this->value[i+digitShift] % (DIGIT10 / multiple)) * multiple : 0;
+        this->value[i] += i+digitShift < (int)this->value.size() ? modulus(this->value[i+digitShift], (DIGIT10 / multiple)) * multiple : 0;
     }
 
     return *this;
@@ -479,14 +535,14 @@ BIGNUM BIGNUM::operator + (BIGNUM const &NUM1){
         res.sign ^= 1;
         return *this - res;
     }
-    
-    int digit, tmpNUM0, tmpNUM1;
+
+    int digit, tmpNUM0, tmpNUM1, nextSlotValue = 0;
     int size0, size1;
-    int pointDiff = (this->point - NUM1.point) % DIGITNUM;
+    int pointDiff = modulus((this->point - NUM1.point), DIGITNUM);
     int modNUM0, modNUM1, pointOver0, pointOver1;
 
-    modNUM0 = pow(10, pointDiff < 0 ? DIGITNUM + pointDiff : DIGITNUM);
-    modNUM1 = pow(10, pointDiff > 0 ? DIGITNUM - pointDiff : DIGITNUM);
+    modNUM0 = quick_pow10(pointDiff < 0 ? DIGITNUM + pointDiff : DIGITNUM);
+    modNUM1 = quick_pow10(pointDiff > 0 ? DIGITNUM - pointDiff : DIGITNUM);
 
     if(this->point - NUM1.point < 0){
         pointOver0 = (NUM1.point - this->point) / DIGITNUM;
@@ -501,24 +557,18 @@ BIGNUM BIGNUM::operator + (BIGNUM const &NUM1){
     size1 = (getDig(NUM1) - 1) / DIGITNUM + 1;
     digit = std::max(size0, size1);
 
-// std::cout << "\nthis ";
-// for(int i=size0-1; i>=0; i--) std::cout << this->value[i] << ", "; std::cout << "\n";
-// for(int i=size1-1; i>=0; i--) std::cout << NUM1.value[i] << ", "; std::cout << "\n";
     res.sign = this->sign;
     res.point = std::max(this->point, NUM1.point);
     res.value.resize(digit + 1);
-// std::cout << "pointDiff " << pointDiff << ", " << pointOver0 << ", " << pointOver1<< ", " << modNUM0 << ", " << modNUM1 << ", " << digit << ", " << res.point << "\n";
 
-    res.value[0] = 0;
     for(int i=0; i<digit; i++){
-        tmpNUM0 = i + pointOver0 < this->value.size() ? this->value[i + pointOver0] : 0;
-        tmpNUM1 = i + pointOver1 < NUM1.value.size() ? NUM1.value[i + pointOver1] : 0;
+        tmpNUM0 = i + pointOver0 < size0 ? this->value[i + pointOver0] : 0;
+        tmpNUM1 = i + pointOver1 < size1 ? NUM1.value[i + pointOver1] : 0;
 
-        res.value[i] += (tmpNUM0 % modNUM0) * (DIGIT10 / modNUM0) + (tmpNUM1 % modNUM1) * (DIGIT10 / modNUM1);
-        res.value[i + 1] = tmpNUM0 / modNUM0 + tmpNUM1 / modNUM1 + (res.value[i] > DIGIT10);
-        res.value[i] %= DIGIT10;
+        res.value[i] = modulus(tmpNUM0, modNUM0) * (DIGIT10 / modNUM0) + modulus(tmpNUM1, modNUM1) * (DIGIT10 / modNUM1) + nextSlotValue;
+        nextSlotValue = tmpNUM0 / modNUM0 + tmpNUM1 / modNUM1 + (res.value[i] > DIGIT10);
+        res.value[i] = modulus(res.value[i], DIGIT10);
     }
-// for(int i=digit; i>=0; i--) std::cout << res.value[i] << ", "; std::cout << "\n";
 
     return res;
 }
@@ -530,7 +580,7 @@ BIGNUM BIGNUM::operator - (BIGNUM const &NUM1){
         return *this + res;
     }
     
-    int digit, tmpNUM0, tmpNUM1;
+    int digit, tmpNUM0, tmpNUM1, nextSlotValue = 0;
     int size0, size1;
     int pointDiff;
     int modNUM0, modNUM1, pointOver0, pointOver1;
@@ -547,10 +597,10 @@ BIGNUM BIGNUM::operator - (BIGNUM const &NUM1){
         res.sign = this->sign;
     }
 
-    pointDiff = (_NUM0->point - _NUM1->point) % DIGITNUM;
+    pointDiff = modulus((_NUM0->point - _NUM1->point), DIGITNUM);
 
-    modNUM0 = pow(10, pointDiff < 0 ? DIGITNUM + pointDiff : DIGITNUM);
-    modNUM1 = pow(10, pointDiff > 0 ? DIGITNUM - pointDiff : DIGITNUM);
+    modNUM0 = quick_pow10(pointDiff < 0 ? DIGITNUM + pointDiff : DIGITNUM);
+    modNUM1 = quick_pow10(pointDiff > 0 ? DIGITNUM - pointDiff : DIGITNUM);
 
     if(_NUM0->point - _NUM1->point < 0){
         pointOver0 = (_NUM1->point - _NUM0->point) / DIGITNUM;
@@ -568,13 +618,12 @@ BIGNUM BIGNUM::operator - (BIGNUM const &NUM1){
     res.point = std::max(this->point, NUM1.point);
     res.value.resize(digit + 1);
 
-    res.value[0] = 0;
     for(int i=0; i<digit; i++){
         tmpNUM0 = i + pointOver0 < _NUM0->value.size() ? _NUM0->value[i + pointOver0] : 0;
         tmpNUM1 = i + pointOver1 < _NUM1->value.size() ? _NUM1->value[i + pointOver1] : 0;
 
-        res.value[i] += (tmpNUM0 % modNUM0) * (DIGIT10 / modNUM0) - (tmpNUM1 % modNUM1) * (DIGIT10 / modNUM1);
-        res.value[i + 1] = tmpNUM0 / modNUM0 - tmpNUM1 / modNUM1 - (res.value[i] < 0);
+        res.value[i] = modulus(tmpNUM0, modNUM0) * (DIGIT10 / modNUM0) - modulus(tmpNUM1, modNUM1) * (DIGIT10 / modNUM1) + nextSlotValue;
+        nextSlotValue = tmpNUM0 / modNUM0 - tmpNUM1 / modNUM1 - (res.value[i] < 0);
         if(res.value[i] < 0) res.value[i] += DIGIT10;
     }
 
@@ -582,26 +631,29 @@ BIGNUM BIGNUM::operator - (BIGNUM const &NUM1){
 }
 BIGNUM BIGNUM::operator * (BIGNUM const &NUM1){
     BIGNUM res;
-    int digit;
-    long long int tmp;
+    int digit, size0, size1;
+    long long int tmp, thisSlotValue = 0, nextSlotValue = 0;
 
     res.sign = this->sign ^ NUM1.sign;
 
-    digit = std::max(getDig(*this) + getDig(NUM1), 1);
+    size0 = (getDig(*this) - 1) / DIGITNUM + 1;
+    size1 = (getDig(NUM1) - 1) / DIGITNUM + 1;
 
-    res.value.resize((digit - 1) / DIGITNUM + 1);
+    digit = size0 + size1;
+
+    res.value.resize(digit);
     res.point = this->point + NUM1.point;
 
-    for(int i=0; i<res.value.size(); i++) res.value[i] = 0;
+    for(int i=0; i<digit; i++){
+        for(int j=0; j<std::min(i + 1, size1); j++){
+            if(i-j >= size0) continue;
+            tmp = (long long int)(this->value[i-j]) * (long long int)(NUM1.value[j]);
 
-    for(int i=0; i<(int)this->value.size(); i++){
-        for(int j=0; j<(int)NUM1.value.size(); j++){
-            tmp = (long long int)(this->value[i]) * (long long int)(NUM1.value[j]);
-            
-            res.value[i + j] += tmp % DIGIT10;
-            res.value[i + j + 1] += tmp / DIGIT10 + res.value[i + j] / DIGIT10;
-            res.value[i + j ] %= DIGIT10;
+            thisSlotValue += tmp;
         }
+        res.value[i] = modulus((thisSlotValue + nextSlotValue), DIGIT10);
+        nextSlotValue = (thisSlotValue + nextSlotValue) / DIGIT10;
+        thisSlotValue = 0;
     }
 
     return res;
@@ -639,16 +691,13 @@ BIGNUM BIGNUM::operator / (BIGNUM NUM1){
             continue;
         }
         f0 = firstDigit2(NUM0);
-        // rangeL = f0>=f1 ? f0/(f1 + 1) : (10*f0 - 1)/(f1 + 1);
         rangeL = f0>=f1 ? f0/f1 : (10*f0 - 1)/(f1 + 1);
         for(int i=rangeL; i<=10; i++){
-            // if(NUM1 * i > NUM0){
-            if((f1 * i > f0 * pow(10, digitNUM0 - digitNUM1) + i) || (NUM1 * i > NUM0)){
-// std::cout<<"/4 "<<f0<<", "<<f1<<", "<<digitNUM0<<", "<<digitNUM1<<", "<<NUM0<<", "<<NUM1<<"\n";
-// std::cout<<"/5 "<<NUM1 * i<<", "<<(NUM1 * i > NUM0)<<"\n";
+            if((f1 * i > f0 * quick_pow10(digitNUM0 - digitNUM1) + i) || (NUM1 * i > NUM0)){
                 tmp = (nowDigit + digitExact - 1) % DIGITNUM;
-                res.value[(nowDigit + digitExact - 1)/DIGITNUM] += (i-1) * pow(10, tmp < 0 ? tmp + DIGITNUM : tmp);
-                NUM0 -= NUM1 * (i-1);
+                res.value[(nowDigit + digitExact - 1)/DIGITNUM] += (i-1) * quick_pow10(tmp < 0 ? tmp + DIGITNUM : tmp);
+                // NUM0 -= NUM1 * (i-1);
+                simpleMinus(NUM0, NUM1, i-1);
                 NUM1 >>= 1;
                 digitNUM0 = degree(NUM0);
                 digitNUM1--;
@@ -684,12 +733,11 @@ BIGNUM BIGNUM::operator % (BIGNUM const &NUM1){
             continue;
         }
         f0 = firstDigit2(res);
-        // rangeL = f0>=f1 ? f0/(f1 + 1) : (10*f0 - 1)/(f1 + 1);
         rangeL = f0>=f1 ? f0/f1 : (10*f0 - 1)/(f1 + 1);
         for(int i=rangeL; i<=10; i++){
-            // if(divNUM * i > res){
-            if((f1 * i > f0 * pow(10, digitNUM0 - digitNUM1) + i) || (divNUM * i > res)){
-                res -= divNUM * (i-1);
+            if((f1 * i > f0 * quick_pow10(digitNUM0 - digitNUM1) + i) || (divNUM * i > res)){
+                // res -= divNUM * (i-1);
+                simpleMinus(res, divNUM, i-1);
                 divNUM >>= 1;
                 digitNUM0 = degree(res);
                 digitNUM1--;
@@ -738,7 +786,7 @@ bool BIGNUM::operator > (BIGNUM const &NUM1){
 
     idx0 = (dig0-1)/DIGITNUM + 1;
     idx1 = (dig1-1)/DIGITNUM + 1;
-    modNUM1 = pow(10, abs(pointDiff));
+    modNUM1 = quick_pow10(abs(pointDiff));
     modNUM0 = (DIGIT10/modNUM1);
 
     for(int i=std::max(idx0, idx1) - 1; i>=0; i--){
@@ -779,7 +827,7 @@ bool BIGNUM::operator < (BIGNUM const &NUM1){
 
     idx0 = (dig0-1)/DIGITNUM + 1;
     idx1 = (dig1-1)/DIGITNUM + 1;
-    modNUM1 = pow(10, abs(pointDiff));
+    modNUM1 = quick_pow10(abs(pointDiff));
     modNUM0 = (DIGIT10/modNUM1);
     
     for(int i=std::max(idx0, idx1) - 1; i>=0; i--){
@@ -815,7 +863,7 @@ bool BIGNUM::operator == (BIGNUM const &NUM1){
 
     idx0 = (dig0-1)/DIGITNUM + 1;
     idx1 = (dig1-1)/DIGITNUM + 1;
-    modNUM1 = pow(10, abs(pointDiff));
+    modNUM1 = quick_pow10(abs(pointDiff));
     modNUM0 = (DIGIT10/modNUM1);
 
     for(int i=std::max(idx0, idx1) - 1; i>=0; i--){

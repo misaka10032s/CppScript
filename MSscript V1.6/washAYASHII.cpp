@@ -119,9 +119,9 @@ int checkfit(vector<uint8_t>& Pixels, int width, int height, int BitsPerPixel){
     for (int i = 0; i < 12; i++) cout << statistics[1][i] << " "; cout << "/ " << totalCube << "\n";
 
     if(attr[4] >= 6) return 4;
-    anotherOK = (attr[8] >= 3) + ((attr[9] >= 15) || (attr[0] >= 3) || (attr[1] >= 3) || (attr[3] >= 3) || (attr[10] >= 12));
+    anotherOK = (attr[8] / 3) + ((attr[9] >= 15) || (attr[0] >= 3) || (attr[1] >= 3) || (attr[3] >= 3) || (attr[10] >= 12));
     if(attr[6] >=6 && anotherOK >= 2) return 6;
-    anotherOK = (attr[8] >= 3) + ((attr[9] >= 15) || (attr[2] >= 3) || (attr[11] >= 12));
+    anotherOK = (attr[8] / 3) + ((attr[9] >= 15) || (attr[2] >= 3) || (attr[11] >= 12));
     if(attr[7] >=6 && anotherOK >= 2) return 7;
     for (int i = 0; i < 12; i++) if(attr[i] >= gate[i]) return i;
     return -1;

@@ -6,9 +6,8 @@
 #ifndef LIB_NUMBER_H_
 #define LIB_NUMBER_H_
 
-#define DIGITDATATYPE int
 // BIGNUM
-
+#define DIGITDATATYPE int
 class BIGNUM{
     private:
 
@@ -107,7 +106,7 @@ class BIGNUM{
         BIGNUM operator /= (double NUM1);
         BIGNUM operator %= (double NUM1);
 };
-
+BIGNUM abs(BIGNUM NUM0);
 // COMPLEX
 
 #endif

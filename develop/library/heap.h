@@ -31,6 +31,7 @@ class HEAP{
         HEAP();
         ~HEAP();
 
+        void push(int key, int weight);
         void push(std::string key, int weight);
         NODE pop();
         NODE get();
@@ -47,6 +48,7 @@ class SMMH{
         SMMH();
         ~SMMH();
 
+        void push(int, int weight);
         void push(std::string key, int weight);
         NODE pop(int popIdx);
         NODE popMin();
@@ -67,10 +69,37 @@ template <typename T> class listHEAP{
     public:
         listHEAP(bool (*cp)(T i0, T i1));
         ~listHEAP();
-        void push(T ele);
+        void push(T item);
         T pop();
         void list();
 };
-#include "heap.tpp"
 
+template <typename T> class STACK{
+    private:
+        int idx;
+        std::vector<T> _STACK;
+    public:
+        STACK(int num);
+
+        T pop();
+        bool push(T item);
+        void list();
+};
+
+
+template <typename T> class QUEUE{
+    private:
+        bool _type;
+        int _popIdx, _pushIdx;
+        std::vector<T> _QUEUE;
+    public:
+        QUEUE(int num, bool type);
+        QUEUE(int num);
+
+        T pop();
+        bool push(T item);
+        void list();
+};
+
+#include "heap.tpp"
 #endif
