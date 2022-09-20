@@ -10,38 +10,23 @@
 #include <chrono>
 #include <time.h>
 
-#define DIGITNUM 9
-#define DIGIT10 (int)pow(10, (int)DIGITNUM)
-#define DIGITINT 10/DIGITNUM + 1
-#define DIGITFLOAT 38/DIGITNUM + 1
-#define DIGITDOUBLE 308/DIGITNUM + 1
+inline bool testExe(bool x){
+    std::cout<<"testExe\n"<<std::endl;
+    return x;
+}
 
+/*
+    ###########################################################################################################
+    #                                                                                                         #
+    #                                                                                                         #
+    #                                                  BIGNUM                                                #
+    #                                                                                                         #
+    #                                                                                                         #
+    ###########################################################################################################
+*/
 BIGNUM abs(BIGNUM NUM0){
     NUM0.sign = 0;
     return NUM0;
-}
-
-inline int getDig(int const &NUM0){
-    int dig0 = 0;
-    for(int i=1; i<DIGIT10; i*=10){
-        if(NUM0>=i) dig0++;
-    }
-    return dig0;
-}
-
-inline int getDig(BIGNUM const &NUM0){
-    int dig0 = 0;
-    for(int i=NUM0.value.size()-1; i>=0; i--){
-        if(NUM0.value[i] != 0){
-            dig0 = DIGITNUM * i;
-            for(int j=1; j<DIGIT10; j*=10){
-                if(NUM0.value[i]>=j) dig0++;
-                else break;
-            }
-            break;
-        }
-    }
-    return dig0;
 }
 
 int pow10List[10] = {
@@ -52,14 +37,31 @@ inline int quick_pow10(int n){
     return pow10List[n];
 }
 
-inline int modulus(int NUM0, int NUM1){
-    return NUM0 - NUM1 * (NUM0 / NUM1);
-}
-inline long long int modulus(long long int NUM0, int NUM1){
-    return NUM0 - (long long int)NUM1 * (NUM0 / (long long int)NUM1);
+inline int getDig(int NUM0){
+    if(NUM0) return floor(log10(NUM0) + 1);
+    return 0;
 }
 
-void simpleMinus(BIGNUM &NUM0, BIGNUM &NUM1, int mul){
+inline int getDig(BIGNUM const &NUM0){
+    for(int i=NUM0.value.size()-1; i>=0; i--){
+        if(NUM0.value[i] != 0){
+            return DIGITNUM * i + floor(log10(NUM0.value[i]) + 1);
+        }
+    }
+    return 0;
+}
+
+inline int degree(BIGNUM const &NUM0){
+    for(int i=NUM0.value.size()-1; i>=0; i--){
+        if(NUM0.value[i] != 0){
+            return DIGITNUM * i + floor(log10(NUM0.value[i]) + 1) - NUM0.point;
+        }
+    }
+    
+    return 0;
+};
+
+inline void simpleMinus(BIGNUM &NUM0, BIGNUM &NUM1, int mul){ // NUM0 - NUM1 * mul
     int digit, tmpNUM0, tmpNUM1;
     int size0, size1;
     int pointDiff, nextNum;
@@ -98,14 +100,8 @@ void simpleMinus(BIGNUM &NUM0, BIGNUM &NUM1, int mul){
     }
 }
 
-bool isZero(BIGNUM const &NUM0){
-    if(NUM0.isInf) return 0;
-    for(int i=NUM0.value.size()-1; i>=0; i--) if(NUM0.value[i]) return 0;
-    return 1;
-}
-
-bool compareAbs(BIGNUM const &NUM0, BIGNUM const &NUM1){
-    if(NUM0.isInf) return 0;
+inline bool compareAbs(BIGNUM const &NUM0, BIGNUM const &NUM1){ // abs(NUM0) < abs(NUM1)
+    if(NUM0.isInf || NUM1.isInf) return 0;
 
     int dig0 = getDig(NUM0), dig1 = getDig(NUM1), tmp;
     if(dig0 - NUM0.point != dig1 - NUM1.point) return dig0 - NUM0.point < dig1 - NUM1.point;
@@ -145,21 +141,11 @@ bool compareAbs(BIGNUM const &NUM0, BIGNUM const &NUM1){
     return NUM0.point != NUM1.point ? (NUM0.point < NUM1.point) ^ rev : 0;
 }
 
-inline int BIGNUM::degree(BIGNUM const &NUM0){
-    int dig0 = 0;
-    for(int i=NUM0.value.size()-1; i>=0; i--){
-        if(NUM0.value[i] != 0){
-            dig0 = DIGITNUM * i - NUM0.point;
-            for(int j=1; j<DIGIT10; j*=10){
-                if(NUM0.value[i]>=j) dig0++;
-                else break;
-            }
-            break;
-        }
-    }
-    
-    return dig0;
-};
+inline bool isZero(BIGNUM const &NUM0){
+    if(NUM0.isInf) return 0;
+    for(int i=NUM0.value.size()-1; i>=0; i--) if(NUM0.value[i]) return 0;
+    return 1;
+}
 
 int BIGNUM::firstDigit(BIGNUM const &NUM0){
     int x = 0;
@@ -417,7 +403,7 @@ BIGNUM BIGNUM::operator << (DIGITDATATYPE NUM1){
 
     for(int i=(int)res.value.size()-1; i>=0; i--){
         res.value[i] = (0 <= i-digitShift && i-digitShift < origSize) ? this->value[i-digitShift] / multiple : 0;
-        res.value[i] += (0 <= i-digitShift+1 && i-digitShift+1 < origSize) ? modulus(this->value[i-digitShift+1], multiple) * (DIGIT10 / multiple) : 0;
+        res.value[i] += (0 <= i-digitShift+1 && i-digitShift+1 < origSize) ? this->value[i-digitShift+1] % multiple * (DIGIT10 / multiple) : 0;
     }
 
     return res;
@@ -457,7 +443,7 @@ BIGNUM BIGNUM::operator >> (DIGITDATATYPE NUM1){
 
     for(int i=0; i<origSize; i++){
         res.value[i] = i+digitShift-1 < (int)this->value.size() ? this->value[i+digitShift-1] / (DIGIT10 / multiple) : 0;
-        res.value[i] += i+digitShift < (int)this->value.size() ? modulus(this->value[i+digitShift], (DIGIT10 / multiple)) * multiple : 0;
+        res.value[i] += i+digitShift < (int)this->value.size() ? this->value[i+digitShift] % (DIGIT10 / multiple) * multiple : 0;
     }
 
     return res;
@@ -489,7 +475,7 @@ BIGNUM BIGNUM::operator <<= (DIGITDATATYPE NUM1){
 
     for(int i=(int)this->value.size()-1; i>=0; i--){
         tmp = (0 <= i-digitShift && i-digitShift < origSize) ? this->value[i-digitShift] / multiple : 0;
-        tmp += (0 <= i-digitShift+1 && i-digitShift+1 < origSize) ? modulus(this->value[i-digitShift+1], multiple) * (DIGIT10 / multiple) : 0;
+        tmp += (0 <= i-digitShift+1 && i-digitShift+1 < origSize) ? this->value[i-digitShift+1] % multiple * (DIGIT10 / multiple) : 0;
         this->value[i] = tmp;
     }
     return *this;
@@ -521,7 +507,7 @@ BIGNUM BIGNUM::operator >>= (DIGITDATATYPE NUM1){
 
     for(int i=0; i<origSize; i++){
         this->value[i] = i+digitShift-1 < (int)this->value.size() ? this->value[i+digitShift-1] / (DIGIT10 / multiple) : 0;
-        this->value[i] += i+digitShift < (int)this->value.size() ? modulus(this->value[i+digitShift], (DIGIT10 / multiple)) * multiple : 0;
+        this->value[i] += i+digitShift < (int)this->value.size() ? this->value[i+digitShift] % (DIGIT10 / multiple) * multiple : 0;
     }
 
     return *this;
@@ -538,7 +524,7 @@ BIGNUM BIGNUM::operator + (BIGNUM const &NUM1){
 
     int digit, tmpNUM0, tmpNUM1, nextSlotValue = 0;
     int size0, size1;
-    int pointDiff = modulus((this->point - NUM1.point), DIGITNUM);
+    int pointDiff = (this->point - NUM1.point) % DIGITNUM;
     int modNUM0, modNUM1, pointOver0, pointOver1;
 
     modNUM0 = quick_pow10(pointDiff < 0 ? DIGITNUM + pointDiff : DIGITNUM);
@@ -565,9 +551,9 @@ BIGNUM BIGNUM::operator + (BIGNUM const &NUM1){
         tmpNUM0 = i + pointOver0 < size0 ? this->value[i + pointOver0] : 0;
         tmpNUM1 = i + pointOver1 < size1 ? NUM1.value[i + pointOver1] : 0;
 
-        res.value[i] = modulus(tmpNUM0, modNUM0) * (DIGIT10 / modNUM0) + modulus(tmpNUM1, modNUM1) * (DIGIT10 / modNUM1) + nextSlotValue;
+        res.value[i] = tmpNUM0 % modNUM0 * (DIGIT10 / modNUM0) + tmpNUM1 % modNUM1 * (DIGIT10 / modNUM1) + nextSlotValue;
         nextSlotValue = tmpNUM0 / modNUM0 + tmpNUM1 / modNUM1 + (res.value[i] > DIGIT10);
-        res.value[i] = modulus(res.value[i], DIGIT10);
+        res.value[i] = res.value[i] % DIGIT10;
     }
 
     return res;
@@ -597,7 +583,7 @@ BIGNUM BIGNUM::operator - (BIGNUM const &NUM1){
         res.sign = this->sign;
     }
 
-    pointDiff = modulus((_NUM0->point - _NUM1->point), DIGITNUM);
+    pointDiff = (_NUM0->point - _NUM1->point) % DIGITNUM;
 
     modNUM0 = quick_pow10(pointDiff < 0 ? DIGITNUM + pointDiff : DIGITNUM);
     modNUM1 = quick_pow10(pointDiff > 0 ? DIGITNUM - pointDiff : DIGITNUM);
@@ -619,10 +605,10 @@ BIGNUM BIGNUM::operator - (BIGNUM const &NUM1){
     res.value.resize(digit + 1);
 
     for(int i=0; i<digit; i++){
-        tmpNUM0 = i + pointOver0 < _NUM0->value.size() ? _NUM0->value[i + pointOver0] : 0;
-        tmpNUM1 = i + pointOver1 < _NUM1->value.size() ? _NUM1->value[i + pointOver1] : 0;
+        tmpNUM0 = i + pointOver0 < size0 ? _NUM0->value[i + pointOver0] : 0;
+        tmpNUM1 = i + pointOver1 < size1 ? _NUM1->value[i + pointOver1] : 0;
 
-        res.value[i] = modulus(tmpNUM0, modNUM0) * (DIGIT10 / modNUM0) - modulus(tmpNUM1, modNUM1) * (DIGIT10 / modNUM1) + nextSlotValue;
+        res.value[i] = (tmpNUM0 % modNUM0) * (DIGIT10 / modNUM0) - (tmpNUM1 % modNUM1) * (DIGIT10 / modNUM1) + nextSlotValue;
         nextSlotValue = tmpNUM0 / modNUM0 - tmpNUM1 / modNUM1 - (res.value[i] < 0);
         if(res.value[i] < 0) res.value[i] += DIGIT10;
     }
@@ -651,7 +637,7 @@ BIGNUM BIGNUM::operator * (BIGNUM const &NUM1){
 
             thisSlotValue += tmp;
         }
-        res.value[i] = modulus((thisSlotValue + nextSlotValue), DIGIT10);
+        res.value[i] = (thisSlotValue + nextSlotValue) % DIGIT10;
         nextSlotValue = (thisSlotValue + nextSlotValue) / DIGIT10;
         thisSlotValue = 0;
     }
@@ -659,18 +645,27 @@ BIGNUM BIGNUM::operator * (BIGNUM const &NUM1){
     return res;
 }
 BIGNUM BIGNUM::operator / (BIGNUM NUM1){
-    BIGNUM NUM0 = *this, res;
-    int digitNUM0, digitNUM1, digitExact, nowDigit, rangeL, f0, f1, tmp;
+    BIGNUM NUM0, res;
+    DIGITDATATYPE digitNUM0, digitNUM1, digitExact, nowDigit;
+    int rangeL, f0, f1, tmp;
 
     if(isZero(NUM1)) {
         res.isInf = 1;
         return res;
     }
 
-    digitNUM0 = degree(NUM0);
+    digitNUM0 = degree(*this);
     digitNUM1 = degree(NUM1);
     nowDigit = digitNUM0 - digitNUM1 + 1;
-    digitExact = digitNUM0 + digitNUM1;
+    digitExact = digitNUM1 + NUM1.point;
+
+    NUM0.value.resize((digitNUM0 + digitExact - 1) / DIGITNUM + 1);
+    for(int i=0; i<this->value.size(); i++){
+        NUM0.value[i] = this->value[i];
+    }
+    NUM0.sign = this->sign;
+    NUM0.isInf = this->isInf;
+    NUM0.point = this->point;
 
     res.sign = this->sign ^ NUM1.sign;
     res.point = digitExact;
@@ -683,7 +678,7 @@ BIGNUM BIGNUM::operator / (BIGNUM NUM1){
     else NUM1 >>= (digitNUM1 - digitNUM0);
     digitNUM1 = digitNUM0;
 
-    while(-nowDigit < digitExact && NUM0 != 0){
+    while(-nowDigit < digitExact && !isZero(NUM0)){
         if(NUM0 < NUM1) {
             NUM1 >>= 1;
             digitNUM1--;
@@ -691,36 +686,44 @@ BIGNUM BIGNUM::operator / (BIGNUM NUM1){
             continue;
         }
         f0 = firstDigit2(NUM0);
-        rangeL = f0>=f1 ? f0/f1 : (10*f0 - 1)/(f1 + 1);
-        for(int i=rangeL; i<=10; i++){
-            if((f1 * i > f0 * quick_pow10(digitNUM0 - digitNUM1) + i) || (NUM1 * i > NUM0)){
-                tmp = (nowDigit + digitExact - 1) % DIGITNUM;
-                res.value[(nowDigit + digitExact - 1)/DIGITNUM] += (i-1) * quick_pow10(tmp < 0 ? tmp + DIGITNUM : tmp);
-                // NUM0 -= NUM1 * (i-1);
-                simpleMinus(NUM0, NUM1, i-1);
-                NUM1 >>= 1;
-                digitNUM0 = degree(NUM0);
-                digitNUM1--;
-                break;
-            }
+        rangeL = f0>=f1 ? f0/f1 : 10*f0/f1;
+        
+        tmp = (nowDigit + digitExact - 1) % DIGITNUM;
+        res.value[(nowDigit + digitExact - 1)/DIGITNUM] += (rangeL-1) * quick_pow10(tmp < 0 ? tmp + DIGITNUM : tmp);
+        simpleMinus(NUM0, NUM1, rangeL-1);
+        if(NUM0 >= NUM1){
+            simpleMinus(NUM0, NUM1, 1);
+            res.value[(nowDigit + digitExact - 1)/DIGITNUM] += quick_pow10(tmp < 0 ? tmp + DIGITNUM : tmp);
         }
+        NUM1 >>= 1;
+        digitNUM0 = degree(NUM0);
+        digitNUM1--;
         nowDigit--;
     }
-
+    
     return res;
 }
 BIGNUM BIGNUM::operator % (BIGNUM const &NUM1){
-    BIGNUM res = abs(*this), divNUM = abs(NUM1);
+    BIGNUM res, divNUM = abs(NUM1);
     DIGITDATATYPE digitNUM0, digitNUM1;
     int rangeL, f0, f1;
+
     if(isZero(NUM1)) {
         res.isInf = 1;
         return res;
     }
-    if(res < NUM1) return *this;
 
-    digitNUM0 = degree(res);
+    digitNUM0 = degree(*this);
     digitNUM1 = degree(NUM1);
+
+    res.value.resize(std::max(this->value.size(), NUM1.value.size()));
+    for(int i=0; i<this->value.size(); i++){
+        res.value[i] = this->value[i];
+    }
+    res.sign = 0;
+    res.isInf = this->isInf;
+    res.point = this->point;
+    if(res < NUM1) return *this;
 
     f1 = firstDigit2(NUM1);
     divNUM = divNUM << (digitNUM0 - digitNUM1);
@@ -733,17 +736,15 @@ BIGNUM BIGNUM::operator % (BIGNUM const &NUM1){
             continue;
         }
         f0 = firstDigit2(res);
-        rangeL = f0>=f1 ? f0/f1 : (10*f0 - 1)/(f1 + 1);
-        for(int i=rangeL; i<=10; i++){
-            if((f1 * i > f0 * quick_pow10(digitNUM0 - digitNUM1) + i) || (divNUM * i > res)){
-                // res -= divNUM * (i-1);
-                simpleMinus(res, divNUM, i-1);
-                divNUM >>= 1;
-                digitNUM0 = degree(res);
-                digitNUM1--;
-                break;
-            }
+        rangeL = f0>=f1 ? f0/f1 : 10*f0/f1;
+        
+        simpleMinus(res, divNUM, rangeL-1);
+        if(res >= divNUM){
+            simpleMinus(res, divNUM, 1);
         }
+        divNUM >>= 1;
+        digitNUM0 = degree(res);
+        digitNUM1--;
     }
 
     return res;
@@ -867,7 +868,7 @@ bool BIGNUM::operator == (BIGNUM const &NUM1){
     modNUM0 = (DIGIT10/modNUM1);
 
     for(int i=std::max(idx0, idx1) - 1; i>=0; i--){
-        tmpNUM0 = i < (int)_NUM0->value.size() ? _NUM0->value[i] % modNUM0 : 0;
+        tmpNUM0 = i < idx0 ? _NUM0->value[i] % modNUM0 : 0;
         tmpNUM1 = (0 <= i - pointOver && i - pointOver < idx1) ? _NUM1->value[i - pointOver] / modNUM1 : 0;
         if(tmpNUM0 != tmpNUM1) return 0;
         
@@ -911,63 +912,63 @@ BIGNUM BIGNUM::operator %= (BIGNUM const &NUM1){
 
 // ===========================================  int  ===========================================
 BIGNUM BIGNUM::operator + (int NUM1){
-    return *this + *(new BIGNUM(NUM1));
+    return *this + BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator - (int NUM1){
-    return *this - *(new BIGNUM(NUM1));
+    return *this - BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator * (int NUM1){
-    return *this * *(new BIGNUM(NUM1));
+    return *this * BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator / (int NUM1){
-    return *this / *(new BIGNUM(NUM1));
+    return *this / BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator % (int NUM1){
-    return *this % *(new BIGNUM(NUM1));
+    return *this % BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator = (int NUM1){
-    return *this = *(new BIGNUM(NUM1));
+    return *this = BIGNUM(NUM1);
 }
 bool BIGNUM::operator > (int NUM1){
-    return *this > *(new BIGNUM(NUM1));
+    return *this > BIGNUM(NUM1);
 }
 bool BIGNUM::operator < (int NUM1){
-    return *this < *(new BIGNUM(NUM1));
+    return *this < BIGNUM(NUM1);
 }
 bool BIGNUM::operator == (int NUM1){
-    return *this == *(new BIGNUM(NUM1));
+    return *this == BIGNUM(NUM1);
 }
 bool BIGNUM::operator != (int NUM1){
-    return !(*this == *(new BIGNUM(NUM1)));
+    return !(*this == BIGNUM(NUM1));
 }
 bool BIGNUM::operator >= (int NUM1){
-    return *this >= *(new BIGNUM(NUM1));
+    return *this >= BIGNUM(NUM1);
 }
 bool BIGNUM::operator <= (int NUM1){
-    return *this <= *(new BIGNUM(NUM1));
+    return *this <= BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator += (int NUM1){
-    BIGNUM res = *this + *(new BIGNUM(NUM1));
+    BIGNUM res = *this + BIGNUM(NUM1);
     *this = res;
     return res;
 }
 BIGNUM BIGNUM::operator -= (int NUM1){
-    BIGNUM res = *this - *(new BIGNUM(NUM1));
+    BIGNUM res = *this - BIGNUM(NUM1);
     *this = res;
     return res;
 }
 BIGNUM BIGNUM::operator *= (int NUM1){
-    BIGNUM res = *this * *(new BIGNUM(NUM1));
+    BIGNUM res = *this * BIGNUM(NUM1);
     *this = res;
     return res;
 }
 BIGNUM BIGNUM::operator /= (int NUM1){
-    BIGNUM res = *this / *(new BIGNUM(NUM1));
+    BIGNUM res = *this / BIGNUM(NUM1);
     *this = res;
     return res;
 }
 BIGNUM BIGNUM::operator %= (int NUM1){
-    BIGNUM res = *this % *(new BIGNUM(NUM1));
+    BIGNUM res = *this % BIGNUM(NUM1);
     *this = res;
     return res;
 }
@@ -975,63 +976,63 @@ BIGNUM BIGNUM::operator %= (int NUM1){
 
 // ===========================================  float  ===========================================
 BIGNUM BIGNUM::operator + (float NUM1){
-    return *this + *(new BIGNUM(NUM1));
+    return *this + BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator - (float NUM1){
-    return *this - *(new BIGNUM(NUM1));
+    return *this - BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator * (float NUM1){
-    return *this * *(new BIGNUM(NUM1));
+    return *this * BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator / (float NUM1){
-    return *this / *(new BIGNUM(NUM1));
+    return *this / BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator % (float NUM1){
-    return *this % *(new BIGNUM(NUM1));
+    return *this % BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator = (float NUM1){
-    return *this = *(new BIGNUM(NUM1));
+    return *this = BIGNUM(NUM1);
 }
 bool BIGNUM::operator > (float NUM1){
-    return *this > *(new BIGNUM(NUM1));
+    return *this > BIGNUM(NUM1);
 }
 bool BIGNUM::operator < (float NUM1){
-    return *this < *(new BIGNUM(NUM1));
+    return *this < BIGNUM(NUM1);
 }
 bool BIGNUM::operator == (float NUM1){
-    return *this == *(new BIGNUM(NUM1));
+    return *this == BIGNUM(NUM1);
 }
 bool BIGNUM::operator != (float NUM1){
-    return !(*this == *(new BIGNUM(NUM1)));
+    return !(*this == BIGNUM(NUM1));
 }
 bool BIGNUM::operator >= (float NUM1){
-    return *this >= *(new BIGNUM(NUM1));
+    return *this >= BIGNUM(NUM1);
 }
 bool BIGNUM::operator <= (float NUM1){
-    return *this <= *(new BIGNUM(NUM1));
+    return *this <= BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator += (float NUM1){
-    BIGNUM res = *this + *(new BIGNUM(NUM1));
+    BIGNUM res = *this + BIGNUM(NUM1);
     *this = res;
     return res;
 }
 BIGNUM BIGNUM::operator -= (float NUM1){
-    BIGNUM res = *this - *(new BIGNUM(NUM1));
+    BIGNUM res = *this - BIGNUM(NUM1);
     *this = res;
     return res;
 }
 BIGNUM BIGNUM::operator *= (float NUM1){
-    BIGNUM res = *this * *(new BIGNUM(NUM1));
+    BIGNUM res = *this * BIGNUM(NUM1);
     *this = res;
     return res;
 }
 BIGNUM BIGNUM::operator /= (float NUM1){
-    BIGNUM res = *this / *(new BIGNUM(NUM1));
+    BIGNUM res = *this / BIGNUM(NUM1);
     *this = res;
     return res;
 }
 BIGNUM BIGNUM::operator %= (float NUM1){
-    BIGNUM res = *this % *(new BIGNUM(NUM1));
+    BIGNUM res = *this % BIGNUM(NUM1);
     *this = res;
     return res;
 }
@@ -1039,63 +1040,409 @@ BIGNUM BIGNUM::operator %= (float NUM1){
 
 // ===========================================  double  ===========================================
 BIGNUM BIGNUM::operator + (double NUM1){
-    return *this + *(new BIGNUM(NUM1));
+    return *this + BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator - (double NUM1){
-    return *this - *(new BIGNUM(NUM1));
+    return *this - BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator * (double NUM1){
-    return *this * *(new BIGNUM(NUM1));
+    return *this * BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator / (double NUM1){
-    return *this / *(new BIGNUM(NUM1));
+    return *this / BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator % (double NUM1){
-    return *this % *(new BIGNUM(NUM1));
+    return *this % BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator = (double NUM1){
-    return *this = *(new BIGNUM(NUM1));
+    return *this = BIGNUM(NUM1);
 }
 bool BIGNUM::operator > (double NUM1){
-    return *this > *(new BIGNUM(NUM1));
+    return *this > BIGNUM(NUM1);
 }
 bool BIGNUM::operator < (double NUM1){
-    return *this < *(new BIGNUM(NUM1));
+    return *this < BIGNUM(NUM1);
 }
 bool BIGNUM::operator == (double NUM1){
-    return *this == *(new BIGNUM(NUM1));
+    return *this == BIGNUM(NUM1);
 }
 bool BIGNUM::operator != (double NUM1){
-    return !(*this == *(new BIGNUM(NUM1)));
+    return !(*this == BIGNUM(NUM1));
 }
 bool BIGNUM::operator >= (double NUM1){
-    return *this >= *(new BIGNUM(NUM1));
+    return *this >= BIGNUM(NUM1);
 }
 bool BIGNUM::operator <= (double NUM1){
-    return *this <= *(new BIGNUM(NUM1));
+    return *this <= BIGNUM(NUM1);
 }
 BIGNUM BIGNUM::operator += (double NUM1){
-    BIGNUM res = *this + *(new BIGNUM(NUM1));
+    BIGNUM res = *this + BIGNUM(NUM1);
     *this = res;
     return res;
 }
 BIGNUM BIGNUM::operator -= (double NUM1){
-    BIGNUM res = *this - *(new BIGNUM(NUM1));
+    BIGNUM res = *this - BIGNUM(NUM1);
     *this = res;
     return res;
 }
 BIGNUM BIGNUM::operator *= (double NUM1){
-    BIGNUM res = *this * *(new BIGNUM(NUM1));
+    BIGNUM res = *this * BIGNUM(NUM1);
     *this = res;
     return res;
 }
 BIGNUM BIGNUM::operator /= (double NUM1){
-    BIGNUM res = *this / *(new BIGNUM(NUM1));
+    BIGNUM res = *this / BIGNUM(NUM1);
     *this = res;
     return res;
 }
 BIGNUM BIGNUM::operator %= (double NUM1){
-    BIGNUM res = *this % *(new BIGNUM(NUM1));
+    BIGNUM res = *this % BIGNUM(NUM1);
     *this = res;
     return res;
 }
+
+/*
+    ###########################################################################################################
+    #                                                                                                         #
+    #                                                                                                         #
+    #                                                  COMPLEX                                                #
+    #                                                                                                         #
+    #                                                                                                         #
+    ###########################################################################################################
+*/
+
+COMPLEX::COMPLEX(){
+    this->Re = 0;
+    this->Im = 0;
+};
+COMPLEX::COMPLEX(int NUM0, int NUM1){
+    this->Re = NUM0;
+    this->Im = NUM1;
+};
+COMPLEX::COMPLEX(float NUM0, float NUM1){
+    this->Re = NUM0;
+    this->Im = NUM1;
+};
+COMPLEX::COMPLEX(double NUM0, double NUM1){
+    this->Re = NUM0;
+    this->Im = NUM1;
+};
+
+COMPLEX_DATA_TYPE abs(COMPLEX NUM0){
+    return sqrt(NUM0.Re * NUM0.Re + NUM0.Im * NUM0.Im);
+};
+COMPLEX bar(COMPLEX NUM0){
+    NUM0.Im = -NUM0.Im;
+    return NUM0;
+};
+COMPLEX COMPLEX::bar(){
+    this->Im = -this->Im;
+    return *this;
+};
+
+std::ostream& operator<<(std::ostream &os, const COMPLEX &m){
+    os << m.Re << " + " << m.Im << "i" << std::flush;
+    return os;
+};
+
+
+COMPLEX COMPLEX::operator + (COMPLEX const &NUM1){
+    COMPLEX res;
+    res.Re = this->Re + NUM1.Re;
+    res.Im = this->Im + NUM1.Im;
+    return res;
+};
+COMPLEX COMPLEX::operator - (COMPLEX const &NUM1){
+    COMPLEX res;
+    res.Re = this->Re - NUM1.Re;
+    res.Im = this->Im - NUM1.Im;
+    return res;
+};
+COMPLEX COMPLEX::operator * (COMPLEX const &NUM1){
+    COMPLEX res;
+    res.Re = this->Re * NUM1.Re - this->Im * NUM1.Im;
+    res.Im = this->Re * NUM1.Im + this->Im * NUM1.Re;
+    return res;
+};
+COMPLEX COMPLEX::operator / (COMPLEX const &NUM1){
+    COMPLEX res;
+    res.Re = (this->Re * NUM1.Re + this->Im * NUM1.Im) / (NUM1.Re * NUM1.Re + NUM1.Im * NUM1.Im);
+    res.Im = (-this->Re * NUM1.Im + this->Im * NUM1.Re) / (NUM1.Re * NUM1.Re + NUM1.Im * NUM1.Im);
+    return res;
+};
+COMPLEX COMPLEX::operator = (COMPLEX const &NUM1){
+    this->Re = NUM1.Re;
+    this->Im = NUM1.Im;
+    return *this;
+};
+bool COMPLEX::operator == (COMPLEX const &NUM1){
+    return (this->Re == NUM1.Re) && (this->Im == NUM1.Im);
+};
+bool COMPLEX::operator != (COMPLEX const &NUM1){
+    return (this->Re != NUM1.Re) || (this->Im != NUM1.Im);
+};
+COMPLEX COMPLEX::operator += (COMPLEX const &NUM1){
+    this->Re = this->Re + NUM1.Re;
+    this->Im = this->Im + NUM1.Im;
+    return *this;
+};
+COMPLEX COMPLEX::operator -= (COMPLEX const &NUM1){
+    this->Re = this->Re - NUM1.Re;
+    this->Im = this->Im - NUM1.Im;
+    return *this;
+};
+COMPLEX COMPLEX::operator *= (COMPLEX const &NUM1){
+    this->Re = this->Re * NUM1.Re - this->Im * NUM1.Im;
+    this->Im = this->Re * NUM1.Im + this->Im * NUM1.Re;
+    return *this;
+};
+COMPLEX COMPLEX::operator /= (COMPLEX const &NUM1){
+    this->Re = (this->Re * NUM1.Re + this->Im * NUM1.Im) / (NUM1.Re * NUM1.Re + NUM1.Im * NUM1.Im);
+    this->Im = (-this->Re * NUM1.Im + this->Im * NUM1.Re) / (NUM1.Re * NUM1.Re + NUM1.Im * NUM1.Im);
+    return *this;
+};
+
+
+// ===========================================  int  ===========================================
+COMPLEX COMPLEX::operator + (int const &NUM1){
+    COMPLEX res;
+    res.Re = this->Re + NUM1;
+    return res;
+};
+COMPLEX COMPLEX::operator - (int const &NUM1){
+    COMPLEX res;
+    res.Re = this->Re - NUM1;
+    return res;
+};
+COMPLEX COMPLEX::operator * (int const &NUM1){
+    COMPLEX res;
+    res.Re = this->Re * NUM1;
+    res.Im = this->Im * NUM1;
+    return res;
+};
+COMPLEX COMPLEX::operator / (int const &NUM1){
+    COMPLEX res;
+    res.Re = this->Re / NUM1;
+    res.Im = this->Im / NUM1;
+    return res;
+};
+COMPLEX COMPLEX::operator = (int const &NUM1){
+    this->Re = NUM1;
+    this->Im = 0;
+    return *this;
+};
+bool COMPLEX::operator == (int const &NUM1){
+    return (this->Re == NUM1) && (this->Im == 0);
+};
+bool COMPLEX::operator != (int const &NUM1){
+    return (this->Re != NUM1) || (this->Im != 0);
+};
+COMPLEX COMPLEX::operator += (int const &NUM1){
+    this->Re = this->Re + NUM1;
+    return *this;
+};
+COMPLEX COMPLEX::operator -= (int const &NUM1){
+    this->Re = this->Re - NUM1;
+    return *this;
+};
+COMPLEX COMPLEX::operator *= (int const &NUM1){
+    this->Re = this->Re * NUM1;
+    this->Im = this->Im * NUM1;
+    return *this;
+};
+COMPLEX COMPLEX::operator /= (int const &NUM1){
+    this->Re = this->Re / NUM1;
+    this->Im = this->Im / NUM1;
+    return *this;
+};
+
+
+// ===========================================  float  ===========================================
+COMPLEX COMPLEX::operator + (float const &NUM1){
+    COMPLEX res;
+    res.Re = this->Re + NUM1;
+    return res;
+};
+COMPLEX COMPLEX::operator - (float const &NUM1){
+    COMPLEX res;
+    res.Re = this->Re - NUM1;
+    return res;
+};
+COMPLEX COMPLEX::operator * (float const &NUM1){
+    COMPLEX res;
+    res.Re = this->Re * NUM1;
+    res.Im = this->Im * NUM1;
+    return res;
+};
+COMPLEX COMPLEX::operator / (float const &NUM1){
+    COMPLEX res;
+    res.Re = this->Re / NUM1;
+    res.Im = this->Im / NUM1;
+    return res;
+};
+COMPLEX COMPLEX::operator = (float const &NUM1){
+    this->Re = NUM1;
+    this->Im = 0;
+    return *this;
+};
+bool COMPLEX::operator == (float const &NUM1){
+    return (this->Re == NUM1) && (this->Im == 0);
+};
+bool COMPLEX::operator != (float const &NUM1){
+    return (this->Re != NUM1) || (this->Im != 0);
+};
+COMPLEX COMPLEX::operator += (float const &NUM1){
+    this->Re = this->Re + NUM1;
+    return *this;
+};
+COMPLEX COMPLEX::operator -= (float const &NUM1){
+    this->Re = this->Re - NUM1;
+    return *this;
+};
+COMPLEX COMPLEX::operator *= (float const &NUM1){
+    this->Re = this->Re * NUM1;
+    this->Im = this->Im * NUM1;
+    return *this;
+};
+COMPLEX COMPLEX::operator /= (float const &NUM1){
+    this->Re = this->Re / NUM1;
+    this->Im = this->Im / NUM1;
+    return *this;
+};
+
+// ===========================================  double  ===========================================
+COMPLEX COMPLEX::operator + (double const &NUM1){
+    COMPLEX res;
+    res.Re = this->Re + NUM1;
+    return res;
+};
+COMPLEX COMPLEX::operator - (double const &NUM1){
+    COMPLEX res;
+    res.Re = this->Re - NUM1;
+    return res;
+};
+COMPLEX COMPLEX::operator * (double const &NUM1){
+    COMPLEX res;
+    res.Re = this->Re * NUM1;
+    res.Im = this->Im * NUM1;
+    return res;
+};
+COMPLEX COMPLEX::operator / (double const &NUM1){
+    COMPLEX res;
+    res.Re = this->Re / NUM1;
+    res.Im = this->Im / NUM1;
+    return res;
+};
+COMPLEX COMPLEX::operator = (double const &NUM1){
+    this->Re = NUM1;
+    this->Im = 0;
+    return *this;
+};
+bool COMPLEX::operator == (double const &NUM1){
+    return (this->Re == NUM1) && (this->Im == 0);
+};
+bool COMPLEX::operator != (double const &NUM1){
+    return (this->Re != NUM1) || (this->Im != 0);
+};
+COMPLEX COMPLEX::operator += (double const &NUM1){
+    this->Re = this->Re + NUM1;
+    return *this;
+};
+COMPLEX COMPLEX::operator -= (double const &NUM1){
+    this->Re = this->Re - NUM1;
+    return *this;
+};
+COMPLEX COMPLEX::operator *= (double const &NUM1){
+    this->Re = this->Re * NUM1;
+    this->Im = this->Im * NUM1;
+    return *this;
+};
+COMPLEX COMPLEX::operator /= (double const &NUM1){
+    this->Re = this->Re / NUM1;
+    this->Im = this->Im / NUM1;
+    return *this;
+};
+
+/*
+    ###########################################################################################################
+    #                                                                                                         #
+    #                                                                                                         #
+    #                                                   MATRIX                                                #
+    #                                                                                                         #
+    #                                                                                                         #
+    ###########################################################################################################
+*/
+
+MATRIX::MATRIX(int colNum, int rowNum){
+    this->col = colNum;
+    this->row = rowNum;
+    this->value.resize(colNum * rowNum);
+    for(int i=0; i<this->col * this->row; i++) this->value[i] = 0;
+};
+
+std::ostream& operator<<(std::ostream &os, const MATRIX &m){
+    os << "\n";
+    for(int i=0; i<m.row; i++){
+        for(int j=0; j<m.col; j++) os << "\t" << m.value[i*m.col + j] << std::flush;
+        os << "\n";
+    }
+    
+    return os;
+};
+
+
+MATRIX MATRIX::operator + (MATRIX const &MTX1){
+    if(this->col != MTX1.col || this->row != MTX1.row) return *this;
+    MATRIX res = *this;
+    for(int i=0; i<this->col * this->row; i++) res.value[i] += MTX1.value[i];
+    return res;
+};
+MATRIX MATRIX::operator - (MATRIX const &MTX1){
+    if(this->col != MTX1.col || this->row != MTX1.row) return *this;
+    MATRIX res = *this;
+    for(int i=0; i<this->col * this->row; i++) res.value[i] -= MTX1.value[i];
+    return res;
+};
+MATRIX MATRIX::operator * (MATRIX const &MTX1){
+    if(this->row != MTX1.col) return *this;
+    MATRIX res(this->row, MTX1.col);
+    for(int i=0; i<res.row; i++){
+        for(int j=0; j<res.col; j++){
+            for(int k=0; k<this->row; k++) res.value[i * res.col + j] += this->value[i * this->col + k] * MTX1.value[k * MTX1.col + j];
+        }
+    }
+    return res;
+};
+MATRIX MATRIX::operator = (MATRIX const &MTX1){
+    this->col = MTX1.col;
+    this->row = MTX1.row;
+    for(int i=0; i<this->col * this->row; i++) this->value[i] = MTX1.value[i];
+    return *this;
+};
+bool MATRIX::operator == (MATRIX const &MTX1){
+    if(this->col != MTX1.col || this->row != MTX1.row) return 0;
+    for(int i=0; i<this->col * this->row; i++) if(this->value[i] != MTX1.value[i]) return 0;
+    return 1;
+};
+bool MATRIX::operator != (MATRIX const &MTX1){
+    if(this->col != MTX1.col || this->row != MTX1.row) return 1;
+    for(int i=0; i<this->col * this->row; i++) if(this->value[i] != MTX1.value[i]) return 1;
+    return 0;
+};
+MATRIX MATRIX::operator += (MATRIX const &MTX1){
+    if(this->col != MTX1.col || this->row != MTX1.row) return *this;
+    for(int i=0; i<this->col * this->row; i++) this->value[i] += MTX1.value[i];
+    return *this;
+};
+MATRIX MATRIX::operator -= (MATRIX const &MTX1){
+    if(this->col != MTX1.col || this->row != MTX1.row) return *this;
+    for(int i=0; i<this->col * this->row; i++) this->value[i] -= MTX1.value[i];
+    return *this;
+};
+MATRIX MATRIX::operator *= (MATRIX const &MTX1){
+    *this = *this * MTX1;
+    return *this;
+};
+
+MATRIX transposed(MATRIX MTX1){};
+MATRIX unitMTX(int order){};

@@ -18,14 +18,14 @@ struct GRAPH {
     GRAPH();
 
     void addEdge(std::string P0, std::string P1, int W);
-    void addEdge(EDGE newEdge);
+    void addEdge(EDGE const &newEdge);
 
     int cost, vertexNum;
     std::vector<EDGE> edges;
     std::unordered_map<std::string, bool> vertices;
 };
 
-GRAPH MST_P(std::vector<EDGE> links);
-GRAPH MST_K(std::vector<EDGE> links);
+GRAPH MST_P(std::vector<EDGE> const &links);
+GRAPH MST_K(std::vector<EDGE> const &links);
 
 #endif

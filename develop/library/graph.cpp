@@ -39,7 +39,7 @@ void GRAPH::addEdge(std::string P0, std::string P1, int W){
     }
 }
 
-void GRAPH::addEdge(EDGE newEdge){
+void GRAPH::addEdge(EDGE const &newEdge){
     this->edges.push_back(newEdge);
     this->cost += newEdge.weight;
     if(this->vertices.find(newEdge.fromV) == this->vertices.end()){
@@ -53,7 +53,7 @@ void GRAPH::addEdge(EDGE newEdge){
 }
 
 // ######################## MST Prim's algorithm ########################
-GRAPH MST_P(std::vector<EDGE> links){
+GRAPH MST_P(std::vector<EDGE> const &links){
     int vertexNum = 0, edgeNum = links.size();
     std::unordered_map<std::string, std::string> vertexLinked;
     std::unordered_map<std::string, int> vertexMinWeight;
@@ -155,7 +155,7 @@ GRAPH MST_P(std::vector<EDGE> links){
 
 
 // ######################## MST Kruskal's algorithm ########################
-GRAPH MST_K(std::vector<EDGE> links){
+GRAPH MST_K(std::vector<EDGE> const &links){
     int vertexNum = 0, groupKeyTmp;
     std::unordered_map<std::string, int> vertexBelong;
     std::unordered_map<int, std::vector<std::string>> vertexGroup;

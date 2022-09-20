@@ -76,13 +76,16 @@ template <typename T> class listHEAP{
 
 template <typename T> class STACK{
     private:
-        int idx;
+        int _idx;
         std::vector<T> _STACK;
     public:
         STACK(int num);
 
+        bool canPop;
+
         T pop();
         bool push(T item);
+        void reset();
         void list();
 };
 
@@ -96,8 +99,11 @@ template <typename T> class QUEUE{
         QUEUE(int num, bool type);
         QUEUE(int num);
 
+        bool canPop;
+
         T pop();
         bool push(T item);
+        void reset();
         void list();
 };
 

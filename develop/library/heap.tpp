@@ -80,28 +80,34 @@ template <typename T> void listHEAP<T>::list(){
 
 
 template <typename T> STACK<T>::STACK(int num){
-    this->idx = 0;
+    this->_idx = 0;
+    this->canPop = 0;
     this->_STACK.resize(num);
 };
 
 template <typename T> T STACK<T>::pop(){
     T rtn;
-    if(this->idx > 0) {
-        this->idx--;
-        return this->_STACK[this->idx];
+    if(this->_idx > 0) {
+        this->_idx--;
+        if(!this->_idx) this->canPop = 0;
+        return this->_STACK[this->_idx];
     }
     else return rtn;
 };
 template <typename T> bool STACK<T>::push(T item){
-    if(this->idx < this->_STACK.size()) {
-        this->_STACK[this->idx] = item;
-        this->idx++;
+    if(this->_idx < this->_STACK.size()) {
+        this->canPop = 1;
+        this->_STACK[this->_idx] = item;
+        this->_idx++;
         return 0;
     }
     else return 1;
 };
+template <typename T> void STACK<T>::reset(){
+    this->_idx = 0;
+};
 template <typename T> void STACK<T>::list(){
-    for(int i=0; i<this->idx; i++){
+    for(int i=0; i<this->_idx; i++){
         std::cout<<_STACK[i]<<",\n";
     }
 };
@@ -114,36 +120,47 @@ template <typename T> QUEUE<T>::QUEUE(int num, bool type){
     this->_popIdx = 0;
     this->_pushIdx = 0;
     this->_type = type;
+    this->canPop = 0;
     this->_QUEUE.resize(num);
 };
 template <typename T> QUEUE<T>::QUEUE(int num){
     this->_popIdx = 0;
     this->_pushIdx = 0;
     this->_type = 0;
+    this->canPop = 0;
     this->_QUEUE.resize(num);
 };
 
 template <typename T> T QUEUE<T>::pop(){
     T rtn;
     int length = this->_QUEUE.size();
-    if(this->_popIdx != this->_pushIdx) {
-        this->_popIdx = (length + this->_popIdx - 1) % length;
-        return this->_QUEUE[this->idx];
+    if(this->canPop) {
+        rtn = this->_QUEUE[this->_popIdx];
+        this->_popIdx = (length + this->_popIdx + 1) % length;
+        if(this->_popIdx == this->_pushIdx) this->canPop = 0;
+        return rtn;
     }
     else return rtn;
 };
 template <typename T> bool QUEUE<T>::push(T item){
     int length = this->_QUEUE.size(), next = (length + this->_pushIdx + 1) % length;
-    if(next != this->_popIdx || this->type) {
-        this->_QUEUE[this->idx] = item;
+    if(this->_pushIdx != this->_popIdx || !this->canPop || this->_type) {
+        this->canPop = 1;
+        this->_QUEUE[this->_pushIdx] = item;
         this->_pushIdx = next;
+        if(this->_type && this->_pushIdx == this->_popIdx) _popIdx = (length + this->_popIdx + 1) % length;
         return 0;
     }
     else return 1;
 };
+template <typename T> void QUEUE<T>::reset(){
+    this->_popIdx = this->_pushIdx = 0;
+};
 template <typename T> void QUEUE<T>::list(){
-    int length = this->_QUEUE.size();
-    for(int i=0; i<this->idx; i++){
-        std::cout<<_QUEUE[(this->_popIdx + i) % length]<<",\n";
+    int length = this->_QUEUE.size(), idx;
+    for(int i=0; i<length; i++){
+        idx = (this->_popIdx + i) % length;
+        if(idx == this->_pushIdx) break;
+        std::cout<<_QUEUE[idx]<<",\n";
     }
 };
