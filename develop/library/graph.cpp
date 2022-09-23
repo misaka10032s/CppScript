@@ -27,7 +27,7 @@ GRAPH::GRAPH(){
 }
 
 void GRAPH::addEdge(std::string P0, std::string P1, int W){
-    this->edges.push_back(*(new EDGE(P0, P1, W)));
+    this->edges.push_back(EDGE(P0, P1, W));
     this->cost += W;
     if(this->vertices.find(P0) == this->vertices.end()){
         this->vertices.emplace(P0, 1);
@@ -60,8 +60,8 @@ GRAPH MST_P(std::vector<EDGE> const &links){
     std::unordered_map<std::string, bool> vertexIsVisited;
     std::unordered_map<std::string, std::unordered_map<std::string, int>> vertexTo;
     std::string nowVertex;
-    GRAPH *forest = new GRAPH();
-    HEAP *minHEAP = new HEAP(0);
+    GRAPH forest;
+    HEAP minHEAP(0);
     bool isNewNodeFrom, isNewNodeTo;
 
     for(int i=0; i<edgeNum; i++){
@@ -121,13 +121,13 @@ GRAPH MST_P(std::vector<EDGE> const &links){
             costTmp = w;
 
             if(w < vertexMinWeight[v]){
-                minHEAP->push(v, w);
+                minHEAP.push(v, w);
                 vertexMinWeight[v] = w;
             }
         }
 
         do{
-            tmpEdge = minHEAP->pop();
+            tmpEdge = minHEAP.pop();
             if(tmpEdge.key == ""){
                 for(auto [key, visited] : vertexIsVisited){
                     if(!visited){
@@ -144,13 +144,13 @@ GRAPH MST_P(std::vector<EDGE> const &links){
         minV = vertexMinWeight[tmpEdge.key];
 
         vertexIsVisited[tmpEdge.key] = 1;
-        forest->addEdge(minOrig, minDest, minV);
+        forest.addEdge(minOrig, minDest, minV);
         vertexNumAdded++;
         nowVertex = minDest;
     }
 
     // free(minHEAP);
-    return *forest;
+    return forest;
 };
 
 
@@ -160,8 +160,8 @@ GRAPH MST_K(std::vector<EDGE> const &links){
     std::unordered_map<std::string, int> vertexBelong;
     std::unordered_map<int, std::vector<std::string>> vertexGroup;
     std::vector<std::string> linksSorted;
-    GRAPH *forest = new GRAPH();
-    HEAP *minHEAP = new HEAP(0);
+    GRAPH forest;
+    HEAP minHEAP(0);
     EDGE checkingEdge;
 
     for(auto l : links){
@@ -175,10 +175,10 @@ GRAPH MST_K(std::vector<EDGE> const &links){
         }
     }
 
-    for(int i=0; i<links.size(); i++) minHEAP->push(std::to_string(i), links[i].weight);
+    for(int i=0; i<links.size(); i++) minHEAP.push(std::to_string(i), links[i].weight);
 
-    while(forest->edges.size() < vertexNum){
-        checkingEdge = links[std::stoi(minHEAP->pop().key)];
+    while(forest.edges.size() < vertexNum){
+        checkingEdge = links[std::stoi(minHEAP.pop().key)];
 
         if(checkingEdge.fromV == checkingEdge.toV) continue;
 
@@ -191,17 +191,17 @@ GRAPH MST_K(std::vector<EDGE> const &links){
             }
             vertexBelong[checkingEdge.fromV] = vertexBelong[checkingEdge.fromV] = groupKeyTmp;
             vertexGroup.emplace(groupKeyTmp, std::initializer_list<std::string>{checkingEdge.fromV, checkingEdge.toV});
-            forest->addEdge(checkingEdge);
+            forest.addEdge(checkingEdge);
         }
         else if(vertexBelong[checkingEdge.fromV] == -1 && vertexBelong[checkingEdge.toV] != -1){
             vertexBelong[checkingEdge.fromV] = vertexBelong[checkingEdge.toV];
             vertexGroup[vertexBelong[checkingEdge.toV]].push_back(checkingEdge.fromV);
-            forest->addEdge(checkingEdge);
+            forest.addEdge(checkingEdge);
         }
         else if(vertexBelong[checkingEdge.fromV] != -1 && vertexBelong[checkingEdge.toV] == -1){
             vertexBelong[checkingEdge.toV] = vertexBelong[checkingEdge.fromV];
             vertexGroup[vertexBelong[checkingEdge.fromV]].push_back(checkingEdge.toV);
-            forest->addEdge(checkingEdge);
+            forest.addEdge(checkingEdge);
         }
         else if(vertexBelong[checkingEdge.fromV] != vertexBelong[checkingEdge.toV]){
             groupKeyTmp = vertexBelong[checkingEdge.fromV];
@@ -211,10 +211,10 @@ GRAPH MST_K(std::vector<EDGE> const &links){
             }
             vertexGroup.erase(groupKeyTmp);
 
-            forest->addEdge(checkingEdge);
+            forest.addEdge(checkingEdge);
         }
     }
 
     // free(minHEAP);
-    return *forest;
+    return forest;
 }

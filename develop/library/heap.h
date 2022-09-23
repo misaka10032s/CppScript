@@ -51,6 +51,7 @@ class SMMH{
         void push(int, int weight);
         void push(std::string key, int weight);
         NODE pop(int popIdx);
+        NODE pop();
         NODE popMin();
         NODE popMax();
         NODE getMin();

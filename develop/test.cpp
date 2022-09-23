@@ -1,5 +1,5 @@
-#define SYS_LINUX
-// #define SYS_WINDOWS
+// #define SYS_LINUX
+#define SYS_WINDOWS
 #include "library/systemS.h"
 
 #include <iostream>
@@ -18,7 +18,7 @@
 
 #include "library/heap.h"
 #include "library/graph.h"
-#include "library/number2.h"
+#include "library/number3.h"
 
 using namespace std;
 
@@ -190,6 +190,17 @@ int main(){
         // cout<< myHeap.popMin().key<<"\n";
     }
 
+    // for(int i=0; i<10000000; i++){ // memory check ok;
+    //     myHeap.push("A", 5);
+    //     myHeap.push("B", 8);
+    //     myHeap.push("C", 4);
+    //     myHeap.push("D", 10);
+    //     myHeap.push("E", 6);
+    //     myHeap.push("F", 7);
+    //     myHeap.push("G", 5);
+    //     for(int j=0; j<7; j++) myHeap.pop();
+    // }
+
     listHEAP<int> mylistHEAP(&cpInt);
     for(int i=0; i<7; i++) cout<< "Empty Pop" << mylistHEAP.pop()<<"\n";
     mylistHEAP.push(5);
@@ -201,6 +212,17 @@ int main(){
     mylistHEAP.push(5);
     for(int i=0; i<7; i++) cout<< mylistHEAP.pop()<<"\n";
 
+    // for(int i=0; i<10000000; i++){ // memory check ok;
+    //     mylistHEAP.push(5);
+    //     mylistHEAP.push(8);
+    //     mylistHEAP.push(4);
+    //     mylistHEAP.push(10);
+    //     mylistHEAP.push(6);
+    //     mylistHEAP.push(7);
+    //     mylistHEAP.push(5);
+    //     for(int j=0; j<7; j++) mylistHEAP.pop();
+    // }
+
 
 
     std::vector<EDGE> links;
@@ -209,6 +231,11 @@ int main(){
     for(int i=0; i<21; i++) links.push_back(*(new EDGE(vtx[i][0], vtx[i][1], vtxW[i])));
     cout<<MST_P(links).cost<<"\n";
     cout<<MST_K(links).cost<<"\n";
+
+    // for(int i=0; i<10000000; i++){ // memory check ok;
+    //     MST_P(links);
+    //     MST_K(links);
+    // }
 
     // std::cout << "Float Range" << std::numeric_limits<float>::min() << " / " << std::numeric_limits<float>::max() << '\n';
 
@@ -225,6 +252,7 @@ int main(){
     // std::cout << (Z<<3) <<"\n";
     // Z <<= 3;
     // std::cout << Z <<"\n";
+
     std::cout << ((BIGNUM)1.5) <<"\n";
     std::cout << ((BIGNUM)4000 > 4000) <<"\n"; // 0
     std::cout << ((BIGNUM)0 == 0) <<"\n"; // 1
@@ -294,6 +322,7 @@ int main(){
     std::cout << (BIGNUM)"100000" / (BIGNUM)"8" <<"\n"; // 12500
     std::cout << (BIGNUM)"123456789101112" / (BIGNUM)"0.0000000001" <<"\n"; // 1234567891011120000000000
     std::cout << (BIGNUM)"18446744073709551616" / (BIGNUM)"548894" <<"\n"; // 33607115533617.69597772976203055599077417
+    std::cout << (BIGNUM)"1844674407370955.1616" / (BIGNUM)"5488.94" <<"\n"; // 336071155336.1769597772976203055599077417
     std::cout << "---------------------------------------------------------" <<"\n";
     std::cout << (BIGNUM)"987654321" % (BIGNUM)"159" <<"\n"; // 63
     std::cout << (BIGNUM)"18446744073709551616" % (BIGNUM)"548894" <<"\n"; // 382018
@@ -321,15 +350,26 @@ int main(){
     std::cout << "---------------------------------------------------------" <<"\n";
 
 
-BIGNUM BNUM0 = (BIGNUM)"89498504469840568940468468045.123", BNUM1 = (BIGNUM)"18446744173709551616.1", BNUM2 = (BIGNUM)"89498504469840568940468468045.2";
-BIGNUM *_NUM0;
-int M = 5, N = 9, O[10] = {0,1,2,3,4,5,6,7,8,9};
-std::cout<<"?:"<<BNUM0 / BNUM1<<"\n"; // 4851723622.718992244523586499562
+BIGNUM BNUM0 = (BIGNUM)"89498504469840568940468468045.123", BNUM1 = (BIGNUM)"18446744173709551616.1", BNUM2 = (BIGNUM)"89498504469840568940468468045.2", resBNUM;
+// std::cout<<"?:"<<BNUM0 / BNUM1<<"\n"; // 4851723622.718992244523586499562
+MATRIX M(2,2,{1,2,3,4});
 
+
+std::cout<<"?:"<<50 + BNUM0<<"\n";
+BNUM0.plus(BNUM1, BNUM0).minus(BNUM1, BNUM0);
+std::cout<<"?:"<<BNUM0<<"\n";
+
+BNUM0.multiply(BNUM1, BNUM0).divideBy(BNUM1, BNUM0);;
+std::cout<<"?:"<<BNUM0<<"\n";
+// BNUM0.divideBy(BNUM1, resBNUM);
+// std::cout<<"?:"<<resBNUM<<"\n";
+std::cout<<"?:"<<BNUM0<<", "<<BNUM1<<"\n";
+BNUM0.modulus(BNUM1, BNUM0);
+std::cout<<"--:"<<BNUM0<<"\n";
 
 auto st = std::chrono::high_resolution_clock::now();
 for(int i=0; i<10000000; i++) {
-    getDigz(BNUM0);
+    // BNUM0.plus(BNUM1, resBNUM).minus(BNUM1, resBNUM);
 }
 auto ed = std::chrono::high_resolution_clock::now();
 auto duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
@@ -338,7 +378,7 @@ std::cout<<"a:"<<duration.count()<<"\n";
 
 st = std::chrono::high_resolution_clock::now();
 for(int i=0; i<10000000; i++) {
-    degreez(BNUM0);
+    BNUM0+BNUM1;
 }
 ed = std::chrono::high_resolution_clock::now();
 duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
@@ -347,7 +387,7 @@ std::cout<<"b:"<<duration.count()<<"\n";
 
 st = std::chrono::high_resolution_clock::now();
 for(int i=0; i<10000000; i++) {
-    BIGNUM(5);
+    
 }
 ed = std::chrono::high_resolution_clock::now();
 duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
@@ -356,44 +396,44 @@ std::cout<<"c:"<<duration.count()<<"\n";
 
 st = std::chrono::high_resolution_clock::now();
 for(int i=0; i<10000000; i++) {
-    newNUM(10);
+    
 }
 ed = std::chrono::high_resolution_clock::now();
 duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
 std::cout<<"d:"<<duration.count()<<"\n";
 
-// ------------------------------------------------------------------------
+// // ------------------------------------------------------------------------
+// st = std::chrono::high_resolution_clock::now();
+// for(int i=0; i<10000000; i++) {
+//     BNUM0 > BNUM1;
+// }
+// ed = std::chrono::high_resolution_clock::now();
+// duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
+// std::cout<<">:"<<duration.count()<<"\n";
+
+
+// st = std::chrono::high_resolution_clock::now();
+// for(int i=0; i<10000000; i++) {
+//     BNUM0 > BNUM2;
+// }
+// ed = std::chrono::high_resolution_clock::now();
+// duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
+// std::cout<<">:"<<duration.count()<<"\n";
+
+
+// st = std::chrono::high_resolution_clock::now();
+// for(int i=0; i<10000000; i++) {
+//     BNUM0 == BNUM1;
+// }
+// ed = std::chrono::high_resolution_clock::now();
+// duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
+// std::cout<<"==:"<<duration.count()<<"\n";
+
+
+
 st = std::chrono::high_resolution_clock::now();
 for(int i=0; i<10000000; i++) {
-    BNUM0 > BNUM1;
-}
-ed = std::chrono::high_resolution_clock::now();
-duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
-std::cout<<">:"<<duration.count()<<"\n";
-
-
-st = std::chrono::high_resolution_clock::now();
-for(int i=0; i<10000000; i++) {
-    BNUM0 > BNUM2;
-}
-ed = std::chrono::high_resolution_clock::now();
-duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
-std::cout<<">:"<<duration.count()<<"\n";
-
-
-st = std::chrono::high_resolution_clock::now();
-for(int i=0; i<10000000; i++) {
-    BNUM0 == BNUM1;
-}
-ed = std::chrono::high_resolution_clock::now();
-duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
-std::cout<<"==:"<<duration.count()<<"\n";
-
-
-
-st = std::chrono::high_resolution_clock::now();
-for(int i=0; i<10000000; i++) {
-    BNUM0 + BNUM1;
+    BNUM0.plus(BNUM1, resBNUM);
 }
 ed = std::chrono::high_resolution_clock::now();
 duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
@@ -402,7 +442,7 @@ std::cout<<"+:"<<duration.count()<<"\n";
 
 st = std::chrono::high_resolution_clock::now();
 for(int i=0; i<10000000; i++){
-    BNUM0 - BNUM1;
+    BNUM0.minus(BNUM1, resBNUM);
 }
 ed = std::chrono::high_resolution_clock::now();
 duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
@@ -411,7 +451,7 @@ std::cout<<"-:"<<duration.count()<<"\n";
 
 st = std::chrono::high_resolution_clock::now();
 for(int i=0; i<10000000; i++) {
-    BNUM0 * BNUM1;
+    BNUM0.multiply(BNUM1, resBNUM);
 }
 ed = std::chrono::high_resolution_clock::now();
 duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
@@ -420,7 +460,7 @@ std::cout<<"*:"<<duration.count()<<"\n";
 
 st = std::chrono::high_resolution_clock::now();
 for(int i=0; i<100000; i++) {
-    BNUM0 / BNUM1;
+    BNUM0.divideBy(BNUM1, resBNUM);
 }
 ed = std::chrono::high_resolution_clock::now();
 duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
@@ -429,12 +469,13 @@ std::cout<<"/:"<<duration.count()<<"\n";
 
 st = std::chrono::high_resolution_clock::now();
 for(int i=0; i<100000; i++){
-    BNUM0 % BNUM1;
+    BNUM0.modulus(BNUM1, resBNUM);
 }
 ed = std::chrono::high_resolution_clock::now();
 duration = std::chrono::duration_cast<std::chrono::microseconds>(ed - st);
 std::cout<<"%:"<<duration.count()<<"\n";
 
-    
+
+    // PAUSE
     return 0;
 }

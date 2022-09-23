@@ -44,6 +44,15 @@ class BIGNUM{
 
         friend std::ostream& operator<<(std::ostream &os, const BIGNUM &m);
 
+        BIGNUM leftShift(DIGITDATATYPE NUM1, BIGNUM &res);
+        BIGNUM rightShift(DIGITDATATYPE NUM1, BIGNUM &res);
+        BIGNUM plus(BIGNUM const &NUM1, BIGNUM &res);
+        BIGNUM minus(BIGNUM const &NUM1, BIGNUM &res);
+        BIGNUM multiply(BIGNUM const &NUM1, BIGNUM &res);
+        BIGNUM divideBy(BIGNUM const &NUM1, BIGNUM &res);
+        // BIGNUM divideBy(BIGNUM const &NUM1, BIGNUM &res, int digitExact);
+        BIGNUM modulus(BIGNUM const &NUM1, BIGNUM &res);
+
         BIGNUM operator << (DIGITDATATYPE NUM1);
         BIGNUM operator >> (DIGITDATATYPE NUM1);
         BIGNUM operator <<= (DIGITDATATYPE NUM1);
@@ -66,42 +75,6 @@ class BIGNUM{
         BIGNUM operator *= (BIGNUM const &NUM1);
         BIGNUM operator /= (BIGNUM const &NUM1);
         BIGNUM operator %= (BIGNUM const &NUM1);
-
-        BIGNUM operator + (int NUM1);
-        BIGNUM operator - (int NUM1);
-        BIGNUM operator * (int NUM1);
-        BIGNUM operator / (int NUM1);
-        BIGNUM operator % (int NUM1);
-        BIGNUM operator = (int NUM1);
-        bool operator > (int NUM1);
-        bool operator < (int NUM1);
-        bool operator == (int NUM1);
-        bool operator != (int NUM1);
-        bool operator >= (int NUM1);
-        bool operator <= (int NUM1);
-        BIGNUM operator += (int NUM1);
-        BIGNUM operator -= (int NUM1);
-        BIGNUM operator *= (int NUM1);
-        BIGNUM operator /= (int NUM1);
-        BIGNUM operator %= (int NUM1);
-
-        BIGNUM operator + (float NUM1);
-        BIGNUM operator - (float NUM1);
-        BIGNUM operator * (float NUM1);
-        BIGNUM operator / (float NUM1);
-        BIGNUM operator % (float NUM1);
-        BIGNUM operator = (float NUM1);
-        bool operator > (float NUM1);
-        bool operator < (float NUM1);
-        bool operator == (float NUM1);
-        bool operator != (float NUM1);
-        bool operator >= (float NUM1);
-        bool operator <= (float NUM1);
-        BIGNUM operator += (float NUM1);
-        BIGNUM operator -= (float NUM1);
-        BIGNUM operator *= (float NUM1);
-        BIGNUM operator /= (float NUM1);
-        BIGNUM operator %= (float NUM1);
         
         BIGNUM operator + (double NUM1);
         BIGNUM operator - (double NUM1);
@@ -120,6 +93,17 @@ class BIGNUM{
         BIGNUM operator *= (double NUM1);
         BIGNUM operator /= (double NUM1);
         BIGNUM operator %= (double NUM1);
+
+        friend BIGNUM operator + (double NUM0, const BIGNUM &NUM1);
+        // friend BIGNUM operator - (double NUM0, const BIGNUM &NUM1);
+        // friend BIGNUM operator * (double NUM0, const BIGNUM &NUM1);
+        // friend BIGNUM operator / (double NUM0, const BIGNUM &NUM1);
+        // friend bool operator > (double NUM0, const BIGNUM &NUM1);
+        // friend bool operator < (double NUM0, const BIGNUM &NUM1);
+        // friend bool operator == (double NUM0, const BIGNUM &NUM1);
+        // friend bool operator != (double NUM0, const BIGNUM &NUM1);
+        // friend bool operator >= (double NUM0, const BIGNUM &NUM1);
+        // friend bool operator <= (double NUM0, const BIGNUM &NUM1);
 };
 BIGNUM abs(BIGNUM NUM0);
 
@@ -139,13 +123,16 @@ class COMPLEX{
         COMPLEX_DATA_TYPE Im, Re;
 
         COMPLEX();
-        COMPLEX(int NUM0, int NUM1);
-        COMPLEX(float NUM0, float NUM1);
         COMPLEX(double NUM0, double NUM1);
 
         COMPLEX bar();
 
         friend std::ostream& operator<<(std::ostream &os, const COMPLEX &m);
+
+        // COMPLEX plus(COMPLEX const &NUM1, COMPLEX &res);
+        // COMPLEX minus(COMPLEX const &NUM1, COMPLEX &res);
+        // COMPLEX multiply(COMPLEX const &NUM1, COMPLEX &res);
+        // COMPLEX divideBy(COMPLEX const &NUM1, COMPLEX &res);
 
         COMPLEX operator + (COMPLEX const &NUM1);
         COMPLEX operator - (COMPLEX const &NUM1);
@@ -159,30 +146,6 @@ class COMPLEX{
         COMPLEX operator *= (COMPLEX const &NUM1);
         COMPLEX operator /= (COMPLEX const &NUM1);
 
-        COMPLEX operator + (int const &NUM1);
-        COMPLEX operator - (int const &NUM1);
-        COMPLEX operator * (int const &NUM1);
-        COMPLEX operator / (int const &NUM1);
-        COMPLEX operator = (int const &NUM1);
-        bool operator == (int const &NUM1);
-        bool operator != (int const &NUM1);
-        COMPLEX operator += (int const &NUM1);
-        COMPLEX operator -= (int const &NUM1);
-        COMPLEX operator *= (int const &NUM1);
-        COMPLEX operator /= (int const &NUM1);
-
-        COMPLEX operator + (float const &NUM1);
-        COMPLEX operator - (float const &NUM1);
-        COMPLEX operator * (float const &NUM1);
-        COMPLEX operator / (float const &NUM1);
-        COMPLEX operator = (float const &NUM1);
-        bool operator == (float const &NUM1);
-        bool operator != (float const &NUM1);
-        COMPLEX operator += (float const &NUM1);
-        COMPLEX operator -= (float const &NUM1);
-        COMPLEX operator *= (float const &NUM1);
-        COMPLEX operator /= (float const &NUM1);
-
         COMPLEX operator + (double const &NUM1);
         COMPLEX operator - (double const &NUM1);
         COMPLEX operator * (double const &NUM1);
@@ -194,6 +157,13 @@ class COMPLEX{
         COMPLEX operator -= (double const &NUM1);
         COMPLEX operator *= (double const &NUM1);
         COMPLEX operator /= (double const &NUM1);
+
+        // friend COMPLEX operator + (double NUM0, const COMPLEX &NUM1);
+        // friend COMPLEX operator - (double NUM0, const COMPLEX &NUM1);
+        // friend COMPLEX operator * (double NUM0, const COMPLEX &NUM1);
+        // friend COMPLEX operator / (double NUM0, const COMPLEX &NUM1);
+        // friend bool operator == (double NUM0, const COMPLEX &NUM1);
+        // friend bool operator != (double NUM0, const COMPLEX &NUM1);
 };
 
 COMPLEX bar(COMPLEX NUM0);
@@ -216,11 +186,27 @@ class MATRIX{
         int col, row;
         std::vector<MATRIX_DATA_TYPE> value;
 
+        MATRIX();
         MATRIX(int colNum, int rowNum);
+        MATRIX(int colNum, int rowNum, std::initializer_list<double> NUM1);
 
         MATRIX transposed();
+
+        // cube matrix olny
+        // MATRIX rotate_d(double degree); // 2D
+        // MATRIX rotate_r(double radian); // 2D
+        // MATRIX rotate_d(double degree, int coor1, int coor2);
+        // MATRIX rotate_r(double radian, int coor1, int coor2);
+        // MATRIX diagonalization(double radian);
+        // MATRIX triangularL(double radian);
+        // MATRIX triangularU(double radian);
+        // MATRIX_DATA_TYPE determinant();
         
         friend std::ostream& operator<<(std::ostream &os, const MATRIX &m);
+
+        // MATRIX plus(MATRIX const &MTX1, MATRIX &res);
+        // MATRIX minus(MATRIX const &MTX1, MATRIX &res);
+        // MATRIX multiply(MATRIX const &MTX1, MATRIX &res);
 
         MATRIX operator + (MATRIX const &MTX1);
         MATRIX operator - (MATRIX const &MTX1);
@@ -231,11 +217,29 @@ class MATRIX{
         MATRIX operator += (MATRIX const &MTX1);
         MATRIX operator -= (MATRIX const &MTX1);
         MATRIX operator *= (MATRIX const &MTX1);
+
+        MATRIX operator = (double* const NUM1);
+        MATRIX operator = (std::initializer_list<double> NUM1);
+        // MATRIX operator = (std::initializer_list<std::initializer_list<double>> NUM1);
+
+        MATRIX operator + (double const &NUM1);
+        MATRIX operator - (double const &NUM1);
+        MATRIX operator * (double const &NUM1);
+        MATRIX operator / (double const &NUM1);
+        MATRIX operator += (double const &NUM1);
+        MATRIX operator -= (double const &NUM1);
+        MATRIX operator *= (double const &NUM1);
+        MATRIX operator /= (double const &NUM1);
+
+        // friend MATRIX operator + (double NUM0, const MATRIX &NUM1);
+        // friend MATRIX operator - (double NUM0, const MATRIX &NUM1);
+        // friend MATRIX operator * (double NUM0, const MATRIX &NUM1);
 };
 
 MATRIX transposed(MATRIX MTX1);
 MATRIX unitMTX(int order);
-MATRIX transposed(MATRIX MTX1);
+MATRIX rotateMTX_d(double degree);
+MATRIX rotateMTX_r(double radian);
 // #include "number2.tpp"
 
 #endif

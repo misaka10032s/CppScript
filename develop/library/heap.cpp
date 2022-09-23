@@ -48,8 +48,16 @@ int getChildrenLength(NODE checkingNode){
     return tmpHeapChildrenLength;
 }
 
+void freeHeap(NODE* node){
+    for(int i=0; i<2; i++){
+        if(node->children[i] != nullptr) freeHeap(node->children[i]);
+    }
+    delete node;
+    node = nullptr;
+}
 
 // ######################## class HEAP ########################
+
 HEAP::HEAP(bool type){
     this->htype = type;
     this->minmaxMultiply = type ? -1 : 1;
@@ -59,7 +67,7 @@ HEAP::HEAP(){
     this->minmaxMultiply = 1;
 }
 HEAP::~HEAP(){
-    if(this->rootHeap != nullptr) delete this->rootHeap;
+    freeHeap(this->rootHeap);
 }
 
 void HEAP::push(int key, int weight){
@@ -70,7 +78,8 @@ void HEAP::push(std::string key, int weight){
     if(key == "") return;
 
     if(this->rootHeap->key == ""){
-        this->rootHeap = new NODE(key, weight);
+        this->rootHeap->key = key;
+        this->rootHeap->weight = weight;
     }
     else{
         NODE* tmpHeap = this->rootHeap;
@@ -103,7 +112,7 @@ void HEAP::push(std::string key, int weight){
 }
 
 NODE HEAP::pop(){
-    NODE rtn = *(new NODE(this->rootHeap->key, this->rootHeap->weight));
+    NODE rtn(this->rootHeap->key, this->rootHeap->weight);
     if(this->rootHeap->key == "") return rtn;
 
     NODE* tmpHeap = this->rootHeap;
@@ -138,12 +147,12 @@ NODE HEAP::pop(){
     return rtn;
 }
 NODE HEAP::get(){
-    return *(new NODE(this->rootHeap->key, this->rootHeap->weight));
+    return NODE(this->rootHeap->key, this->rootHeap->weight);
 }
 
 void HEAP::list(NODE *tmpHeap){
     if(tmpHeap == nullptr) tmpHeap = this->rootHeap;
-    cout<<"@ "<<tmpHeap->key<<"\n";
+    std::cout<<"@ "<<tmpHeap->key<<"\n";
     for(int i=0; i<2; i++){
         if(tmpHeap->children[i] != nullptr) list(tmpHeap->children[i]);
     }
@@ -153,7 +162,7 @@ void HEAP::list(NODE *tmpHeap){
 // ######################## class SMMH ########################
 SMMH::SMMH(){}
 SMMH::~SMMH(){
-    if(this->rootHeap != nullptr) delete this->rootHeap;
+    freeHeap(this->rootHeap);
 }
 
 NODE* SMMH::getValue(NODE *nodeList[2], int index){
@@ -209,14 +218,14 @@ void SMMH::push(std::string key, int weight){
 }
 
 NODE SMMH::pop(int popIdx){
-    if(!getChildrenLength(*rootHeap)) return *(new NODE("", 0));
+    if(!getChildrenLength(*rootHeap)) return NODE("", 0);
     popIdx = popIdx ? 1 : 0;
     int minmaxMultiply = popIdx ? -1 : 1;
 
     NODE *tmpHeap = rootHeap, *leftNode, *rightNode, *leftNodeChild, *rightNodeChild, *tmpNodeChild;
     NODE rtn = *getValue(rootHeap->children, popIdx);
 
-    rtn = *(new NODE(rtn.key, rtn.weight));
+    rtn = NODE(rtn.key, rtn.weight);
     leftNode = tmpHeap->children[0];
     rightNode = tmpHeap->children[1];
 
@@ -258,6 +267,10 @@ NODE SMMH::pop(int popIdx){
     return rtn;
 }
 
+NODE SMMH::pop(){
+    return this->pop(0);
+};
+
 NODE SMMH::popMin(){
     return this->pop(0);
 }
@@ -267,14 +280,14 @@ NODE SMMH::popMax(){
 }
 
 NODE SMMH::getMin(){
-    if(!getChildrenLength(*rootHeap)) return *(new NODE("", 0));
-    return *(new NODE(rootHeap->children[0]->key, rootHeap->children[0]->weight));
+    if(!getChildrenLength(*rootHeap)) return NODE("", 0);
+    return NODE(rootHeap->children[0]->key, rootHeap->children[0]->weight);
 }
 
 NODE SMMH::getMax(){
-    if(!getChildrenLength(*rootHeap)) return *(new NODE("", 0));
+    if(!getChildrenLength(*rootHeap)) return NODE("", 0);
     NODE rtn = *getValue(rootHeap->children, 1);
-    return *(new NODE(rtn.key, rtn.weight));
+    return NODE(rtn.key, rtn.weight);
 }
 
 void SMMH::list(NODE *tmpHeap){
