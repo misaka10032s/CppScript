@@ -50,11 +50,11 @@ template <typename T> T listHEAP<T>::pop(){
     this->_listheap[_listheap.size()-1] = tmpEle;
     _listheap.pop_back();
 
-    while(this->getChild(parIdx, 1) < this->_listheap.size()){
+    while(this->getChild(parIdx, 1) < (int)this->_listheap.size()){
         ch0 = this->getChild(parIdx, 0);
         ch1 = this->getChild(parIdx, 1);
 
-        if(ch0 >= _listheap.size()) ch0 = ch1;
+        if(ch0 >= (int)_listheap.size()) ch0 = ch1;
         chIdx = this->compare(_listheap[ch0], _listheap[ch1]) ? ch0 : ch1;
 
         if(this->compare(_listheap[parIdx], _listheap[chIdx])) break;

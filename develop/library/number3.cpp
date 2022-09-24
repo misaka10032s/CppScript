@@ -607,7 +607,7 @@ BIGNUM BIGNUM::divideBy(BIGNUM const &NUM1, BIGNUM &res){
     digitExact = digitNUM1 + NUM1.point;
 
     NUM0.value.resize((digitNUM0 + digitExact - 1) / DIGITNUM + 1);
-    for(int i=0; i<this->value.size(); i++){
+    for(int i=0; i<(int)this->value.size(); i++){
         NUM0.value[i] = this->value[i];
     }
     NUM0.sign = this->sign;
@@ -670,7 +670,7 @@ BIGNUM BIGNUM::modulus(BIGNUM const &NUM1, BIGNUM &res){
     nowDigit = digitNUM0 - digitNUM1;
 
     if((int)res.value.size() < std::max(this->value.size(), NUM1.value.size())) res.value.resize(std::max(this->value.size(), NUM1.value.size()));
-    for(int i=0; i<this->value.size(); i++){
+    for(int i=0; i<(int)this->value.size(); i++){
         res.value[i] = this->value[i];
     }
     res.sign = 0;
@@ -925,7 +925,7 @@ BIGNUM BIGNUM::operator % (BIGNUM const &NUM1){
 }
 BIGNUM BIGNUM::operator = (BIGNUM const &NUM1){
     this->value.resize(NUM1.value.size());
-    for(int i=0; i<NUM1.value.size(); i++){
+    for(int i=0; i<(int)NUM1.value.size(); i++){
         this->value[i] = NUM1.value[i];
     }
     this->sign = NUM1.sign;

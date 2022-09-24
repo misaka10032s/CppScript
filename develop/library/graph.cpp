@@ -175,9 +175,9 @@ GRAPH MST_K(std::vector<EDGE> const &links){
         }
     }
 
-    for(int i=0; i<links.size(); i++) minHEAP.push(std::to_string(i), links[i].weight);
+    for(int i=0; i<(int)links.size(); i++) minHEAP.push(std::to_string(i), links[i].weight);
 
-    while(forest.edges.size() < vertexNum){
+    while((int)forest.edges.size() < vertexNum){
         checkingEdge = links[std::stoi(minHEAP.pop().key)];
 
         if(checkingEdge.fromV == checkingEdge.toV) continue;
@@ -205,7 +205,7 @@ GRAPH MST_K(std::vector<EDGE> const &links){
         }
         else if(vertexBelong[checkingEdge.fromV] != vertexBelong[checkingEdge.toV]){
             groupKeyTmp = vertexBelong[checkingEdge.fromV];
-            for(int i=0; i<vertexGroup[groupKeyTmp].size(); i++){
+            for(int i=0; i<(int)vertexGroup[groupKeyTmp].size(); i++){
                 vertexBelong[vertexGroup[groupKeyTmp][i]] = vertexBelong[checkingEdge.toV];
                 vertexGroup[vertexBelong[checkingEdge.toV]].push_back(vertexGroup[groupKeyTmp][i]);
             }
