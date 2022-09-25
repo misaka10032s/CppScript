@@ -1,2 +1,2 @@
-g++ -o GTEST.exe test.cpp -g -Wall -static-libgcc library/*.cpp
+g++ -o GTEST3.exe test.cpp -Wall -std=c++17 library/*.cpp
 pause

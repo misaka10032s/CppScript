@@ -146,8 +146,12 @@ inline bool compareAbs(BIGNUM const &NUM0, BIGNUM const &NUM1, int exp){ // abs(
         
 
 // std::cout<<"compareAbs!: "<<tmpNUM0_0 <<", "<< tmpNUM0_1<<", "<<tmpNUM1_0<<", "<<tmpNUM1_1<<", "<<exp<<"\n";
-        if(i==1) if(NUM0.value[size0 - i] != (tmpNUM1_0 + tmpNUM1_1) % modNUM0) return NUM0.value[size0 - i] < (tmpNUM1_0 + tmpNUM1_1) % modNUM0;
-        else if(NUM0.value[size0 - i] != tmpNUM1_0 + tmpNUM1_1) return NUM0.value[size0 - i] < tmpNUM1_0 + tmpNUM1_1;
+        if(i==1) {
+            if(NUM0.value[size0 - i] != (tmpNUM1_0 + tmpNUM1_1) % modNUM0) return NUM0.value[size0 - i] < (tmpNUM1_0 + tmpNUM1_1) % modNUM0;
+        }
+        else {
+            if(NUM0.value[size0 - i] != tmpNUM1_0 + tmpNUM1_1) return NUM0.value[size0 - i] < tmpNUM1_0 + tmpNUM1_1;
+        }
         // if(tmpNUM0_0 + tmpNUM0_1 != tmpNUM1_0 + tmpNUM1_1) return tmpNUM0_0 + tmpNUM0_1 < tmpNUM1_0 + tmpNUM1_1;
     }
     return 0;
@@ -656,7 +660,7 @@ BIGNUM BIGNUM::divideBy(BIGNUM const &NUM1, BIGNUM &res){
     return res;
 };
 BIGNUM BIGNUM::modulus(BIGNUM const &NUM1, BIGNUM &res){
-    BIGNUM divNUM = abs(NUM1);
+    // BIGNUM divNUM = abs(NUM1);
     DIGITDATATYPE digitNUM0, digitNUM1, nowDigit;
     int rangeL, f0, f1;
 
@@ -669,7 +673,7 @@ BIGNUM BIGNUM::modulus(BIGNUM const &NUM1, BIGNUM &res){
     digitNUM1 = getDigInteger(NUM1);
     nowDigit = digitNUM0 - digitNUM1;
 
-    if((int)res.value.size() < std::max(this->value.size(), NUM1.value.size())) res.value.resize(std::max(this->value.size(), NUM1.value.size()));
+    if((int)res.value.size() < (int)std::max(this->value.size(), NUM1.value.size())) res.value.resize(std::max(this->value.size(), NUM1.value.size()));
     for(int i=0; i<(int)this->value.size(); i++){
         res.value[i] = this->value[i];
     }
@@ -683,7 +687,7 @@ BIGNUM BIGNUM::modulus(BIGNUM const &NUM1, BIGNUM &res){
 
 // std::cout<<"%0: "<<res<<"\n";
     while(compareAbs(NUM1, res)){
-        if(compareAbs(res, divNUM, nowDigit)) {
+        if(compareAbs(res, NUM1, nowDigit)) {
             digitNUM1--;
             nowDigit--;
             continue;
@@ -691,16 +695,15 @@ BIGNUM BIGNUM::modulus(BIGNUM const &NUM1, BIGNUM &res){
         f0 = firstDigit2(res);
         rangeL = digitNUM0==digitNUM1 ? f0/f1 : 10*f0/f1;
         
-        simpleMinus(res, divNUM, rangeL-1, nowDigit);
+        simpleMinus(res, NUM1, rangeL-1, nowDigit);
 // std::cout<<"%1: "<<res<<", "<<rangeL-1<<"\n";
-        if(!compareAbs(res, divNUM, nowDigit)){
-            simpleMinus(res, divNUM, 1, nowDigit);
+        if(!compareAbs(res, NUM1, nowDigit)){
+            simpleMinus(res, NUM1, 1, nowDigit);
         }
 // std::cout<<"%2: "<<res<<", "<<rangeL-1<<", "<<NUM1<<", "<<compareAbs(NUM1, res)<<"\n";
         digitNUM0 = getDigInteger(res);
         digitNUM1--;
         nowDigit--;
-        // PAUSE
     }
     return res;
 };
