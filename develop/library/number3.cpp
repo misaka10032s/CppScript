@@ -385,6 +385,25 @@ void const BIGNUM::retract(){
     this->value.resize(std::max((int)this->value.size() - fltZero, 0));
 };
 
+void const BIGNUM::removeZero(){
+    // std::cout<<"x0 "<<this->point<<"\n";
+    int zero = 0;
+    for(int i=0; i<(int)this->value.size(); i++){
+        if((zero + 1) * DIGITNUM > this->point) break;
+        if(this->value[i] == 0) zero++;
+        else break;
+    }
+    if(!zero) return;
+    for(int i=0; i<(int)this->value.size()-zero; i++){
+        this->value[i] = this->value[i+zero];
+    }
+    for(int i=(int)this->value.size()-zero; i<(int)this->value.size(); i++){
+        this->value[i] = 0;
+    }
+    this->point -= zero * DIGITNUM;
+    // std::cout<<"x1 "<<this->point<<", "<<zero<<"\n";
+};
+
 // ================================================================================================
 BIGNUM BIGNUM::leftShift(DIGITDATATYPE NUM1, BIGNUM &res){
     if(NUM1 <= 0 || this->isInf) {
@@ -418,6 +437,7 @@ BIGNUM BIGNUM::leftShift(DIGITDATATYPE NUM1, BIGNUM &res){
         res.value[i] = (0 <= i-digitShift && i-digitShift < origSize) ? this->value[i-digitShift] / multiple : 0;
         res.value[i] += (0 <= i-digitShift+1 && i-digitShift+1 < origSize) ? this->value[i-digitShift+1] % multiple * (DIGIT10 / multiple) : 0;
     }
+    res.removeZero();
     return res;
 };
 BIGNUM BIGNUM::rightShift(DIGITDATATYPE NUM1, BIGNUM &res){
@@ -458,6 +478,7 @@ BIGNUM BIGNUM::rightShift(DIGITDATATYPE NUM1, BIGNUM &res){
         res.value[i] = i+digitShift-1 < (int)this->value.size() ? this->value[i+digitShift-1] / (DIGIT10 / multiple) : 0;
         res.value[i] += i+digitShift < (int)this->value.size() ? this->value[i+digitShift] % (DIGIT10 / multiple) * multiple : 0;
     }
+    res.removeZero();
     return res;
 };
 BIGNUM BIGNUM::plus(BIGNUM const &NUM1, BIGNUM &res){
@@ -510,6 +531,7 @@ BIGNUM BIGNUM::plus(BIGNUM const &NUM1, BIGNUM &res){
         if(res.value[i] < 0) res.value[i] += DIGIT10;
         else res.value[i] %= DIGIT10;
     }
+    res.removeZero();
     return res;
 };
 BIGNUM BIGNUM::minus(BIGNUM const &NUM1, BIGNUM &res){
@@ -562,6 +584,7 @@ BIGNUM BIGNUM::minus(BIGNUM const &NUM1, BIGNUM &res){
         if(res.value[i] < 0) res.value[i] += DIGIT10;
         else res.value[i] %= DIGIT10;
     }
+    res.removeZero();
     return res;
 };
 BIGNUM BIGNUM::multiply(BIGNUM const &NUM1, BIGNUM &res){
@@ -592,6 +615,7 @@ BIGNUM BIGNUM::multiply(BIGNUM const &NUM1, BIGNUM &res){
         nextSlotValue = (thisSlotValue / (long long int)DIGIT10 + nextSlotValue) / (long long int)DIGIT10;
     }
     for(int i=0; i<digit; i++) res.value[i] = tmpRes[i];
+    res.removeZero();
     return res;
 };
 BIGNUM BIGNUM::divideBy(BIGNUM const &NUM1, BIGNUM &res){
@@ -657,6 +681,7 @@ BIGNUM BIGNUM::divideBy(BIGNUM const &NUM1, BIGNUM &res){
         nowDigit--;
     }
     for(int i=0; i<digit; i++) res.value[i] = tmpRes[i];
+    res.removeZero();
     return res;
 };
 BIGNUM BIGNUM::modulus(BIGNUM const &NUM1, BIGNUM &res){
@@ -705,6 +730,7 @@ BIGNUM BIGNUM::modulus(BIGNUM const &NUM1, BIGNUM &res){
         digitNUM1--;
         nowDigit--;
     }
+    res.removeZero();
     return res;
 };
 

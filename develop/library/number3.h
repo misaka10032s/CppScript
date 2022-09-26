@@ -41,6 +41,7 @@ class BIGNUM{
         int firstDigit(BIGNUM const &NUM0);
         int firstDigit2(BIGNUM const &NUM0);
         void const retract();
+        void const removeZero();
 
         friend std::ostream& operator<<(std::ostream &os, const BIGNUM &m);
 

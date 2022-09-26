@@ -8,7 +8,8 @@
           "${workspaceFolder}",
           "C:/Program Files/LLVM/include",
           "C:/C++extend/opencvMingw/include",
-          "C:/C++extend/OpenSSL-Win64/include"
+          "C:/C++extend/OpenSSL-Win64/include",
+          "C:/Program Files/LLVM/x86_64-w64-mingw32/include"
         ],
         "defines": [],
         "browse": {

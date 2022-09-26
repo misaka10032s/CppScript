@@ -135,60 +135,60 @@ int main(){
     // for(int i=0; i<10; i++) mySTACK.push(i+1);
     // while(mySTACK.canPop) std::cout<<mySTACK.pop()<<", "; std::cout<<"\n";
 
-    STACK<int> mySTACK(10);
-    mySTACK.push(5);
-    mySTACK.push(8);
-    mySTACK.push(6);
-    mySTACK.push(9);
-    std::cout<<mySTACK.pop()<<", "; 
-    std::cout<<mySTACK.pop()<<", "; 
-    std::cout<<mySTACK.pop()<<", "; 
-    mySTACK.push(1);
-    mySTACK.push(2);
-    std::cout<<mySTACK.pop()<<", "; 
-    std::cout<<mySTACK.pop()<<", "; 
-    std::cout<<mySTACK.pop()<<", "; 
-    std::cout<<"\n";
+    // STACK<int> mySTACK(10);
+    // mySTACK.push(5);
+    // mySTACK.push(8);
+    // mySTACK.push(6);
+    // mySTACK.push(9);
+    // std::cout<<mySTACK.pop()<<", "; 
+    // std::cout<<mySTACK.pop()<<", "; 
+    // std::cout<<mySTACK.pop()<<", "; 
+    // mySTACK.push(1);
+    // mySTACK.push(2);
+    // std::cout<<mySTACK.pop()<<", "; 
+    // std::cout<<mySTACK.pop()<<", "; 
+    // std::cout<<mySTACK.pop()<<", "; 
+    // std::cout<<"\n";
 
-    QUEUE<int> myQUEUE(10);
-    myQUEUE.push(5);
-    myQUEUE.push(8);
-    myQUEUE.push(6);
-    myQUEUE.push(9);
-    std::cout<<myQUEUE.pop()<<", "; 
-    std::cout<<myQUEUE.pop()<<", "; 
-    std::cout<<myQUEUE.pop()<<", "; 
-    myQUEUE.push(1);
-    myQUEUE.push(2);
-    std::cout<<myQUEUE.pop()<<", "; 
-    std::cout<<myQUEUE.pop()<<", "; 
-    std::cout<<myQUEUE.pop()<<", "; 
-    std::cout<<"\n";
+    // QUEUE<int> myQUEUE(10);
+    // myQUEUE.push(5);
+    // myQUEUE.push(8);
+    // myQUEUE.push(6);
+    // myQUEUE.push(9);
+    // std::cout<<myQUEUE.pop()<<", "; 
+    // std::cout<<myQUEUE.pop()<<", "; 
+    // std::cout<<myQUEUE.pop()<<", "; 
+    // myQUEUE.push(1);
+    // myQUEUE.push(2);
+    // std::cout<<myQUEUE.pop()<<", "; 
+    // std::cout<<myQUEUE.pop()<<", "; 
+    // std::cout<<myQUEUE.pop()<<", "; 
+    // std::cout<<"\n";
 
 
-    COMPLEX C0(9,8), C1(1,-9);
-    std::cout<<"C+C "<<C0 + C1<<"\n";
-    std::cout<<"C-C "<<C0 - C1<<"\n";
-    std::cout<<"C*C "<<C0 * C1<<"\n";
-    std::cout<<"C/C "<<C0 / C1<<"\n";
+    // COMPLEX C0(9,8), C1(1,-9);
+    // std::cout<<"C+C "<<C0 + C1<<"\n";
+    // std::cout<<"C-C "<<C0 - C1<<"\n";
+    // std::cout<<"C*C "<<C0 * C1<<"\n";
+    // std::cout<<"C/C "<<C0 / C1<<"\n";
 
     // HEAPHEAPHEAPHEAPHEAPHEAPHEAPHEAPHEAPHEAPHEAPHEAPHEAPHEAPHEAPHEAPHEAP
-    HEAP myHeap(1);
-    // SMMH myHeap;
-    myHeap.push("A", 5);
-    myHeap.push("B", 8);
-    myHeap.push("C", 4);
-    myHeap.push("D", 10);
-    myHeap.push("E", 6);
-    myHeap.push("F", 7);
-    myHeap.push("G", 5);
-    // myHeap.list(nullptr);cout<<"------------------\n";
+    // HEAP myHeap(1);
+    // // SMMH myHeap;
+    // myHeap.push("A", 5);
+    // myHeap.push("B", 8);
+    // myHeap.push("C", 4);
+    // myHeap.push("D", 10);
+    // myHeap.push("E", 6);
+    // myHeap.push("F", 7);
+    // myHeap.push("G", 5);
+    // // myHeap.list(nullptr);cout<<"------------------\n";
 
-    // CAGEFBD
-    for(int i=0; i<8; i++){
-        cout<< myHeap.pop().key<<"\n";
-        // cout<< myHeap.popMin().key<<"\n";
-    }
+    // // CAGEFBD
+    // for(int i=0; i<8; i++){
+    //     cout<< myHeap.pop().key<<"\n";
+    //     // cout<< myHeap.popMin().key<<"\n";
+    // }
 
     // for(int i=0; i<10000000; i++){ // memory check ok;
     //     myHeap.push("A", 5);
@@ -201,16 +201,16 @@ int main(){
     //     for(int j=0; j<7; j++) myHeap.pop();
     // }
 
-    listHEAP<int> mylistHEAP(&cpInt);
-    for(int i=0; i<7; i++) cout<< "Empty Pop" << mylistHEAP.pop()<<"\n";
-    mylistHEAP.push(5);
-    mylistHEAP.push(8);
-    mylistHEAP.push(4);
-    mylistHEAP.push(10);
-    mylistHEAP.push(6);
-    mylistHEAP.push(7);
-    mylistHEAP.push(5);
-    for(int i=0; i<7; i++) cout<< mylistHEAP.pop()<<"\n";
+    // listHEAP<int> mylistHEAP(&cpInt);
+    // for(int i=0; i<7; i++) cout<< "Empty Pop" << mylistHEAP.pop()<<"\n";
+    // mylistHEAP.push(5);
+    // mylistHEAP.push(8);
+    // mylistHEAP.push(4);
+    // mylistHEAP.push(10);
+    // mylistHEAP.push(6);
+    // mylistHEAP.push(7);
+    // mylistHEAP.push(5);
+    // for(int i=0; i<7; i++) cout<< mylistHEAP.pop()<<"\n";
 
     // for(int i=0; i<10000000; i++){ // memory check ok;
     //     mylistHEAP.push(5);
@@ -225,12 +225,12 @@ int main(){
 
 
 
-    std::vector<EDGE> links;
-    string vtx[21][2] = {{"a", "b"}, {"a", "c"}, {"a", "d"}, {"b", "c"}, {"b", "f"}, {"b", "g"}, {"c", "d"}, {"c", "e"}, {"c", "f"}, {"d", "e"}, {"d", "i"}, {"e", "i"}, {"e", "f"}, {"f", "i"}, {"f", "h"}, {"f", "g"}, {"g", "h"}, {"g", "j"}, {"h", "i"}, {"h", "j"}, {"i", "j"}};
-    int vtxW[21] = {9,3,6,9,8,18,4,2,9,2,9,9,8,7,9,10,3,4,5,1,4};
-    for(int i=0; i<21; i++) links.push_back(*(new EDGE(vtx[i][0], vtx[i][1], vtxW[i])));
-    cout<<MST_P(links).cost<<"\n";
-    cout<<MST_K(links).cost<<"\n";
+    // std::vector<EDGE> links;
+    // string vtx[21][2] = {{"a", "b"}, {"a", "c"}, {"a", "d"}, {"b", "c"}, {"b", "f"}, {"b", "g"}, {"c", "d"}, {"c", "e"}, {"c", "f"}, {"d", "e"}, {"d", "i"}, {"e", "i"}, {"e", "f"}, {"f", "i"}, {"f", "h"}, {"f", "g"}, {"g", "h"}, {"g", "j"}, {"h", "i"}, {"h", "j"}, {"i", "j"}};
+    // int vtxW[21] = {9,3,6,9,8,18,4,2,9,2,9,9,8,7,9,10,3,4,5,1,4};
+    // for(int i=0; i<21; i++) links.push_back(*(new EDGE(vtx[i][0], vtx[i][1], vtxW[i])));
+    // cout<<MST_P(links).cost<<"\n";
+    // cout<<MST_K(links).cost<<"\n";
 
     // for(int i=0; i<10000000; i++){ // memory check ok;
     //     MST_P(links);
@@ -355,17 +355,25 @@ BIGNUM BNUM0 = (BIGNUM)"89498504469840568940468468045.123", BNUM1 = (BIGNUM)"184
 MATRIX M(2,2,{1,2,3,4});
 
 
-std::cout<<"?:"<<50 + BNUM0<<"\n";
+std::cout<<"0?:"<<50 + BNUM0<<"\n";
 BNUM0.plus(BNUM1, BNUM0).minus(BNUM1, BNUM0);
-std::cout<<"?:"<<BNUM0<<"\n";
+std::cout<<"1?:"<<BNUM0<<"\n";
 
 BNUM0.multiply(BNUM1, BNUM0).divideBy(BNUM1, BNUM0);;
-std::cout<<"?:"<<BNUM0<<"\n";
+std::cout<<"2?:"<<BNUM0<<", "<<BNUM0.point<<"\n";
 // BNUM0.divideBy(BNUM1, resBNUM);
 // std::cout<<"?:"<<resBNUM<<"\n";
-std::cout<<"?:"<<BNUM0<<", "<<BNUM1<<"\n";
-BNUM0.modulus(BNUM1, BNUM0);
-std::cout<<"--:"<<BNUM0<<"\n";
+// std::cout<<"?:"<<BNUM0<<", "<<BNUM1<<"\n";
+BNUM0.modulus(BNUM1, resBNUM);
+std::cout<<"0--:"<<BNUM0<<", "<<BNUM1<<", "<<resBNUM<<", "<<BNUM0.point<<", "<<BNUM1.point<<", "<<resBNUM.point<<", "<<"\n";
+    BNUM0.divideBy(BNUM1, resBNUM);
+std::cout<<"1--:"<<BNUM0<<", "<<BNUM1<<", "<<resBNUM<<", "<<BNUM0.point<<", "<<BNUM1.point<<", "<<resBNUM.point<<", "<<"\n";
+    BNUM0.divideBy(BNUM1, resBNUM);
+std::cout<<"2--:"<<BNUM0<<", "<<BNUM1<<", "<<resBNUM<<", "<<BNUM0.point<<", "<<BNUM1.point<<", "<<resBNUM.point<<", "<<"\n";
+
+// for(int i=0; i<10000000; i++) {
+//     BNUM0+BNUM1;
+// }
 
 auto st = std::chrono::high_resolution_clock::now();
 for(int i=0; i<10000000; i++) {
