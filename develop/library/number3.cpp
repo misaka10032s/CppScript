@@ -1100,15 +1100,15 @@ BIGNUM BIGNUM::operator -= (BIGNUM const &NUM1){
     return *this;
 }
 BIGNUM BIGNUM::operator *= (BIGNUM const &NUM1){
-    *this = *this * NUM1;
+    this->multiply(NUM1, *this);
     return *this;
 }
 BIGNUM BIGNUM::operator /= (BIGNUM const &NUM1){
-    *this = *this / NUM1;
+    this->divideBy(NUM1, *this);
     return *this;
 }
 BIGNUM BIGNUM::operator %= (BIGNUM const &NUM1){
-    *this = *this % NUM1;
+    this->modulus(NUM1, *this);
     return *this;
 }
 
@@ -1184,6 +1184,33 @@ BIGNUM BIGNUM::operator %= (double NUM1){
 BIGNUM operator + (double NUM0, const BIGNUM &NUM1){
     return BIGNUM(NUM0) + NUM1;
 }
+BIGNUM operator - (double NUM0, const BIGNUM &NUM1){
+    return BIGNUM(NUM0) - NUM1;
+}
+BIGNUM operator * (double NUM0, const BIGNUM &NUM1){
+    return BIGNUM(NUM0) * NUM1;
+}
+BIGNUM operator / (double NUM0, const BIGNUM &NUM1){
+    return BIGNUM(NUM0) / NUM1;
+}
+bool operator > (double NUM0, const BIGNUM &NUM1){
+    return BIGNUM(NUM0) > NUM1;
+}
+bool operator < (double NUM0, const BIGNUM &NUM1){
+    return BIGNUM(NUM0) < NUM1;
+}
+bool operator == (double NUM0, const BIGNUM &NUM1){
+    return BIGNUM(NUM0) == NUM1;
+}
+bool operator != (double NUM0, const BIGNUM &NUM1){
+    return BIGNUM(NUM0) != NUM1;
+}
+bool operator >= (double NUM0, const BIGNUM &NUM1){
+    return BIGNUM(NUM0) >= NUM1;
+}
+bool operator <= (double NUM0, const BIGNUM &NUM1){
+    return BIGNUM(NUM0) <= NUM1;
+}
 /*
     ###########################################################################################################
     #                                                                                                         #
@@ -1202,6 +1229,11 @@ COMPLEX::COMPLEX(double NUM0, double NUM1){
     this->Re = NUM0;
     this->Im = NUM1;
 };
+std::ostream& operator<<(std::ostream &os, const COMPLEX &m){
+    if(m.Im < 0) os << m.Re << " - " << -m.Im << "i" << std::flush;
+    else os << m.Re << " + " << m.Im << "i" << std::flush;
+    return os;
+};
 
 COMPLEX_DATA_TYPE abs(COMPLEX NUM0){
     return sqrt(NUM0.Re * NUM0.Re + NUM0.Im * NUM0.Im);
@@ -1215,11 +1247,6 @@ COMPLEX COMPLEX::bar(){
     return *this;
 };
 
-std::ostream& operator<<(std::ostream &os, const COMPLEX &m){
-    if(m.Im < 0) os << m.Re << " - " << -m.Im << "i" << std::flush;
-    else os << m.Re << " + " << m.Im << "i" << std::flush;
-    return os;
-};
 
 
 COMPLEX COMPLEX::operator + (COMPLEX const &NUM1){
@@ -1342,199 +1369,4 @@ COMPLEX COMPLEX::operator /= (double const &NUM1){
     ###########################################################################################################
 */
 
-MATRIX::MATRIX(){};
-MATRIX::MATRIX(int colNum, int rowNum){
-    this->col = colNum;
-    this->row = rowNum;
-    this->value.resize(colNum * rowNum);
-    for(int i=0; i<this->col * this->row; i++) this->value[i] = 0;
-};
-MATRIX::MATRIX(int colNum, int rowNum, std::initializer_list<double> NUM1){
-    this->col = colNum;
-    this->row = rowNum;
-    this->value.resize(colNum * rowNum);
-    this->value = NUM1;
-};
-
-std::ostream& operator<<(std::ostream &os, const MATRIX &m){
-    os << "\n";
-    for(int i=0; i<m.row; i++){
-        for(int j=0; j<m.col; j++) os << "\t" << m.value[i*m.col + j] << std::flush;
-        os << "\n";
-    }
-    
-    return os;
-};
-
-
-MATRIX MATRIX::operator + (MATRIX const &MTX1){
-    if(this->col != MTX1.col || this->row != MTX1.row) {
-        // error here
-        return *this;
-    }
-    MATRIX res = *this;
-    for(int i=0; i<this->col * this->row; i++) res.value[i] += MTX1.value[i];
-    return res;
-};
-MATRIX MATRIX::operator - (MATRIX const &MTX1){
-    if(this->col != MTX1.col || this->row != MTX1.row) {
-        // error here
-        return *this;
-    }
-    MATRIX res = *this;
-    for(int i=0; i<this->col * this->row; i++) res.value[i] -= MTX1.value[i];
-    return res;
-};
-MATRIX MATRIX::operator * (MATRIX const &MTX1){
-    if(this->row != MTX1.col) {
-        // error here
-        return *this;
-    }
-    MATRIX res(this->row, MTX1.col);
-    for(int i=0; i<res.row; i++){
-        for(int j=0; j<res.col; j++){
-            for(int k=0; k<this->row; k++) res.value[i * res.col + j] += this->value[i * this->col + k] * MTX1.value[k * MTX1.col + j];
-        }
-    }
-    return res;
-};
-MATRIX MATRIX::operator = (MATRIX const &MTX1){
-    if(this->value.size() != MTX1.value.size()) this->value.resize(MTX1.value.size());
-    this->col = MTX1.col;
-    this->row = MTX1.row;
-    int s = this->col * this->row;
-    for(int i=0; i<s; i++) this->value[i] = MTX1.value[i];
-    return *this;
-};
-bool MATRIX::operator == (MATRIX const &MTX1){
-    if(this->col != MTX1.col || this->row != MTX1.row) return 0;
-    int s = this->col * this->row;
-    for(int i=0; i<s; i++) if(this->value[i] != MTX1.value[i]) return 0;
-    return 1;
-};
-bool MATRIX::operator != (MATRIX const &MTX1){
-    if(this->col != MTX1.col || this->row != MTX1.row) return 1;
-    int s = this->col * this->row;
-    for(int i=0; i<s; i++)  if(this->value[i] != MTX1.value[i]) return 1;
-    return 0;
-};
-MATRIX MATRIX::operator += (MATRIX const &MTX1){
-    if(this->col != MTX1.col || this->row != MTX1.row) return *this;
-    int s = this->col * this->row;
-    for(int i=0; i<s; i++) this->value[i] += MTX1.value[i];
-    return *this;
-};
-MATRIX MATRIX::operator -= (MATRIX const &MTX1){
-    if(this->col != MTX1.col || this->row != MTX1.row) return *this;
-    int s = this->col * this->row;
-    for(int i=0; i<s; i++) this->value[i] -= MTX1.value[i];
-    return *this;
-};
-MATRIX MATRIX::operator *= (MATRIX const &MTX1){
-    *this = *this * MTX1;
-    return *this;
-};
-
-MATRIX MATRIX::operator = (double* const NUM1){
-    int s = this->col * this->row;
-    for(int i=0; i<s; i++) this->value[i] = NUM1[i];
-    return *this;
-};
-MATRIX MATRIX::operator = (std::initializer_list<double> NUM1){
-    this->value = NUM1;
-    return *this;
-};
-// MATRIX MATRIX::operator = (std::initializer_list<std::std::initializer_list<std::initializer_list<double>> NUM1);<double>> NUM1){
-//     this->value = NUM1;
-//     return *this;
-// };
-
-MATRIX MATRIX::operator + (double const &NUM1){
-    MATRIX res(this->row, this->col);
-    int s = this->col * this->row;
-    if(this->row != this->col) for(int i=0; i<s; i++) res.value[i] = this->value[i] + NUM1;
-    else for(int i=0; i<s; i++) res.value[i] = this->value[i] + (i%(this->row+1) ? 0 : NUM1);
-    return res;
-};
-MATRIX MATRIX::operator - (double const &NUM1){
-    MATRIX res(this->row, this->col);
-    int s = this->col * this->row;
-    if(this->row != this->col) for(int i=0; i<s; i++) res.value[i] = this->value[i] - NUM1;
-    else for(int i=0; i<s; i+=this->row+1) res.value[i] = this->value[i] - (i%(this->row+1) ? 0 : NUM1);
-    return res;
-};
-MATRIX MATRIX::operator * (double const &NUM1){
-    MATRIX res(this->row, this->col);
-    int s = this->col * this->row;
-    for(int i=0; i<s; i++) res.value[i] = this->value[i] * NUM1;
-    return res;
-};
-MATRIX MATRIX::operator / (double const &NUM1){
-    MATRIX res(this->row, this->col);
-    int s = this->col * this->row;
-    for(int i=0; i<s; i++) res.value[i] = this->value[i] / NUM1;
-    return res;
-};
-MATRIX MATRIX::operator += (double const &NUM1){
-    int s = this->col * this->row;
-    if(this->row != this->col) for(int i=0; i<s; i++) this->value[i] += NUM1;
-    else for(int i=0; i<s; i+=this->row+1) this->value[i] += NUM1;
-    return *this;
-};
-MATRIX MATRIX::operator -= (double const &NUM1){
-    int s = this->col * this->row;
-    if(this->row != this->col) for(int i=0; i<s; i++) this->value[i] -= NUM1;
-    else for(int i=0; i<s; i+=this->row+1) this->value[i] -= NUM1;
-    return *this;
-};
-MATRIX MATRIX::operator *= (double const &NUM1){
-    int s = this->col * this->row;
-    for(int i=0; i<s; i++) this->value[i] *= NUM1;
-    return *this;
-};
-MATRIX MATRIX::operator /= (double const &NUM1){
-    int s = this->col * this->row;
-    for(int i=0; i<s; i++) this->value[i] /= NUM1;
-    return *this;
-};
-
-
-
-
-
-
-
-MATRIX transposed(MATRIX MTX1){
-    MATRIX res(MTX1.row, MTX1.col);
-    for(int i=0; i<MTX1.row; i++){ // 2
-        for(int j=0; j<MTX1.col; j++){ // 3
-            res.value[j*MTX1.row+i] = MTX1.value[i*MTX1.col+j];
-        }
-    }
-    return res;
-};
-MATRIX unitMTX(int order){
-    int s = order * order;
-    MATRIX res(order, order);
-    for(int i=0; i<s; i+=order+1){
-        res.value[i] = 1;
-    }
-    return res;
-};
-MATRIX rotateMTX_d(double deg){
-    MATRIX res(2, 2);
-    double theta = deg * M_PI / 180.0;
-    res.value[0] = cos(theta);
-    res.value[1] = -sin(theta);
-    res.value[2] = sin(theta);
-    res.value[3] = cos(theta);
-    return res;
-};
-MATRIX rotateMTX_r(double rad){
-    MATRIX res(2, 2);
-    res.value[0] = cos(rad);
-    res.value[1] = -sin(rad);
-    res.value[2] = sin(rad);
-    res.value[3] = cos(rad);
-    return res;
-};
+// in number3.tpp

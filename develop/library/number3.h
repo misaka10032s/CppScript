@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <type_traits>
 
 #ifndef LIB_NUMBER_H_
 #define LIB_NUMBER_H_
@@ -96,15 +97,15 @@ class BIGNUM{
         BIGNUM operator %= (double NUM1);
 
         friend BIGNUM operator + (double NUM0, const BIGNUM &NUM1);
-        // friend BIGNUM operator - (double NUM0, const BIGNUM &NUM1);
-        // friend BIGNUM operator * (double NUM0, const BIGNUM &NUM1);
-        // friend BIGNUM operator / (double NUM0, const BIGNUM &NUM1);
-        // friend bool operator > (double NUM0, const BIGNUM &NUM1);
-        // friend bool operator < (double NUM0, const BIGNUM &NUM1);
-        // friend bool operator == (double NUM0, const BIGNUM &NUM1);
-        // friend bool operator != (double NUM0, const BIGNUM &NUM1);
-        // friend bool operator >= (double NUM0, const BIGNUM &NUM1);
-        // friend bool operator <= (double NUM0, const BIGNUM &NUM1);
+        friend BIGNUM operator - (double NUM0, const BIGNUM &NUM1);
+        friend BIGNUM operator * (double NUM0, const BIGNUM &NUM1);
+        friend BIGNUM operator / (double NUM0, const BIGNUM &NUM1);
+        friend bool operator > (double NUM0, const BIGNUM &NUM1);
+        friend bool operator < (double NUM0, const BIGNUM &NUM1);
+        friend bool operator == (double NUM0, const BIGNUM &NUM1);
+        friend bool operator != (double NUM0, const BIGNUM &NUM1);
+        friend bool operator >= (double NUM0, const BIGNUM &NUM1);
+        friend bool operator <= (double NUM0, const BIGNUM &NUM1);
 };
 BIGNUM abs(BIGNUM NUM0);
 
@@ -126,9 +127,9 @@ class COMPLEX{
         COMPLEX();
         COMPLEX(double NUM0, double NUM1);
 
-        COMPLEX bar();
-
         friend std::ostream& operator<<(std::ostream &os, const COMPLEX &m);
+
+        COMPLEX bar();
 
         // COMPLEX plus(COMPLEX const &NUM1, COMPLEX &res);
         // COMPLEX minus(COMPLEX const &NUM1, COMPLEX &res);
@@ -181,19 +182,22 @@ COMPLEX_DATA_TYPE abs(COMPLEX NUM0);
 */
 
 #define MATRIX_DATA_TYPE double
-class MATRIX{
+template <typename T> class MATRIX{
     private:
     public:
+
         int col, row;
-        std::vector<MATRIX_DATA_TYPE> value;
+        std::vector<T> value;
 
         MATRIX();
         MATRIX(int colNum, int rowNum);
-        MATRIX(int colNum, int rowNum, std::initializer_list<double> NUM1);
+        MATRIX(int colNum, int rowNum, std::initializer_list<T> NUM1);
+        
+        template<typename U> friend std::ostream& operator<<(std::ostream &os, const MATRIX<U> &m);
 
         MATRIX transposed();
 
-        // cube matrix olny
+        // cube matrix only
         // MATRIX rotate_d(double degree); // 2D
         // MATRIX rotate_r(double radian); // 2D
         // MATRIX rotate_d(double degree, int coor1, int coor2);
@@ -202,8 +206,6 @@ class MATRIX{
         // MATRIX triangularL(double radian);
         // MATRIX triangularU(double radian);
         // MATRIX_DATA_TYPE determinant();
-        
-        friend std::ostream& operator<<(std::ostream &os, const MATRIX &m);
 
         // MATRIX plus(MATRIX const &MTX1, MATRIX &res);
         // MATRIX minus(MATRIX const &MTX1, MATRIX &res);
@@ -237,10 +239,19 @@ class MATRIX{
         // friend MATRIX operator * (double NUM0, const MATRIX &NUM1);
 };
 
-MATRIX transposed(MATRIX MTX1);
-MATRIX unitMTX(int order);
-MATRIX rotateMTX_d(double degree);
-MATRIX rotateMTX_r(double radian);
-// #include "number2.tpp"
+template <typename T> MATRIX<T> transposed(MATRIX<T> MTX1);
+template <typename T> MATRIX<T> unitMTX(int order);
+template <typename T> MATRIX<T> rotateMTX_d(double degree);
+template <typename T> MATRIX<T> rotateMTX_r(double radian);
+
+// MATRIX<uint8_t>;
+// MATRIX<uint16_t>;
+// MATRIX<uint32_t>;
+// MATRIX<uint64_t>;
+// MATRIX<int>;
+// MATRIX<double>;
+// MATRIX<char>;
+
+#include "number3.tpp"
 
 #endif

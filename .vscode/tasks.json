@@ -12,7 +12,7 @@
 		  "-Wall",
 		//   "-static-libgcc",
 		//   "-fcolor-diagnostics",
-		//   "--target=x86_64-w64-mingw", 
+		  "--target=x86_64-w64-mingw",
 		  "-std=c++17" ,
 		  "develop/library/*.cpp",
 		//   "-I","C:/C++extend/OpenSSL-Win64/include",
