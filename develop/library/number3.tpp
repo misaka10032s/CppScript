@@ -2,6 +2,8 @@
 #include <iostream>
 #include <type_traits> // https://stackoverflow.com/questions/14294267/class-template-for-numeric-types
 
+#include "systemOS.h"
+
 template <typename T> MATRIX<T>::MATRIX(){
     static_assert(std::is_arithmetic<T>::value, "NumericType must be numeric");
 };

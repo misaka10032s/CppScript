@@ -3,6 +3,8 @@
 #include <vector>
 #include <functional>
 
+#include "systemOS.h"
+
 #ifndef LIB_HEAP_H_
 #define LIB_HEAP_H_
 

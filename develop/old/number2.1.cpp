@@ -1,6 +1,6 @@
 #define SYS_LINUX
 // #define SYS_WINDOWS
-#include "systemS.h"
+#include "systemFnc.h"
 
 #include <string>
 #include <iostream>

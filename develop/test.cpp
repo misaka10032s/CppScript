@@ -1,6 +1,4 @@
-// #define SYS_LINUX
-#define SYS_WINDOWS
-#include "library/systemS.h"
+#include "library/systemFnc.h"
 
 #include <iostream>
 #define _USE_MATH_DEFINES
@@ -19,6 +17,7 @@
 #include "library/heap.h"
 #include "library/graph.h"
 #include "library/number3.h"
+#include "library/picture.h"
 
 using namespace std;
 
@@ -126,6 +125,10 @@ bool cpInt(int a, int b){
 }
 
 int main(){
+    PICTURE MS(200, 300, "MapleStory");
+    MS.screenShot(50, 50).display();
+
+
     // int x=1, y=1;
     // int* a[2] = {&x, &y};
     // test(a)[0] *= 7;

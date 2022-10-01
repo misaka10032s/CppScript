@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <type_traits>
 
+#include "systemOS.h"
+
 #ifndef LIB_NUMBER_H_
 #define LIB_NUMBER_H_
 // numerical

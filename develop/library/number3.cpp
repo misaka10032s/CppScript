@@ -1,6 +1,6 @@
 #define SYS_LINUX
 // #define SYS_WINDOWS
-#include "systemS.h"
+#include "systemFnc.h"
 
 #include <string>
 #include <iostream>
@@ -10,10 +10,8 @@
 #include <cmath>
 #include <algorithm>
 
+#include "systemOS.h"
 #include "number3.h"
-
-#include <chrono>
-#include <time.h>
 
 inline bool testExe(bool x){
     std::cout<<"testExe\n"<<std::endl;
