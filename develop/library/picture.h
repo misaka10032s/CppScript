@@ -2,13 +2,15 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <opencv2/opencv.hpp>
-#include <cstdint>
+// #include <cstdint>
 #include <cstring>
 #include <vector>
-#include <tiffio.h>
+// #include <tiffio.h>
 #include <string>
-#include <sstream>
-#include <dirent.h>
+// #include <sstream>
+// #include <dirent.h>
+
+#include "systemOS.h"
 
 #ifdef SYS_LINUX
 #endif
@@ -16,7 +18,6 @@
 #include <windows.h>
 #endif
 
-#include "systemOS.h"
 class RANGE{
     public:
         RANGE();
@@ -47,7 +48,7 @@ class PICTURE{
         #endif
         
         void display();
-        PICTURE resize(int width, int height);
+        PICTURE resize(int width, int height, int bit);
         PICTURE setWindow(char* window);
 
         PICTURE screenShot(int dx, int dy);

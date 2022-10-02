@@ -125,10 +125,16 @@ bool cpInt(int a, int b){
 }
 
 int main(){
-    PICTURE MS(200, 300, "MapleStory");
+    PICTURE MS(200, 300, "MapleStory"), effect;
     MS.screenShot(50, 50).display();
-
-
+    MS.blackhole(effect, 100, 150, 5, 2).display();
+    MS.GaussBlur(effect, 2).display();
+    MS.twist(effect, 100, 150, 50).display();
+    MS.negative(effect).display();
+    MS.sharp(effect, 2).display();
+    MS.imgFloor(effect, 64).display();
+    MS.rotateD(effect, 100, 150, 45, RANGE(50, 150, 50, 250)).display();
+    
     // int x=1, y=1;
     // int* a[2] = {&x, &y};
     // test(a)[0] *= 7;

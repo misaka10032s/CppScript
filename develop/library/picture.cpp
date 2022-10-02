@@ -2,13 +2,13 @@
 #define _USE_MATH_DEFINES
 #include <cmath> 
 #include <opencv2/opencv.hpp>
-#include <cstdint>
+// #include <cstdint>
 #include <cstring>
 #include <vector>
-#include <tiffio.h>
+// #include <tiffio.h>
 #include <string>
-#include <sstream>
-#include <dirent.h>
+// #include <sstream>
+// #include <dirent.h>
 
 #include "systemOS.h"
 
@@ -223,7 +223,7 @@ PICTURE PICTURE::screenShot(int dx, int dy){
     ReleaseDC(this->hwnd, hwindowDC);
 
     this->bit = src.channels();
-    this->resize(this->width, this->height);
+    this->resize(this->width, this->height, this->bit);
     this->Pixels.assign(src.data, src.data + src.total()*src.channels());
     return *this;
 };
@@ -232,8 +232,11 @@ void PICTURE::display(){
     cv::imshow("Display P", cv::Mat(this->height, this->width, this->bit > 3 ? CV_8UC4 : CV_8UC3, &this->Pixels[0]));
     cv::waitKey(0);
 }
-PICTURE PICTURE::resize(int width, int height){
-    if((int)this->Pixels.size() < width * height * this->bit) this->Pixels.resize(width * height * this->bit);
+PICTURE PICTURE::resize(int width, int height, int bit){
+    if((int)this->Pixels.size() < width * height * bit) this->Pixels.resize(width * height * bit);
+    this->width = width;
+    this->height = height;
+    this->bit = bit;
     return *this;
 };
 
@@ -244,7 +247,7 @@ PICTURE PICTURE::resize(int width, int height){
 
 PICTURE PICTURE::twoValue(PICTURE &targetPic, int gate){
     int tmp;
-    targetPic.resize(this->width, this->height);
+    targetPic.resize(this->width, this->height, this->bit);
     for(int j=0;j<this->height;j++){
         for(int i=0;i<this->width;i++){
             tmp = 0;
@@ -264,7 +267,7 @@ PICTURE PICTURE::subPic(PICTURE &targetPic, RANGE range){
     int idx=0;
     range.regularize();
     range.retract(RANGE(0, this->width, 0, this->height));
-    targetPic.resize((range.right - range.left + 1), (range.bottom - range.top + 1));
+    targetPic.resize((range.right - range.left + 1), (range.bottom - range.top + 1), this->bit);
     for(int j=range.top; j<=range.bottom; j++){
         for(int i=range.left; i<=range.right; i++){
             if(i<0 || i>=this->width || j<0 || j>=this->height){
@@ -287,7 +290,7 @@ PICTURE PICTURE::GaussBlur(PICTURE &targetPic, double rate){
     for(int i=0;i<w;i++){
         G[i] = pow(M_E, -((r-i)*(r-i))/(2*rate*rate))/sqrt(2*M_PI*rate*rate);
     }
-    targetPic.resize(this->width, this->height);
+    targetPic.resize(this->width, this->height, this->bit);
     for(int j=0;j<this->height;j++){
         for(int i=0;i<this->width;i++){
             for(int k=0;k<3;k++){
@@ -297,7 +300,7 @@ PICTURE PICTURE::GaussBlur(PICTURE &targetPic, double rate){
                     q = j+n-r;
                     if(q<0) q=-q;
                     else if(q>=this->height) q=2*this->height-q-2;
-                    tmp += G[n] * (float)Pixels[i*this->bit + q*this->width*this->bit + k];
+                    tmp += G[n] * (float)this->Pixels[i*this->bit + q*this->width*this->bit + k];
                 }
                 targetPic.Pixels[i*this->bit + j*this->width*this->bit + k] = MAX(MIN(tmp, 255), 0);
             }
@@ -322,7 +325,7 @@ PICTURE PICTURE::GaussBlur(PICTURE &targetPic, double rate){
 PICTURE PICTURE::twist(PICTURE &targetPic, int posx, int posy, double rate){
     double newx, newy;
     double r2, sine, cosine, theta, rmax = MIN(MIN(posx, posy),MIN(this->width - posx, this->height - posy));
-    targetPic.resize(this->width, this->height);
+    targetPic.resize(this->width, this->height, this->bit);
     for(int j=0;j<this->height;j++){
         for(int i=0;i<this->width;i++){
             r2 = (i-posx)*(i-posx) + (j-posy)*(j-posy);
@@ -340,7 +343,7 @@ PICTURE PICTURE::twist(PICTURE &targetPic, int posx, int posy, double rate){
 };
 PICTURE PICTURE::blackhole(PICTURE &targetPic, int posx, int posy, double gravity, double factor){
     float r, newx, newy;
-    targetPic.resize(this->width, this->height);
+    targetPic.resize(this->width, this->height, this->bit);
     posx = MAX(MIN(posx, this->width), 0);
     posy = MAX(MIN(posy, this->height), 0);
 
@@ -350,6 +353,7 @@ PICTURE PICTURE::blackhole(PICTURE &targetPic, int posx, int posy, double gravit
             newx = (i-posx) * pow( 1 + 64*gravity/(pow(r+15,1.9)+10), factor ) + posx;
             newy = (j-posy) * pow( 1 + 64*gravity/(pow(r+15,1.9)+10), factor ) + posy;
             for(int k=0;k<3;k++){
+// std::cout<<"@ "<<newx<<", "<<newy<<", "<<k<<", "<<targetPic.Pixels.size()<<", "<<targetPic.bit<<", "<<getFloatValueAt(*this, newx, newy, k)<<"\n";
                 targetPic.Pixels[i*this->bit + j*this->width*this->bit + k] = getFloatValueAt(*this, newx, newy, k);
             }
         }
@@ -357,7 +361,7 @@ PICTURE PICTURE::blackhole(PICTURE &targetPic, int posx, int posy, double gravit
     return targetPic;
 };
 PICTURE PICTURE::negative(PICTURE &targetPic){
-    targetPic.resize(this->width, this->height);
+    targetPic.resize(this->width, this->height, this->bit);
     for(int j=0;j<this->height;j++){
         for(int i=0;i<this->width;i++){
             for(int k=0;k<3;k++){
@@ -369,7 +373,7 @@ PICTURE PICTURE::negative(PICTURE &targetPic){
 };
 PICTURE PICTURE::RGBtoYUV(PICTURE &targetPic, char type){
     double tmp;
-    targetPic.resize(this->width, this->height);
+    targetPic.resize(this->width, this->height, this->bit);
     for(int j=0;j<this->height;j++){
         for(int i=0;i<this->width;i++){
             if(type == 'Y')tmp = (float)Pixels[i*this->bit + j*this->width*this->bit]*0.299 + (float)Pixels[i*this->bit + j*this->width*this->bit + 1]*0.587 + (float)Pixels[i*this->bit + j*this->width*this->bit + 2]*0.114;
@@ -384,7 +388,7 @@ PICTURE PICTURE::RGBtoYUV(PICTURE &targetPic, char type){
     return targetPic;
 };
 PICTURE PICTURE::GammaTransform(PICTURE &targetPic, double gamma){
-    targetPic.resize(this->width, this->height);
+    targetPic.resize(this->width, this->height, this->bit);
     for(int k=0;k<4;k++){
         for(int j=0;j<this->height;j++){
             for(int i=0;i<this->width;i++){
@@ -399,7 +403,7 @@ PICTURE PICTURE::jpeg_compress(PICTURE &targetPic, double Q){
     float Qm[8][8] = {{16,11,10,16,24,40,51,61},{12,12,14,19,26,58,60,55},{14,13,16,24,40,57,69,56},{14,17,22,29,51,87,80,62},{18,22,37,56,68,109,103,77},{24,35,55,64,81,104,113,92},{49,64,78,87,103,121,120,101},{72,92,95,98,112,100,103,99}};
     float S = Q < 50 ? 5000.0/Q : 200.0 - 2.0*Q, g[8][8], G[8][8], au, av;
     float omega[64];
-    targetPic.resize(this->width, this->height);
+    targetPic.resize(this->width, this->height, this->bit);
     for(int i=0;i<8;i++){
         for(int j=0;j<8;j++){
             Qm[i][j] = floor((S*Qm[i][j]+50)/100);
@@ -467,7 +471,7 @@ PICTURE PICTURE::jpeg_decompress(PICTURE &targetPic, double Q){
     Q = Q < 1 ? 1 : Q;
     float S = Q < 50 ? 5000.0/Q : 200.0 - 2.0*Q, g[8][8], G[8][8], au, av;
     float omega[64];
-    targetPic.resize(this->width, this->height);
+    targetPic.resize(this->width, this->height, this->bit);
     for(int i=0;i<8;i++){
         for(int j=0;j<8;j++){
             Qm[i][j] = floor((S*Qm[i][j]+50)/100);
@@ -529,7 +533,7 @@ PICTURE PICTURE::jpeg_decompress(PICTURE &targetPic, double Q){
     return targetPic;
 };
 PICTURE PICTURE::sharp(PICTURE &targetPic, double rate){
-    targetPic.resize(this->width, this->height);
+    targetPic.resize(this->width, this->height, this->bit);
     this->GaussBlur(targetPic, rate);
 
     for(int j=0;j<this->height;j++){
@@ -542,7 +546,7 @@ PICTURE PICTURE::sharp(PICTURE &targetPic, double rate){
     return targetPic;
 };
 PICTURE PICTURE::imgFloor(PICTURE &targetPic, int flr){
-    targetPic.resize(this->width, this->height);
+    targetPic.resize(this->width, this->height, this->bit);
     for(int j=0;j<this->height;j++){
         for(int i=0;i<this->width;i++){
             for(int k=0;k<3;k++){
@@ -556,7 +560,7 @@ PICTURE PICTURE::matrixTrans(PICTURE &targetPic, int posx, int posy, double mat[
     double newx, newy;
     range.regularize();
     range.retract(RANGE(0, this->width, 0, this->height));
-    targetPic.resize((range.right - range.left + 1), (range.bottom - range.top + 1));
+    targetPic.resize(this->width, this->height, this->bit);
     for(int j=range.top; j<=range.bottom; j++){
         for(int i=range.left; i<=range.right; i++){
             newx = MAX( MIN(mat[0] * (i-posx) + mat[1] * (j-posy) + posx, this->width-1), 0);
