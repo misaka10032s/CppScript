@@ -573,7 +573,7 @@ PICTURE PICTURE::matrixTrans(PICTURE &targetPic, int posx, int posy, double mat[
     return targetPic;
 };
 PICTURE PICTURE::rotateD(PICTURE &targetPic, int posx, int posy, double deg, RANGE range){
-    double c = cos(deg), s = sin(deg), mat[4] = {c, -s, s, c};
+    double c = cos(deg*M_PI/180), s = sin(deg*M_PI/180), mat[4] = {c, -s, s, c};
     matrixTrans(targetPic, posx, posy, mat, range);
     return targetPic;
 };
