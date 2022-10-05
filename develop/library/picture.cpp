@@ -147,14 +147,14 @@ PICTURE PICTURE::ScreenShot(int dx, int dy){
 // https://superkogito.github.io/blog/2020/07/26/capture_screen_using_gdiplus.html
 #ifdef SYS_WINDOWS
 PICTURE::PICTURE(){};
-PICTURE::PICTURE(char* window){
+PICTURE::PICTURE(const char* window){
     this->hwnd = FindWindow(NULL, (LPCSTR)window);
 };
 PICTURE::PICTURE(int width, int height){
     this->width = width;
     this->height = height;
 };
-PICTURE::PICTURE(int width, int height, char* window){
+PICTURE::PICTURE(int width, int height, const char* window){
     this->width = width;
     this->height = height;
     this->hwnd = FindWindow(NULL, (LPCSTR)window);
@@ -342,7 +342,8 @@ PICTURE PICTURE::twist(PICTURE &targetPic, int posx, int posy, double rate){
     return targetPic;
 };
 PICTURE PICTURE::blackhole(PICTURE &targetPic, int posx, int posy, double gravity, double factor){
-    float r, newx, newy;
+    double r, mul, newx, newy, rmax = MIN(MIN(posx, posy),MIN(this->width - posx, this->height - posy));
+    // double tn, rx, ry, tmprx, tmpry;
     targetPic.resize(this->width, this->height, this->bit);
     posx = MAX(MIN(posx, this->width), 0);
     posy = MAX(MIN(posy, this->height), 0);
@@ -350,10 +351,20 @@ PICTURE PICTURE::blackhole(PICTURE &targetPic, int posx, int posy, double gravit
     for(int j=0;j<this->height;j++){
         for(int i=0;i<this->width;i++){
             r = sqrt((i-posx)*(i-posx) + (j-posy)*(j-posy));
-            newx = (i-posx) * pow( 1 + 64*gravity/(pow(r+15,1.9)+10), factor ) + posx;
-            newy = (j-posy) * pow( 1 + 64*gravity/(pow(r+15,1.9)+10), factor ) + posy;
+            // tn = abs((j-posy==0 ? 1 : j-posy) / (i-posx==0 ? 1 : i-posx));
+            // tmprx = i-posx < 0 ? posx : this->width-posx;
+            // tmpry = j-posy < 0 ? posy : this->height-posy;
+            // rx = MIN(tmprx, tmpry/tn);
+            // ry = MIN(tmpry, tmprx*tn);
+            // rmax = sqrt(rx*rx + ry*ry);
+            
+            // newx = (i-posx) * pow( 1 + 64*gravity/(pow(r+15,1.9)+10), factor ) + posx;
+            // newy = (j-posy) * pow( 1 + 64*gravity/(pow(r+15,1.9)+10), factor ) + posy;
+            mul = 1 / pow(100.0 / (100.0 + gravity * (MAX(rmax / (r + 0.6*gravity), 1) - 1)), factor);
+            newx = (i-posx) * mul + posx;
+            newy = (j-posy) * mul + posy;
+            // std::cout<<mul<<", "<<rmax<<", "<<r<<", "<<i<<", "<<j<<", "<<newx<<", "<<newy<<"\n";
             for(int k=0;k<3;k++){
-// std::cout<<"@ "<<newx<<", "<<newy<<", "<<k<<", "<<targetPic.Pixels.size()<<", "<<targetPic.bit<<", "<<getFloatValueAt(*this, newx, newy, k)<<"\n";
                 targetPic.Pixels[i*this->bit + j*this->width*this->bit + k] = getFloatValueAt(*this, newx, newy, k);
             }
         }

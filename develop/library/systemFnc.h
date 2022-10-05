@@ -6,10 +6,11 @@
     #include <unistd.h>
     #define PAUSE printf("Press Enter key to continue..."); fgetc(stdin);
     #define SLEEP(ms) usleep(ms*1000);
-#endif
-#ifdef SYS_WINDOWS
+// #endif
+// #ifdef SYS_WINDOWS
+#elif defined SYS_WINDOWS
     #define PAUSE system("pause");
-    #define SLEEP(ms) Sleep(ms*1000);
+    #define SLEEP(ms) Sleep(ms);
 
     #include <map>
     #include <windows.h>
@@ -30,16 +31,16 @@
             bool enable, check_WHD=1;
 
         public:
-            SYS(char* window);
+            SYS(const char* window);
 
-            RECT rctScreen, MSxy;
+            RECT rctScreen, targetWNDsize;
 
             static void GetFocusWindowText();
             static void SaveToClipboard(const char* str);
             static int gettimeofday(struct timeval * tp, struct timezone * tzp);
             static std::string gettimestring();
             
-            SYS setWindow(char* window);
+            SYS setWindow(const char* window);
             bool isEnable();
             void keybd(const char* btn, char type);
             // mouse position absolute
@@ -55,6 +56,9 @@
             void mouseWHr(int dx, int dy, char type);
             void mouseMVr(int dx, int dy);
             void wait(int dur); // dur ms
+            void wait(int minDur, int rangeDur); // dur ms
+            void minimize();
+            void maximize();
             void focus();
             void pause();
     };

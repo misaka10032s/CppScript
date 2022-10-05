@@ -1,5 +1,3 @@
-#include "library/systemFnc.h"
-
 #include <iostream>
 #define _USE_MATH_DEFINES
 #include <cmath> 
@@ -18,6 +16,7 @@
 #include "library/graph.h"
 #include "library/number3.h"
 #include "library/picture.h"
+#include "library/systemFnc.h"
 
 using namespace std;
 
@@ -125,15 +124,20 @@ bool cpInt(int a, int b){
 }
 
 int main(){
-    PICTURE MS(200, 300, "MapleStory"), effect;
-    MS.screenShot(50, 50).display();
-    MS.blackhole(effect, 100, 150, 5, 2).display();
-    MS.GaussBlur(effect, 2).display();
-    MS.twist(effect, 100, 150, 50).display();
-    MS.negative(effect).display();
-    MS.sharp(effect, 2).display();
-    MS.imgFloor(effect, 64).display();
-    MS.rotateD(effect, 100, 150, 45, RANGE(50, 150, 50, 250)).display();
+    // PICTURE MS(200, 300, "MapleStory"), effect;
+    // MS.screenShot(50, 50).display();
+    // MS.blackhole(effect, 100, 150, 20, 2).display();
+    // MS.GaussBlur(effect, 2).display();
+    // MS.twist(effect, 100, 150, 50).display();
+    // MS.negative(effect).display();
+    // MS.sharp(effect, 2).display();
+    // MS.imgFloor(effect, 64).display();
+    // MS.rotateD(effect, 100, 150, 45, RANGE(50, 150, 50, 250)).display();
+
+    SYS MYSYS("MapleStory");
+    while(1){
+        MYSYS.wait(50);
+    }
     
     // int x=1, y=1;
     // int* a[2] = {&x, &y};

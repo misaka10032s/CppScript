@@ -36,6 +36,7 @@
 		//   "-lopencv_highgui452",
 		//   "-lws2_32",
 		//   "-lgdi32"
+		"-std=gun99", // about M_PI
 		], 
 		"type": "shell", 
 		"group": {

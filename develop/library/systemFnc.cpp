@@ -16,7 +16,7 @@
     #include <map>
     #include <windows.h>
     #include <iostream>
-    SYS::SYS(char* window){
+    SYS::SYS(const char* window){
         for (int i = 2; i < 12; i++) {
             const char* a[] = { "1","2","3","4","5","6","7","8","9","0" };
             this->key[a[i - 2]] = i;
@@ -77,8 +77,9 @@
         this->key["HOME"] = 199;
         this->key["END"] = 207;
 
-        GetWindowRect(FindWindow(NULL, (LPCSTR)window), &this->MSxy);
+        GetWindowRect(FindWindow(NULL, (LPCSTR)window), &this->targetWNDsize);
         GetWindowRect(GetDesktopWindow(), &this->rctScreen);
+        this->targetWND = FindWindow(NULL, (LPCSTR)window);
     }
 
     void SYS::GetFocusWindowText(){
@@ -128,7 +129,7 @@
     };
 
 
-    SYS SYS::setWindow(char* window){
+    SYS SYS::setWindow(const char* window){
         this->targetWND = FindWindow(NULL, (LPCSTR)window);
         return *this;
     };
@@ -159,8 +160,8 @@
     };
     // mouse position absolute
     void SYS::mouseRC(int x, int y, char type){
-        GetWindowRect(this->targetWND, &this->MSxy);
-        mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->MSxy.left + x) * 65536 / this->rctScreen.right, (this->MSxy.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
+        GetWindowRect(this->targetWND, &this->targetWNDsize);
+        mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->targetWNDsize.left + x) * 65536 / this->rctScreen.right, (this->targetWNDsize.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
         SLEEP(10);
         if(type & 1) {
             mouse_event(MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0);
@@ -171,8 +172,8 @@
         }
     };
     void SYS::mouseLC(int x, int y, char type){
-        GetWindowRect(this->targetWND, &this->MSxy);
-        mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->MSxy.left + x) * 65536 / this->rctScreen.right, (this->MSxy.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
+        GetWindowRect(this->targetWND, &this->targetWNDsize);
+        mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->targetWNDsize.left + x) * 65536 / this->rctScreen.right, (this->targetWNDsize.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
         SLEEP(10);
         if(type & 1) {
             mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
@@ -183,8 +184,8 @@
         }
     };
     void SYS::mouseMC(int x, int y, char type){
-        GetWindowRect(this->targetWND, &this->MSxy);
-        mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->MSxy.left + x) * 65536 / this->rctScreen.right, (this->MSxy.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
+        GetWindowRect(this->targetWND, &this->targetWNDsize);
+        mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->targetWNDsize.left + x) * 65536 / this->rctScreen.right, (this->targetWNDsize.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
         SLEEP(10);
         if(type & 1) {
             mouse_event(MOUSEEVENTF_MIDDLEDOWN, 0, 0, 0, 0);
@@ -195,8 +196,8 @@
         }
     };
     void SYS::mouseWH(int x, int y, char type){
-        GetWindowRect(this->targetWND, &this->MSxy);
-        mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->MSxy.left + x) * 65536 / this->rctScreen.right, (this->MSxy.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
+        GetWindowRect(this->targetWND, &this->targetWNDsize);
+        mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->targetWNDsize.left + x) * 65536 / this->rctScreen.right, (this->targetWNDsize.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
         SLEEP(10);
         if(type & 1) {
             mouse_event(MOUSEEVENTF_WHEEL, 0, 0, DWORD(WHEEL_DELTA), 0);
@@ -207,12 +208,12 @@
         }
     };
     void SYS::mouseMV(int x, int y){
-        GetWindowRect(this->targetWND, &this->MSxy);
-	    mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->MSxy.left + x) * 65536 / this->rctScreen.right, (this->MSxy.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
+        GetWindowRect(this->targetWND, &this->targetWNDsize);
+	    mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->targetWNDsize.left + x) * 65536 / this->rctScreen.right, (this->targetWNDsize.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
     };
     // mouse position relative
     void SYS::mouseRCr(int dx, int dy, char type){
-        GetWindowRect(this->targetWND, &this->MSxy);
+        GetWindowRect(this->targetWND, &this->targetWNDsize);
         mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
         SLEEP(10);
         if(type & 1) {
@@ -224,7 +225,7 @@
         }
     };
     void SYS::mouseLCr(int dx, int dy, char type){
-        GetWindowRect(this->targetWND, &this->MSxy);
+        GetWindowRect(this->targetWND, &this->targetWNDsize);
         mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
         SLEEP(10);
         if(type & 1) {
@@ -236,7 +237,7 @@
         }
     };
     void SYS::mouseMCr(int dx, int dy, char type){
-        GetWindowRect(this->targetWND, &this->MSxy);
+        GetWindowRect(this->targetWND, &this->targetWNDsize);
         mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
         SLEEP(10);
         if(type & 1) {
@@ -248,7 +249,7 @@
         }
     };
     void SYS::mouseWHr(int dx, int dy, char type){
-        GetWindowRect(this->targetWND, &this->MSxy);
+        GetWindowRect(this->targetWND, &this->targetWNDsize);
         mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
         SLEEP(10);
         if(type & 1) {
@@ -260,7 +261,7 @@
         }
     };
     void SYS::mouseMVr(int dx, int dy){
-        GetWindowRect(this->targetWND, &this->MSxy);
+        GetWindowRect(this->targetWND, &this->targetWNDsize);
 	    mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
     };
 
@@ -274,6 +275,7 @@
             frontIsTarget = GetForegroundWindow() == this->targetWND;
             numLockOn = LOWORD(GetKeyState(VK_NUMLOCK));
             ed = this->timestamp.tv_sec * 1000 + this->timestamp.tv_usec / 1000;
+            // std::cout<<this->enable<<", "<<GetForegroundWindow()<<", "<<this->targetWND<<", "<<frontIsTarget<<", "<<numLockOn<<"\n";
             if(ed - st > dur && this->enable && (frontIsTarget || !this->check_WHD)){
                 if(ed - st > dur + 1000) SLEEP(100);
                 break;
@@ -287,6 +289,9 @@
                 std::cout << (this->enable ? "work": "stop")  << "\n";
                 SLEEP(200);
             }
+            if(GetAsyncKeyState(VK_F3) < 0) this->maximize();
+            if(GetAsyncKeyState(VK_F4) < 0) this->minimize();
+            if(GetAsyncKeyState(VK_F5) < 0) SetForegroundWindow(this->targetWND);
 
             if((!frontIsTarget && !numLockOn) || ((frontIsTarget) && (this->enable) && numLockOn)){
                 keybd("NUMLOCK", 3);
@@ -296,6 +301,18 @@
             SLEEP(10);
         }
         gettimeofday(&this->timestamp, NULL);
+    };
+
+    void SYS::wait(int minDur, int rangeDur){
+        int dur = rand()%rangeDur + minDur;
+        this->wait(dur);
+    };
+    // https://stackoverflow.com/questions/31224092/maximize-minimize-window-from-another-thread
+    void SYS::minimize(){
+        PostMessage(this->targetWND, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+    };
+    void SYS::maximize(){
+        PostMessage(this->targetWND, WM_SYSCOMMAND, SC_RESTORE, 0);
     };
     void SYS::focus(){
         SetForegroundWindow(this->targetWND);

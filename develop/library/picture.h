@@ -33,9 +33,9 @@ class RANGE{
 class PICTURE{
     public:
         PICTURE();
-        PICTURE(char* window);
+        PICTURE(const char* window);
         PICTURE(int width, int height);
-        PICTURE(int width, int height, char* window);
+        PICTURE(int width, int height, const char* window);
 
         std::vector<uint8_t> Pixels;
         int width, height, bit;
