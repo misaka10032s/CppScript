@@ -436,6 +436,20 @@ double POLYGON::getArea(){
     this->area = abs(res/2.0);
     return this->area;
 };
+POINT2D POLYGON::getCenter(){
+    this->center.X = this->center.Y = 0;
+    for(int i=0; i<this->vertexNum; i++){
+        this->center.X += this->vertex[i].X / (double)this->vertexNum;
+        this->center.Y += this->vertex[i].Y / (double)this->vertexNum;
+    }
+};
+POLYGON POLYGON::update(){
+    this->vertexNum = this.vertex.size();
+    this->getRadius();
+    this->getArea();
+    this->getCenter();
+    return *this;
+};
 bool POLYGON::isContain(POINT2D point1){
     if(this->center.distance(point1) > this->radius) return 0;
     int next, crs = 0;

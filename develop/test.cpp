@@ -126,13 +126,26 @@ bool cpInt(int a, int b){
 int main(){
     // PICTURE MS(200, 300, "MapleStory"), effect;
     // MS.screenShot(50, 50).display();
-    // MS.blackhole(effect, 100, 150, 20, 2).display();
+    // MS.twoValue(effect, 128).display();
+    // MS.subPic(effect, RANGE(70, 150, 20, 160)).display();
     // MS.GaussBlur(effect, 2).display();
     // MS.twist(effect, 100, 150, 50).display();
+    // MS.blackhole(effect, 100, 150, 20, 2).display();
     // MS.negative(effect).display();
+    // MS.RGBtoYUV(effect, 'Y').display();
+    // MS.RGBtoYUV(effect, 'U').display();
+    // MS.RGBtoYUV(effect, 'V').display();
+    // MS.RGBtoYUV(effect, 'Z').display();
+    // MS.GammaTransform(effect, 1.5).display();
     // MS.sharp(effect, 2).display();
     // MS.imgFloor(effect, 64).display();
     // MS.rotateD(effect, 100, 150, 45, RANGE(50, 150, 50, 250)).display();
+    // MS.rotateQ(effect, 1).display();
+    // MS.rotateQ(effect, 2).display();
+    // MS.rotateQ(effect, 3).display();
+    // MS.rotateQ(effect, 4).display();
+    // MS.ripple(effect, 100, 150, 10).display();
+    // MS.copyPaste(effect, RANGE(50, 150, 50, 250), 60, 70).display();
 
     SYS MYSYS("MapleStory");
     while(1){

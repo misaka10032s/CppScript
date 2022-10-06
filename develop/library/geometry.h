@@ -85,6 +85,8 @@ class POLYGON{
         POLYGON telescopic(POLYGON &resultP, double multipleX, double multipleY, POINT2D datumP);
         double getRadius();
         double getArea();
+        POINT2D getCenter();
+        POLYGON update();
         bool isContain(POINT2D point1);
         bool isCollide(POLYGON polygon1);
 };

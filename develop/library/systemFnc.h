@@ -6,9 +6,9 @@
     #include <unistd.h>
     #define PAUSE printf("Press Enter key to continue..."); fgetc(stdin);
     #define SLEEP(ms) usleep(ms*1000);
-// #endif
-// #ifdef SYS_WINDOWS
-#elif defined SYS_WINDOWS
+#endif
+#ifdef SYS_WINDOWS
+// #elif defined SYS_WINDOWS
     #define PAUSE system("pause");
     #define SLEEP(ms) Sleep(ms);
 
@@ -29,6 +29,7 @@
             HWND targetWND;
             struct timeval timestamp;
             bool enable, check_WHD=1;
+            unsigned char switchKey, maximizeKey, minimizeKey, focusKey;
 
         public:
             SYS(const char* window);
@@ -41,8 +42,11 @@
             static std::string gettimestring();
             
             SYS setWindow(const char* window);
+            SYS setWindow();
+            void setKey(unsigned char key, unsigned char value);
             bool isEnable();
             void keybd(const char* btn, char type);
+            void mouseAction(int x, int y, char type, bool abs, DWORD dwFlags);
             // mouse position absolute
             void mouseRC(int x, int y, char type);
             void mouseLC(int x, int y, char type);

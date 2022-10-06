@@ -588,3 +588,59 @@ PICTURE PICTURE::rotateD(PICTURE &targetPic, int posx, int posy, double deg, RAN
     matrixTrans(targetPic, posx, posy, mat, range);
     return targetPic;
 };
+
+PICTURE PICTURE::rotateQ(PICTURE &targetPic, int qNum){
+    int i, j, *I, *J, ti, tj;
+    qNum = qNum < 0 ? qNum%4 + 4 : qNum%4;
+    if(qNum%2) {
+        targetPic.resize(this->height, this->width, this->bit);
+        I = &j;
+        J = &i;
+    }
+    else{
+        targetPic.resize(this->width, this->height, this->bit);
+        I = &i;
+        J = &j;
+    }
+    for(j=0; j<=this->height; j++){
+        for(i=0; i<=this->width; i++){`
+            for(int k=0;k<3;k++){
+                ti = qNum/2 ? targetPic.width - *I : *I;
+                tj = qNum/2 ? targetPic.height - *J : *J;
+                targetPic.Pixels[ti*targetPic.bit + tj*targetPic.width*targetPic.bit + k] = this->Pixels[i*this->bit + j*this->width*this->bit + k];
+            }
+        }
+    }
+    return targetPic;
+};
+
+PICTURE PICTURE::ripple(PICTURE &targetPic, int posx, int posy, double density){
+    double newx, newy, r, dr;
+    targetPic.resize(this->width, this->height, this->bit);
+    for(j=0; j<=this->height; j++){
+        for(i=0; i<=this->width; i++){
+            r = sqrt((i-posx) * (i-posx) + (j-posy) * (j-posy));
+            // \sin\left(\frac{3200\pi}{2\left(xd+100\right)}\right)e^{-\frac{x}{5d}}
+            dr = sin((3200.0 * M_PI) / (2*r*density + 200.0)) * exp(-r/(5*density));
+            newx = (i-posx)*(r+dr)/r + posx;
+            newy = (i-posy)*(r+dr)/r + posy;
+            for(int k=0;k<3;k++){
+                targetPic.Pixels[i*targetPic.bit + j*targetPic.width*targetPic.bit + k] = getFloatValueAt(*this, newx, newy, k);
+            }
+        }
+    }
+    return targetPic;
+};
+PICTURE PICTURE::copyPaste(PICTURE &targetPic, RANGE oRange, int pX, int pY){
+    oRange.regularize();
+    oRange.retract(RANGE(0, this->width, 0, this->height));
+    for(j=oRange.top; j<=oRange.bottom; j++){
+        for(i=oRange.left; i<=oRange.right; i++){`
+            for(int k=0;k<3;k++){
+                if(i+pX < 0 || i+pX >= targetPic.width || j+pY < 0 || j+pY >= targetPic.height) continue;
+                targetPic.Pixels[(i+pX)*targetPic.bit + (j+pY)*targetPic.width*targetPic.bit + k] = this->Pixels[i*this->bit + j*this->width*this->bit + k];
+            }
+        }
+    }
+    return targetPic;
+};

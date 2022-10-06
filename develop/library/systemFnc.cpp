@@ -16,6 +16,7 @@
     #include <map>
     #include <windows.h>
     #include <iostream>
+
     SYS::SYS(const char* window){
         for (int i = 2; i < 12; i++) {
             const char* a[] = { "1","2","3","4","5","6","7","8","9","0" };
@@ -80,6 +81,12 @@
         GetWindowRect(FindWindow(NULL, (LPCSTR)window), &this->targetWNDsize);
         GetWindowRect(GetDesktopWindow(), &this->rctScreen);
         this->targetWND = FindWindow(NULL, (LPCSTR)window);
+
+        this->switchKey = VK_F10;
+        this->maximizeKey = VK_F3
+        this->minimizeKey = VK_F4;
+        this->focusKey = VK_F5;
+        this.setForegroundWindow = VK_F2;
     }
 
     void SYS::GetFocusWindowText(){
@@ -133,6 +140,29 @@
         this->targetWND = FindWindow(NULL, (LPCSTR)window);
         return *this;
     };
+    SYS SYS::setWindow(){
+        this->targetWND = GetForegroundWindow();
+        return *this;
+    };
+    void SYS::setKey(unsigned char key, unsigned char value){
+        switch(key){
+            case 0:
+                this->switchKey = value;
+                break;
+            case 1:
+                this->maximizeKey = value;
+                break;
+            case 2:
+                this->minimizeKey = value;
+                break;
+            case 3:
+                this->focusKey = value;
+                break;
+            case 3:
+                this->setForegroundWindow = value;
+                break;
+        }
+    };
 
     bool SYS::isEnable(){
         return this->enable;
@@ -159,41 +189,54 @@
         }
     };
     // mouse position absolute
-    void SYS::mouseRC(int x, int y, char type){
+
+    void SYS::mouseAction(int x, int y, char type, bool abs, DWORD dwFlags){
         GetWindowRect(this->targetWND, &this->targetWNDsize);
-        mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->targetWNDsize.left + x) * 65536 / this->rctScreen.right, (this->targetWNDsize.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
+        mouse_event((abs ? MOUSEEVENTF_ABSOLUTE : 0) | MOUSEEVENTF_MOVE, (this->targetWNDsize.left + x) * 65536 / this->rctScreen.right, (this->targetWNDsize.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
         SLEEP(10);
-        if(type & 1) {
-            mouse_event(MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0);
-        }
+        if(type & 1) mouse_event(dwFlags, 0, 0, 0, 0);
         if(type & 3) SLEEP(30);
-        if(type & 2) {
-            mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
-        }
+        if(type & 2) mouse_event(dwFlags<<1, 0, 0, 0, 0);
+    };
+
+    void SYS::mouseRC(int x, int y, char type){
+        this->mouseAction(x, y, type, 1, MOUSEEVENTF_RIGHTDOWN);
+        // GetWindowRect(this->targetWND, &this->targetWNDsize);
+        // mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->targetWNDsize.left + x) * 65536 / this->rctScreen.right, (this->targetWNDsize.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
+        // SLEEP(10);
+        // if(type & 1) {
+        //     mouse_event(MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0);
+        // }
+        // if(type & 3) SLEEP(30);
+        // if(type & 2) {
+        //     mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
+        // }
     };
     void SYS::mouseLC(int x, int y, char type){
-        GetWindowRect(this->targetWND, &this->targetWNDsize);
-        mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->targetWNDsize.left + x) * 65536 / this->rctScreen.right, (this->targetWNDsize.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
-        SLEEP(10);
-        if(type & 1) {
-            mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
-        }
-        if(type & 3) SLEEP(30);
-        if(type & 2) {
-            mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-        }
+        this->mouseAction(x, y, type, 1, MOUSEEVENTF_LEFTDOWN);
+        // GetWindowRect(this->targetWND, &this->targetWNDsize);
+        // mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->targetWNDsize.left + x) * 65536 / this->rctScreen.right, (this->targetWNDsize.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
+        // SLEEP(10);
+        // if(type & 1) {
+        //     mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
+        // }
+        // if(type & 3) SLEEP(30);
+        // if(type & 2) {
+        //     mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+        // }
     };
     void SYS::mouseMC(int x, int y, char type){
-        GetWindowRect(this->targetWND, &this->targetWNDsize);
-        mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->targetWNDsize.left + x) * 65536 / this->rctScreen.right, (this->targetWNDsize.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
-        SLEEP(10);
-        if(type & 1) {
-            mouse_event(MOUSEEVENTF_MIDDLEDOWN, 0, 0, 0, 0);
-        }
-        if(type & 3) SLEEP(30);
-        if(type & 2) {
-            mouse_event(MOUSEEVENTF_MIDDLEUP, 0, 0, 0, 0);
-        }
+        this->mouseAction(x, y, type, 1, MOUSEEVENTF_MIDDLEDOWN);
+        // GetWindowRect(this->targetWND, &this->targetWNDsize);
+        // mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->targetWNDsize.left + x) * 65536 / this->rctScreen.right, (this->targetWNDsize.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
+        // SLEEP(10);
+        // if(type & 1) {
+        //     mouse_event(MOUSEEVENTF_MIDDLEDOWN, 0, 0, 0, 0);
+        // }
+        // if(type & 3) SLEEP(30);
+        // if(type & 2) {
+        //     mouse_event(MOUSEEVENTF_MIDDLEUP, 0, 0, 0, 0);
+        // }
     };
     void SYS::mouseWH(int x, int y, char type){
         GetWindowRect(this->targetWND, &this->targetWNDsize);
@@ -208,45 +251,49 @@
         }
     };
     void SYS::mouseMV(int x, int y){
+        this->mouseAction(x, y, 0, 1, 0);
         GetWindowRect(this->targetWND, &this->targetWNDsize);
 	    mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->targetWNDsize.left + x) * 65536 / this->rctScreen.right, (this->targetWNDsize.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
     };
     // mouse position relative
     void SYS::mouseRCr(int dx, int dy, char type){
-        GetWindowRect(this->targetWND, &this->targetWNDsize);
-        mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
-        SLEEP(10);
-        if(type & 1) {
-            mouse_event(MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0);
-        }
-        if(type & 3) SLEEP(30);
-        if(type & 2) {
-            mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
-        }
+        this->mouseAction(x, y, type, 0, MOUSEEVENTF_RIGHTDOWN);
+        // GetWindowRect(this->targetWND, &this->targetWNDsize);
+        // mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
+        // SLEEP(10);
+        // if(type & 1) {
+        //     mouse_event(MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0);
+        // }
+        // if(type & 3) SLEEP(30);
+        // if(type & 2) {
+        //     mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
+        // }
     };
     void SYS::mouseLCr(int dx, int dy, char type){
-        GetWindowRect(this->targetWND, &this->targetWNDsize);
-        mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
-        SLEEP(10);
-        if(type & 1) {
-            mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
-        }
-        if(type & 3) SLEEP(30);
-        if(type & 2) {
-            mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-        }
+        this->mouseAction(x, y, type, 0, MOUSEEVENTF_LEFTDOWN);
+        // GetWindowRect(this->targetWND, &this->targetWNDsize);
+        // mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
+        // SLEEP(10);
+        // if(type & 1) {
+        //     mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
+        // }
+        // if(type & 3) SLEEP(30);
+        // if(type & 2) {
+        //     mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+        // }
     };
     void SYS::mouseMCr(int dx, int dy, char type){
-        GetWindowRect(this->targetWND, &this->targetWNDsize);
-        mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
-        SLEEP(10);
-        if(type & 1) {
-            mouse_event(MOUSEEVENTF_MIDDLEDOWN, 0, 0, 0, 0);
-        }
-        if(type & 3) SLEEP(30);
-        if(type & 2) {
-            mouse_event(MOUSEEVENTF_MIDDLEUP, 0, 0, 0, 0);
-        }
+        this->mouseAction(x, y, type, 0, MOUSEEVENTF_MIDDLEDOWN);
+        // GetWindowRect(this->targetWND, &this->targetWNDsize);
+        // mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
+        // SLEEP(10);
+        // if(type & 1) {
+        //     mouse_event(MOUSEEVENTF_MIDDLEDOWN, 0, 0, 0, 0);
+        // }
+        // if(type & 3) SLEEP(30);
+        // if(type & 2) {
+        //     mouse_event(MOUSEEVENTF_MIDDLEUP, 0, 0, 0, 0);
+        // }
     };
     void SYS::mouseWHr(int dx, int dy, char type){
         GetWindowRect(this->targetWND, &this->targetWNDsize);
@@ -261,6 +308,7 @@
         }
     };
     void SYS::mouseMVr(int dx, int dy){
+        this->mouseAction(x, y, 0, 0, 0);
         GetWindowRect(this->targetWND, &this->targetWNDsize);
 	    mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
     };
@@ -280,7 +328,7 @@
                 if(ed - st > dur + 1000) SLEEP(100);
                 break;
             }
-            if (GetAsyncKeyState(VK_F10) < 0) {
+            if (GetAsyncKeyState(this->switchKey) < 0) {
                 this->enable ^= 1; 
                 if(this->enable == numLockOn && frontIsTarget){
                     keybd("NUMLOCK", 3);
@@ -289,9 +337,10 @@
                 std::cout << (this->enable ? "work": "stop")  << "\n";
                 SLEEP(200);
             }
-            if(GetAsyncKeyState(VK_F3) < 0) this->maximize();
-            if(GetAsyncKeyState(VK_F4) < 0) this->minimize();
-            if(GetAsyncKeyState(VK_F5) < 0) SetForegroundWindow(this->targetWND);
+            if(GetAsyncKeyState(this->maximizeKey) < 0) this->maximize();
+            if(GetAsyncKeyState(this->minimizeKey) < 0) this->minimize();
+            if(GetAsyncKeyState(this->focusKey) < 0) this->focus();
+            if(GetAsyncKeyState(this->setForegroundWindow) < 0) this->setWindow();
 
             if((!frontIsTarget && !numLockOn) || ((frontIsTarget) && (this->enable) && numLockOn)){
                 keybd("NUMLOCK", 3);

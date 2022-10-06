@@ -66,6 +66,9 @@ class PICTURE{
         PICTURE imgFloor(PICTURE &targetPic, int flr);
         PICTURE matrixTrans(PICTURE &targetPic, int posx, int posy, double mat[4], RANGE range);
         PICTURE rotateD(PICTURE &targetPic, int posx, int posy, double deg, RANGE range);
+        PICTURE rotateQ(PICTURE &targetPic, int qNum);
+        PICTURE ripple(PICTURE &targetPic, int posx, int posy, double density);
+        PICTURE copyPaste(PICTURE &targetPic, RANGE oRange, int pX, int pY);
 
 
         // findarrow
