@@ -83,10 +83,10 @@
         this->targetWND = FindWindow(NULL, (LPCSTR)window);
 
         this->switchKey = VK_F10;
-        this->maximizeKey = VK_F3
+        this->maximizeKey = VK_F3;
         this->minimizeKey = VK_F4;
         this->focusKey = VK_F5;
-        this.setForegroundWindow = VK_F2;
+        this->setForegroundWindow = VK_F2;
     }
 
     void SYS::GetFocusWindowText(){
@@ -158,7 +158,7 @@
             case 3:
                 this->focusKey = value;
                 break;
-            case 3:
+            case 4:
                 this->setForegroundWindow = value;
                 break;
         }
@@ -257,7 +257,7 @@
     };
     // mouse position relative
     void SYS::mouseRCr(int dx, int dy, char type){
-        this->mouseAction(x, y, type, 0, MOUSEEVENTF_RIGHTDOWN);
+        this->mouseAction(dx, dy, type, 0, MOUSEEVENTF_RIGHTDOWN);
         // GetWindowRect(this->targetWND, &this->targetWNDsize);
         // mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
         // SLEEP(10);
@@ -270,7 +270,7 @@
         // }
     };
     void SYS::mouseLCr(int dx, int dy, char type){
-        this->mouseAction(x, y, type, 0, MOUSEEVENTF_LEFTDOWN);
+        this->mouseAction(dx, dy, type, 0, MOUSEEVENTF_LEFTDOWN);
         // GetWindowRect(this->targetWND, &this->targetWNDsize);
         // mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
         // SLEEP(10);
@@ -283,7 +283,7 @@
         // }
     };
     void SYS::mouseMCr(int dx, int dy, char type){
-        this->mouseAction(x, y, type, 0, MOUSEEVENTF_MIDDLEDOWN);
+        this->mouseAction(dx, dy, type, 0, MOUSEEVENTF_MIDDLEDOWN);
         // GetWindowRect(this->targetWND, &this->targetWNDsize);
         // mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
         // SLEEP(10);
@@ -308,7 +308,7 @@
         }
     };
     void SYS::mouseMVr(int dx, int dy){
-        this->mouseAction(x, y, 0, 0, 0);
+        this->mouseAction(dx, dy, 0, 0, 0);
         GetWindowRect(this->targetWND, &this->targetWNDsize);
 	    mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
     };

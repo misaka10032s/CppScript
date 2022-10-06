@@ -444,7 +444,7 @@ POINT2D POLYGON::getCenter(){
     }
 };
 POLYGON POLYGON::update(){
-    this->vertexNum = this.vertex.size();
+    this->vertexNum = this->vertex.size();
     this->getRadius();
     this->getArea();
     this->getCenter();
