@@ -605,8 +605,8 @@ PICTURE PICTURE::rotateQ(PICTURE &targetPic, int qNum){
     for(j=0; j<=this->height; j++){
         for(i=0; i<=this->width; i++){
             for(int k=0;k<3;k++){
-                ti = qNum/2 ? targetPic.width - *I : *I;
-                tj = qNum/2 ? targetPic.height - *J : *J;
+                ti = qNum/2 ? targetPic.width - *I - 1 : *I;
+                tj = qNum/2 ? targetPic.height - *J - 1 : *J;
                 targetPic.Pixels[ti*targetPic.bit + tj*targetPic.width*targetPic.bit + k] = this->Pixels[i*this->bit + j*this->width*this->bit + k];
             }
         }

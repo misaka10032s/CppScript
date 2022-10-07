@@ -19,7 +19,30 @@ EDGE::EDGE(std::string fromV, std::string toV, int weight){
     this->fromV = fromV;
     this->toV = toV;
     this->weight = weight;
+    this->directional = 0;
 }
+EDGE::EDGE(std::string fromV, std::string toV, int weight, bool directional){
+    this->fromV = fromV;
+    this->toV = toV;
+    this->weight = weight;
+    this->directional = directional;
+}
+
+bool EDGE::operator == (EDGE const &EDGE1){
+    if(this->weight != EDGE1.weight) return 0;
+    if(this->directional){
+        if(this->fromV != EDGE1.fromV) return 0;
+        if(this->toV != EDGE1.toV) return 0;
+    }
+    else{
+        if(this->fromV != EDGE1.fromV && this->fromV != EDGE1.toV) return 0;
+        if(this->toV != EDGE1.fromV && this->toV != EDGE1.toV) return 0;
+    }
+    return 1;
+};
+bool EDGE::operator != (EDGE const &EDGE1){
+    return !(*this == EDGE1);
+};
 
 // ######################## struct GRAPH ########################
 GRAPH::GRAPH(){

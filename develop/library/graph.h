@@ -8,12 +8,17 @@
 #define LIB_GRAPH_H_
 
 struct EDGE {
-    EDGE(std::string fromV, std::string toV, int weight);
     EDGE();
+    EDGE(std::string fromV, std::string toV, int weight);
+    EDGE(std::string fromV, std::string toV, int weight, bool directional);
 
     std::string fromV;
     std::string toV;
     int weight;
+    bool directional;
+
+    bool operator == (EDGE const &EDGE1);
+    bool operator != (EDGE const &EDGE1);
 };
 
 struct GRAPH {
