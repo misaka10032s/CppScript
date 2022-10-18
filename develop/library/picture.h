@@ -53,7 +53,6 @@ class PICTURE{
 
         PICTURE screenShot(int dx, int dy);
         PICTURE twoValue(PICTURE &targetPic, int gate);
-        PICTURE subPic(PICTURE &targetPic, RANGE range);
         PICTURE GaussBlur(PICTURE &targetPic, double rate);
         PICTURE twist(PICTURE &targetPic, int posx, int posy, double rate);
         PICTURE blackhole(PICTURE &targetPic, int posx, int posy, double gravity, double factor);
@@ -68,7 +67,9 @@ class PICTURE{
         PICTURE rotateD(PICTURE &targetPic, int posx, int posy, double deg, RANGE range);
         PICTURE rotateQ(PICTURE &targetPic, int qNum);
         PICTURE ripple(PICTURE &targetPic, int posx, int posy, double density);
+        PICTURE subPic(PICTURE &targetPic, RANGE range);
         PICTURE copyPaste(PICTURE &targetPic, RANGE oRange, int pX, int pY);
+        PICTURE rgbMatrixTrans(PICTURE &targetPic, int mtx[9]);
 
 
         // findarrow

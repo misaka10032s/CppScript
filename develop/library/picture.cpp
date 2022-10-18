@@ -263,26 +263,6 @@ PICTURE PICTURE::twoValue(PICTURE &targetPic, int gate){
     }
     return targetPic;
 };
-PICTURE PICTURE::subPic(PICTURE &targetPic, RANGE range){
-    int idx=0;
-    range.regularize();
-    range.retract(RANGE(0, this->width, 0, this->height));
-    targetPic.resize((range.right - range.left + 1), (range.bottom - range.top + 1), this->bit);
-    for(int j=range.top; j<=range.bottom; j++){
-        for(int i=range.left; i<=range.right; i++){
-            if(i<0 || i>=this->width || j<0 || j>=this->height){
-                targetPic.Pixels[idx++] = 0;
-            }
-            else{
-                for(int k=0;k<3;k++){
-                    targetPic.Pixels[idx++] = this->Pixels[i*this->bit + j*this->width*this->bit + k];
-                }
-                if(targetPic.bit == 4)targetPic.Pixels[idx++] = 0;
-            }
-        }
-    }
-    return targetPic;
-};
 PICTURE PICTURE::GaussBlur(PICTURE &targetPic, double rate){
     int r = 3*rate+0.5, w, p, q;
     w = 2*r+1;
@@ -631,6 +611,26 @@ PICTURE PICTURE::ripple(PICTURE &targetPic, int posx, int posy, double density){
     }
     return targetPic;
 };
+PICTURE PICTURE::subPic(PICTURE &targetPic, RANGE range){
+    int idx=0;
+    range.regularize();
+    range.retract(RANGE(0, this->width, 0, this->height));
+    targetPic.resize((range.right - range.left + 1), (range.bottom - range.top + 1), this->bit);
+    for(int j=range.top; j<=range.bottom; j++){
+        for(int i=range.left; i<=range.right; i++){
+            if(i<0 || i>=this->width || j<0 || j>=this->height){
+                targetPic.Pixels[idx++] = 0;
+            }
+            else{
+                for(int k=0;k<3;k++){
+                    targetPic.Pixels[idx++] = this->Pixels[i*this->bit + j*this->width*this->bit + k];
+                }
+                if(targetPic.bit == 4)targetPic.Pixels[idx++] = 0;
+            }
+        }
+    }
+    return targetPic;
+};
 PICTURE PICTURE::copyPaste(PICTURE &targetPic, RANGE oRange, int pX, int pY){
     oRange.regularize();
     oRange.retract(RANGE(0, this->width, 0, this->height));
@@ -639,6 +639,22 @@ PICTURE PICTURE::copyPaste(PICTURE &targetPic, RANGE oRange, int pX, int pY){
             for(int k=0;k<3;k++){
                 if(i+pX < 0 || i+pX >= targetPic.width || j+pY < 0 || j+pY >= targetPic.height) continue;
                 targetPic.Pixels[(i+pX)*targetPic.bit + (j+pY)*targetPic.width*targetPic.bit + k] = this->Pixels[i*this->bit + j*this->width*this->bit + k];
+            }
+        }
+    }
+    return targetPic;
+};
+PICTURE rgbMatrixTrans(PICTURE &targetPic, int mtx[9]){
+    int tmp;
+    targetPic.resize(this->width, this->height, this->bit);
+    for(int j=0; j<=this->height; j++){
+        for(int i=0; i<=this->width; i++){
+            for(int k=0;k<3;k++){
+                tmp = 0;
+                for(int l=0; l<3; l++){
+                    tmp += mtx[(k/3)*3 + l] * this->Pixels[i*this->bit + j*this->width*this->bit + l];
+                }
+                targetPic.Pixels[i*targetPic.bit + j*targetPic.width*targetPic.bit + k] = tmp;
             }
         }
     }

@@ -7,6 +7,10 @@
 class SUDOKU{
     private:
         char map[9][9];
+
+        int write(int &map[9][9], int &numberLeft[9][9]);
+        bool suppose(int map[9][9], int numberLeft[9][9]);
+        int status;
     public:
 
         SUDOKU();
