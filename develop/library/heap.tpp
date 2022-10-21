@@ -16,7 +16,7 @@ template <typename T> int listHEAP<T>::getChild(int idx, bool lr){
     return std::min((idx+1)*2 - lr, (int)this->_listheap.size());
 };
 template <typename T> int listHEAP<T>::getParent(int idx){
-    return (idx+1)/2 - 1;
+    return std::max((idx+1)/2 - 1, 0);
 };
 
 template <typename T> void listHEAP<T>::push(T item){
@@ -82,25 +82,27 @@ template <typename T> void listHEAP<T>::list(){
 
 
 template <typename T> STACK<T>::STACK(int num){
+    this->_direction = 1;
     this->_idx = 0;
+    this->_btmidx = 0;
     this->canPop = 0;
     this->_STACK.resize(num);
 };
 
 template <typename T> T STACK<T>::pop(){
     T rtn;
-    if(this->_idx > 0) {
-        this->_idx--;
-        if(!this->_idx) this->canPop = 0;
+    if(this->canPop) {
+        this->_idx -= (this->_direction ? 1 : -1);
+        if(this->_idx == this->_btmidx) this->canPop = 0;
         return this->_STACK[this->_idx];
     }
     else return rtn;
 };
 template <typename T> bool STACK<T>::push(T item){
-    if(this->_idx < this->_STACK.size()) {
+    if(this->_idx + (this->_direction ? 1 : -1) != this->_btmidx) {
         this->canPop = 1;
         this->_STACK[this->_idx] = item;
-        this->_idx++;
+        this->_idx += (this->_direction ? 1 : -1);
         return 0;
     }
     else return 1;
@@ -113,6 +115,13 @@ template <typename T> void STACK<T>::list(){
         std::cout<<_STACK[i]<<",\n";
     }
 };
+template <typename T> void STACK<T>::reverse(){
+    int tmp;
+    this->_direction ^= 1;
+    tmp = this->_idx;
+    this->_idx = this->_btmidx;
+    this->_btmidx = tmp;
+}
 
 
 
@@ -122,6 +131,7 @@ template <typename T> QUEUE<T>::QUEUE(int num, bool type){
     this->_popIdx = 0;
     this->_pushIdx = 0;
     this->_type = type;
+    this->_direction = 1;
     this->canPop = 0;
     this->_QUEUE.resize(num);
 };
@@ -129,6 +139,7 @@ template <typename T> QUEUE<T>::QUEUE(int num){
     this->_popIdx = 0;
     this->_pushIdx = 0;
     this->_type = 0;
+    this->_direction = 1;
     this->canPop = 0;
     this->_QUEUE.resize(num);
 };
@@ -138,14 +149,14 @@ template <typename T> T QUEUE<T>::pop(){
     int length = this->_QUEUE.size();
     if(this->canPop) {
         rtn = this->_QUEUE[this->_popIdx];
-        this->_popIdx = (length + this->_popIdx + 1) % length;
+        this->_popIdx = (length + this->_popIdx + 1 * (this._direction ? 1 : -1)) % length;
         if(this->_popIdx == this->_pushIdx) this->canPop = 0;
         return rtn;
     }
     else return rtn;
 };
 template <typename T> bool QUEUE<T>::push(T item){
-    int length = this->_QUEUE.size(), next = (length + this->_pushIdx + 1) % length;
+    int length = this->_QUEUE.size(), next = (length + this->_pushIdx + 1 * (this._direction ? 1 : -1)) % length;
     if(this->_pushIdx != this->_popIdx || !this->canPop || this->_type) {
         this->canPop = 1;
         this->_QUEUE[this->_pushIdx] = item;
@@ -165,4 +176,10 @@ template <typename T> void QUEUE<T>::list(){
         if(idx == this->_pushIdx) break;
         std::cout<<_QUEUE[idx]<<",\n";
     }
+};
+template <typename T> void QUEUE<T>::reverse(){
+    this->_direction ^= 1;
+    int tmp = this->_pushIdx;
+    this->_pushIdx = this->_popIdx;
+    this->_popIdx = tmp;
 };

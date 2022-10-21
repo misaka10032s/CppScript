@@ -66,7 +66,7 @@ template <typename T> class listHEAP{
         std::vector<T> _listheap;
         int getChild(int idx, bool lr);
         int getParent(int idx);
-        std::function<bool(int, int)> compare;
+        std::function<bool(T, T)> compare;
         // bool *compare(int i0, int i1);
 
     public:
@@ -79,7 +79,8 @@ template <typename T> class listHEAP{
 
 template <typename T> class STACK{
     private:
-        int _idx;
+        bool _direction;
+        int _idx, _btmidx;
         std::vector<T> _STACK;
     public:
         STACK(int num);
@@ -90,12 +91,13 @@ template <typename T> class STACK{
         bool push(T item);
         void reset();
         void list();
+        void reverse();
 };
 
 
 template <typename T> class QUEUE{
     private:
-        bool _type;
+        bool _type, _direction; // _type 0 will detect full then stop push, 1 will cover the old data if queue is full
         int _popIdx, _pushIdx;
         std::vector<T> _QUEUE;
     public:
@@ -108,6 +110,7 @@ template <typename T> class QUEUE{
         bool push(T item);
         void reset();
         void list();
+        void reverse();
 };
 
 #include "heap.tpp"
