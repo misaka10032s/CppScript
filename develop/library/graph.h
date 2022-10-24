@@ -35,4 +35,5 @@ struct GRAPH {
 GRAPH MST_P(std::vector<EDGE> const &links);
 GRAPH MST_K(std::vector<EDGE> const &links);
 
+GRAPH shortestPath(std::vector<EDGE> const &links);
 #endif

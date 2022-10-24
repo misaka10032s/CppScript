@@ -17,67 +17,68 @@
     #include <windows.h>
     #include <iostream>
 
+
+    for (int i = 2; i < 12; i++) {
+        const char* a[] = { "1","2","3","4","5","6","7","8","9","0" };
+        key[a[i - 2]] = i;
+    }
+    for (int i = 16; i < 26; i++) {
+        const char* a[] = { "Q","W","E","R","T","Y","U","I","O","P" };
+        key[a[i - 16]] = i;
+    }
+    for (int i = 30; i < 39; i++) {
+        const char* a[] = { "A","S","D","F","G","H","J","K","L" };
+        key[a[i - 30]] = i;
+    }
+    for (int i = 44; i < 51; i++) {
+        const char* a[] = { "Z","X","C","V","B","N","M" };
+        key[a[i - 44]] = i;
+    }
+    for (int i = 59; i < 69; i++) {
+        const char* a[] = { "F1","F2","F3","F4","F5","F6","F7","F8","F9","F10" };
+        key[a[i - 59]] = i;
+    }
+    key["F11"] = 87;
+    key["F12"] = 88;
+
+    key["ESC"] = 1;
+    key["-"] = 12;
+    key["="] = 13;
+    key["BACKSPACE"] = 14;
+    key["TAB"] = 15;
+    key["ENTER"] = 28;
+    key["CTRL"] = 29;
+    key[";"] = 39;
+    key["\'"] = 40;
+    key["`"] = 41;
+    key["LSHIFT"] = 42;
+    key["\\"] = 43;
+    key["<"] = 51;
+    key[","] = 51;
+    key[">"] = 52;
+    key["."] = 52;
+    key["/"] = 53;
+    key["RSHIFT"] = 54;
+    key["*"] = 55;
+    key["ALT"] = 56;
+    key["SPACE"] = 57;
+    key["CAPSLOCK"] = 58;
+    key["NUMLOCK"] = 69;
+    key["SCRLOCK"] = 70;
+
+    key["LEFT"] = 75;
+    key["RIGHT"] = 77;
+    key["UP"] = 72;
+    key["DOWN"] = 80;
+
+    key["PGU"] = 201;
+    key["PGD"] = 209;
+    key["INS"] = 210;
+    key["DEL"] = 211;
+    key["HOME"] = 199;
+    key["END"] = 207;
+
     SYS::SYS(const char* window){
-        for (int i = 2; i < 12; i++) {
-            const char* a[] = { "1","2","3","4","5","6","7","8","9","0" };
-            this->key[a[i - 2]] = i;
-        }
-        for (int i = 16; i < 26; i++) {
-            const char* a[] = { "Q","W","E","R","T","Y","U","I","O","P" };
-            this->key[a[i - 16]] = i;
-        }
-        for (int i = 30; i < 39; i++) {
-            const char* a[] = { "A","S","D","F","G","H","J","K","L" };
-            this->key[a[i - 30]] = i;
-        }
-        for (int i = 44; i < 51; i++) {
-            const char* a[] = { "Z","X","C","V","B","N","M" };
-            this->key[a[i - 44]] = i;
-        }
-        for (int i = 59; i < 69; i++) {
-            const char* a[] = { "F1","F2","F3","F4","F5","F6","F7","F8","F9","F10" };
-            this->key[a[i - 59]] = i;
-        }
-        this->key["F11"] = 87;
-        this->key["F12"] = 88;
-
-        this->key["ESC"] = 1;
-        this->key["-"] = 12;
-        this->key["="] = 13;
-        this->key["BACKSPACE"] = 14;
-        this->key["TAB"] = 15;
-        this->key["ENTER"] = 28;
-        this->key["CTRL"] = 29;
-        this->key[";"] = 39;
-        this->key["\'"] = 40;
-        this->key["`"] = 41;
-        this->key["LSHIFT"] = 42;
-        this->key["\\"] = 43;
-        this->key["<"] = 51;
-        this->key[","] = 51;
-        this->key[">"] = 52;
-        this->key["."] = 52;
-        this->key["/"] = 53;
-        this->key["RSHIFT"] = 54;
-        this->key["*"] = 55;
-        this->key["ALT"] = 56;
-        this->key["SPACE"] = 57;
-        this->key["CAPSLOCK"] = 58;
-        this->key["NUMLOCK"] = 69;
-        this->key["SCRLOCK"] = 70;
-
-        this->key["LEFT"] = 75;
-        this->key["RIGHT"] = 77;
-        this->key["UP"] = 72;
-        this->key["DOWN"] = 80;
-
-        this->key["PGU"] = 201;
-        this->key["PGD"] = 209;
-        this->key["INS"] = 210;
-        this->key["DEL"] = 211;
-        this->key["HOME"] = 199;
-        this->key["END"] = 207;
-
         GetWindowRect(FindWindow(NULL, (LPCSTR)window), &this->targetWNDsize);
         GetWindowRect(GetDesktopWindow(), &this->rctScreen);
         this->targetWND = FindWindow(NULL, (LPCSTR)window);
@@ -87,6 +88,8 @@
         this->minimizeKey = VK_F4;
         this->focusKey = VK_F5;
         this->setForegroundWindow = VK_F2;
+
+        this->timeCountDown = -1;
     }
 
     void SYS::GetFocusWindowText(){
@@ -318,13 +321,18 @@
         gettimeofday(&this->timestamp, NULL);
         long int st = this->timestamp.tv_sec * 1000 + this->timestamp.tv_usec / 1000, ed;
         bool frontIsTarget, numLockOn;
+
+        if(this->timeCountDown <= this->timestamp){
+            this->enable = 0;
+            this->timeCountDown = -1;
+        }
         while(1){
             gettimeofday(&this->timestamp, NULL);
             frontIsTarget = GetForegroundWindow() == this->targetWND;
             numLockOn = LOWORD(GetKeyState(VK_NUMLOCK));
             ed = this->timestamp.tv_sec * 1000 + this->timestamp.tv_usec / 1000;
             // std::cout<<this->enable<<", "<<GetForegroundWindow()<<", "<<this->targetWND<<", "<<frontIsTarget<<", "<<numLockOn<<"\n";
-            if(ed - st > dur && this->enable && (frontIsTarget || !this->check_WHD)){
+            if(ed - st > dur && this->enable && (frontIsTarget || !this->check_WHD) && (this->timeCountDown == -1 || this->timeCountDown > this->timestamp)){
                 if(ed - st > dur + 1000) SLEEP(100);
                 break;
             }
@@ -372,5 +380,9 @@
             keybd("NUMLOCK", 3);
             SLEEP(50);
         }
+    };
+    void SYS::setCountdown(int time){
+        gettimeofday(&this->timestamp, NULL);
+        this->timeCountDown = this->timestamp + time;
     };
 #endif

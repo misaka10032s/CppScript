@@ -16,20 +16,22 @@
     #include <windows.h>
     #include <iostream>
 
+    struct cmp_str{
+        bool operator()(char const *a, char const *b) const
+        {
+            return strcmp(a, b) < 0;
+        }
+    };
+
+    std::map<const char*, int, cmp_str> key;
+
     class SYS{
         private:
-            struct cmp_str{
-                bool operator()(char const *a, char const *b) const
-                {
-                    return strcmp(a, b) < 0;
-                }
-            };
-
-            std::map<const char*, int, cmp_str> key;
             HWND targetWND;
             struct timeval timestamp;
             bool enable, check_WHD=1;
             unsigned char switchKey, maximizeKey, minimizeKey, focusKey, setForegroundWindow;
+            int timeCountDown;
 
         public:
             SYS(const char* window);
@@ -65,6 +67,7 @@
             void maximize();
             void focus();
             void pause();
+            void setCountdown(int time);
     };
 #endif
 

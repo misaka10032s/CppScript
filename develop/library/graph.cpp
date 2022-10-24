@@ -14,6 +14,7 @@ EDGE::EDGE(){
     this->fromV = "";
     this->toV = "";
     this->weight = 0;
+    this->directional = 0;
 }
 EDGE::EDGE(std::string fromV, std::string toV, int weight){
     this->fromV = fromV;
