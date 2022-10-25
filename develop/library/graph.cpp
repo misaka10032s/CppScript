@@ -243,3 +243,56 @@ GRAPH MST_K(std::vector<EDGE> const &links){
     // free(minHEAP);
     return forest;
 }
+
+// ######################## find shortest route between two points ########################
+void rfind(std::string start, std::string end, std::unordered_map<std::string, std::vector<EDGE>> &rtdict, std::vector<std::string> &rt, std::vector<std::string> &route, std::unordered_map<std::string, int> &pointV, std::unordered_map<std::string, int> &hasGoThrough){
+    std::vector<EDGE> possible = rtdict[start];
+    if(possible.size() == 0){
+        if(start != end) {
+            hasGoThrough.erase(rt.back());
+            rt.pop_back();
+        }
+        return;
+    }
+    for(auto edge : possible){
+        if(hasGoThrough.find(edge.toV) != hasGoThrough.end() || pointV[edge.fromV] + edge.weight > pointV[end]) continue;
+        rt.push_back(edge.fromV);
+        hasGoThrough.emplace(edge.fromV, 1);
+        if(pointV[edge.toV] > pointV[edge.fromV] + edge.weight || pointV[edge.toV] == -2147483648){
+            pointV[edge.toV] = pointV[edge.fromV] + edge.toV;
+            if(edge.toV == end) {
+                route = rt;
+            }
+        }
+    }
+
+    rfind(edge.toV, end, rtdict, rt, route, pointV, hasGoThrough);
+};
+
+GRAPH shortestRoute(std::vector<EDGE> const &links, std::string start, std::string end){
+    GRAPH resRoute;
+    std::unordered_map<std::string, int> pointV, hasGoThrough;
+    std::unordered_map<std::string, std::vector<EDGE>> rtdict;
+    std::vector<std::string> rt, route;
+    int length = 0, vertexNum = 0;
+
+    for(auto l : links){
+        pointV.emplace(l.fromV, -2147483648);
+        pointV.emplace(l.toV, -2147483648);
+
+        if(rtdict.find(l.fromV) == rtdict.end()) rtdict.emplace(l.fromV, {l});
+        else rtdict[l.fromV].push_back(l);
+
+        if(!l.directional){
+            if(rtdict.find(l.toV) == rtdict.end()) rtdict.emplace(l.toV, {l});
+            else rtdict[l.toV].push_back(l);
+        }
+    }
+
+    rfind(start, end, rtdict, rt, route, pointV, hasGoThrough);
+
+    for(auto r : route){
+        resRoute.addEdge(rtdict[r]);
+    }
+    return resRoute;
+};
