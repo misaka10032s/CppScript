@@ -8,8 +8,8 @@ class SUDOKU{
     private:
         char map[9][9];
 
-        int write(int &map[9][9], int &numberLeft[9][9]);
-        bool suppose(int map[9][9], int numberLeft[9][9]);
+        int write(char map[9][9], int numberLeft[9][9]);
+        bool suppose(char map[9][9], int numberLeft[9][9]);
         int status;
     public:
 
@@ -19,7 +19,7 @@ class SUDOKU{
 
         SUDOKU solve();
         void print();
-}
+};
 
 class NONOGRAM{
     private:
@@ -33,5 +33,5 @@ class NONOGRAM{
 
         NONOGRAM solve();
         void print();
-}
+};
 #endif

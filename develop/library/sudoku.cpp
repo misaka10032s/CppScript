@@ -1,5 +1,7 @@
+#include <iostream>
 #include <vector>
 #include <string>
+#include <functional>
 
 #include "systemOS.h"
 #include "sudoku.h"
@@ -30,11 +32,11 @@ SUDOKU::SUDOKU(std::initializer_list<std::initializer_list<char>> map){
     }
 };
 
-int SUDOKU::write(int &map[9][9], int &numberLeft[9][9]){
+int SUDOKU::write(char map[9][9], int numberLeft[9][9]){
     int updateN = 0, filledNum = 0, tmp;
     for(int i=0; i<9; i++) {
         for(int j=0; j<9;j++){
-            if(this->numberLeft[i][j] == 0){
+            if(numberLeft[i][j] == 0){
                 return -2;
             }
             if(this->map[i][j] != 0){
@@ -70,7 +72,7 @@ int SUDOKU::write(int &map[9][9], int &numberLeft[9][9]){
     if(filledNum == 81) return -1;
     return updateN;
 }
-bool SUDOKU::suppose(int map[9][9], int numberLeft[9][9]){
+bool SUDOKU::suppose(char map[9][9], int numberLeft[9][9]){
     int res, si = rand()%9, sj = rand()%9, origNF[9][9], origMap[9][9];
     do{
         sj = (sj+1)%9;
@@ -78,7 +80,7 @@ bool SUDOKU::suppose(int map[9][9], int numberLeft[9][9]){
     }
     while(map[si][sj]);
 
-    origNF = numberLeft[si][sj];
+    std::copy(std::begin(numberLeft), std::end(numberLeft), std::begin(origNF));
     for(int i=0; i<9; i++) {
         for(int j=0; j<9;j++) {
             origMap[i][j] = map[i][j];

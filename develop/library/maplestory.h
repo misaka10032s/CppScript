@@ -3,6 +3,7 @@
 #include <vector>
 #include <functional>
 
+#include "picture.h"
 #include "systemOS.h"
 
 #ifndef LIB_MAPLESTORY_H_

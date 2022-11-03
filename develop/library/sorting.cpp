@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <functional>
-#include <math>
+#include <cmath>
 
 #include "systemOS.h"
 #include "heap.h"

@@ -10,7 +10,7 @@
 class AUDIO{
     public:
         // https://zh.wikipedia.org/wiki/WAV
-        class WAV{
+        struct WAV{
             uint8_t         RIFF[4];        // RIFF Header Magic header
             uint32_t        ChunkSize;      // RIFF Chunk Size
             uint8_t         WAVE[4];        // WAVE Header
@@ -31,7 +31,7 @@ class AUDIO{
         };
 
         // https://en.wikipedia.org/wiki/MP3#/media/File:Mp3filestructure.svg
-        class MP3{
+        struct MP3{
             bool sync_word[11];
             bool version;
             bool layer[2];

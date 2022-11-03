@@ -1,6 +1,7 @@
 #include "systemOS.h"
 #include "systemFnc.h"
 #include "systemFncScanCode.h"
+#include <string>
 
     // VK key list
     // http://www.kbdedit.com/manual/low_level_vk_list.html
@@ -17,66 +18,67 @@
     #include <windows.h>
     #include <iostream>
 
+    void set_key_value(){
+        for (int i = 2; i < 12; i++) {
+            const char* a[] = { "1","2","3","4","5","6","7","8","9","0" };
+            key[a[i - 2]] = i;
+        }
+        for (int i = 16; i < 26; i++) {
+            const char* a[] = { "Q","W","E","R","T","Y","U","I","O","P" };
+            key[a[i - 16]] = i;
+        }
+        for (int i = 30; i < 39; i++) {
+            const char* a[] = { "A","S","D","F","G","H","J","K","L" };
+            key[a[i - 30]] = i;
+        }
+        for (int i = 44; i < 51; i++) {
+            const char* a[] = { "Z","X","C","V","B","N","M" };
+            key[a[i - 44]] = i;
+        }
+        for (int i = 59; i < 69; i++) {
+            const char* a[] = { "F1","F2","F3","F4","F5","F6","F7","F8","F9","F10" };
+            key[a[i - 59]] = i;
+        }
+        key["F11"] = 87;
+        key["F12"] = 88;
 
-    for (int i = 2; i < 12; i++) {
-        const char* a[] = { "1","2","3","4","5","6","7","8","9","0" };
-        key[a[i - 2]] = i;
-    }
-    for (int i = 16; i < 26; i++) {
-        const char* a[] = { "Q","W","E","R","T","Y","U","I","O","P" };
-        key[a[i - 16]] = i;
-    }
-    for (int i = 30; i < 39; i++) {
-        const char* a[] = { "A","S","D","F","G","H","J","K","L" };
-        key[a[i - 30]] = i;
-    }
-    for (int i = 44; i < 51; i++) {
-        const char* a[] = { "Z","X","C","V","B","N","M" };
-        key[a[i - 44]] = i;
-    }
-    for (int i = 59; i < 69; i++) {
-        const char* a[] = { "F1","F2","F3","F4","F5","F6","F7","F8","F9","F10" };
-        key[a[i - 59]] = i;
-    }
-    key["F11"] = 87;
-    key["F12"] = 88;
+        key["ESC"] = 1;
+        key["-"] = 12;
+        key["="] = 13;
+        key["BACKSPACE"] = 14;
+        key["TAB"] = 15;
+        key["ENTER"] = 28;
+        key["CTRL"] = 29;
+        key[";"] = 39;
+        key["\'"] = 40;
+        key["`"] = 41;
+        key["LSHIFT"] = 42;
+        key["\\"] = 43;
+        key["<"] = 51;
+        key[","] = 51;
+        key[">"] = 52;
+        key["."] = 52;
+        key["/"] = 53;
+        key["RSHIFT"] = 54;
+        key["*"] = 55;
+        key["ALT"] = 56;
+        key["SPACE"] = 57;
+        key["CAPSLOCK"] = 58;
+        key["NUMLOCK"] = 69;
+        key["SCRLOCK"] = 70;
 
-    key["ESC"] = 1;
-    key["-"] = 12;
-    key["="] = 13;
-    key["BACKSPACE"] = 14;
-    key["TAB"] = 15;
-    key["ENTER"] = 28;
-    key["CTRL"] = 29;
-    key[";"] = 39;
-    key["\'"] = 40;
-    key["`"] = 41;
-    key["LSHIFT"] = 42;
-    key["\\"] = 43;
-    key["<"] = 51;
-    key[","] = 51;
-    key[">"] = 52;
-    key["."] = 52;
-    key["/"] = 53;
-    key["RSHIFT"] = 54;
-    key["*"] = 55;
-    key["ALT"] = 56;
-    key["SPACE"] = 57;
-    key["CAPSLOCK"] = 58;
-    key["NUMLOCK"] = 69;
-    key["SCRLOCK"] = 70;
+        key["LEFT"] = 75;
+        key["RIGHT"] = 77;
+        key["UP"] = 72;
+        key["DOWN"] = 80;
 
-    key["LEFT"] = 75;
-    key["RIGHT"] = 77;
-    key["UP"] = 72;
-    key["DOWN"] = 80;
-
-    key["PGU"] = 201;
-    key["PGD"] = 209;
-    key["INS"] = 210;
-    key["DEL"] = 211;
-    key["HOME"] = 199;
-    key["END"] = 207;
+        key["PGU"] = 201;
+        key["PGD"] = 209;
+        key["INS"] = 210;
+        key["DEL"] = 211;
+        key["HOME"] = 199;
+        key["END"] = 207;
+    };
 
     SYS::SYS(const char* window){
         GetWindowRect(FindWindow(NULL, (LPCSTR)window), &this->targetWNDsize);
@@ -322,7 +324,7 @@
         long int st = this->timestamp.tv_sec * 1000 + this->timestamp.tv_usec / 1000, ed;
         bool frontIsTarget, numLockOn;
 
-        if(this->timeCountDown <= this->timestamp){
+        if(this->timeCountDown <= st){
             this->enable = 0;
             this->timeCountDown = -1;
         }
@@ -332,7 +334,7 @@
             numLockOn = LOWORD(GetKeyState(VK_NUMLOCK));
             ed = this->timestamp.tv_sec * 1000 + this->timestamp.tv_usec / 1000;
             // std::cout<<this->enable<<", "<<GetForegroundWindow()<<", "<<this->targetWND<<", "<<frontIsTarget<<", "<<numLockOn<<"\n";
-            if(ed - st > dur && this->enable && (frontIsTarget || !this->check_WHD) && (this->timeCountDown == -1 || this->timeCountDown > this->timestamp)){
+            if(ed - st > dur && this->enable && (frontIsTarget || !this->check_WHD) && (this->timeCountDown == -1 || this->timeCountDown > st)){
                 if(ed - st > dur + 1000) SLEEP(100);
                 break;
             }
@@ -383,6 +385,6 @@
     };
     void SYS::setCountdown(int time){
         gettimeofday(&this->timestamp, NULL);
-        this->timeCountDown = this->timestamp + time;
+        this->timeCountDown = this->timestamp.tv_sec * 1000 + this->timestamp.tv_usec / 1000 + time;
     };
 #endif

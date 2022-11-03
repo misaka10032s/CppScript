@@ -428,13 +428,13 @@ int takenoko(PICTURE &targetPic, int type){
     int ref[15][30][3];
     switch(type){
         case 0:
-            ref = herb;
+            std::copy(std::begin(herb), std::end(herb), std::begin(ref));
             break;
         case 1:
-            ref = mineral;
+            std::copy(std::begin(mineral), std::end(mineral), std::begin(ref));
             break;
         default:
-            ref = herb;
+            std::copy(std::begin(herb), std::end(herb), std::begin(ref));
             break;
     }
     std::vector<uint8_t> koPixels;

@@ -12,6 +12,10 @@
 
 #include "systemOS.h"
 
+
+#ifndef LIB_PICTURE_H_
+#define LIB_PICTURE_H_
+
 #ifdef SYS_LINUX
 #endif
 #ifdef SYS_WINDOWS
@@ -70,10 +74,5 @@ class PICTURE{
         PICTURE subPic(PICTURE &targetPic, RANGE range);
         PICTURE copyPaste(PICTURE &targetPic, RANGE oRange, int pX, int pY);
         PICTURE rgbMatrixTrans(PICTURE &targetPic, int mtx[9]);
-
-
-        // findarrow
-        // matchway
-        // getpos
-        // getNPC
 };
+#endif

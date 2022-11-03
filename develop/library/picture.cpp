@@ -644,7 +644,7 @@ PICTURE PICTURE::copyPaste(PICTURE &targetPic, RANGE oRange, int pX, int pY){
     }
     return targetPic;
 };
-PICTURE rgbMatrixTrans(PICTURE &targetPic, int mtx[9]){
+PICTURE PICTURE::rgbMatrixTrans(PICTURE &targetPic, int mtx[9]){
     int tmp;
     targetPic.resize(this->width, this->height, this->bit);
     for(int j=0; j<=this->height; j++){
