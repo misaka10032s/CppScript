@@ -17,8 +17,8 @@ struct EDGE {
     int weight;
     bool directional;
 
-    bool operator == (EDGE const &EDGE1);
-    bool operator != (EDGE const &EDGE1);
+    bool operator == (EDGE const &EDGE1) const;
+    bool operator != (EDGE const &EDGE1) const;
 };
 
 struct GRAPH {

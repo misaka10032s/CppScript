@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <map>
 using namespace std;
 
 #include "systemOS.h"
@@ -29,7 +30,7 @@ EDGE::EDGE(std::string fromV, std::string toV, int weight, bool directional){
     this->directional = directional;
 }
 
-bool EDGE::operator == (EDGE const &EDGE1){
+bool EDGE::operator == (EDGE const &EDGE1) const{
     if(this->weight != EDGE1.weight) return 0;
     if(this->directional){
         if(this->fromV != EDGE1.fromV) return 0;
@@ -41,7 +42,7 @@ bool EDGE::operator == (EDGE const &EDGE1){
     }
     return 1;
 };
-bool EDGE::operator != (EDGE const &EDGE1){
+bool EDGE::operator != (EDGE const &EDGE1) const{
     return !(*this == EDGE1);
 };
 
@@ -245,6 +246,26 @@ GRAPH MST_K(std::vector<EDGE> const &links){
 }
 
 // ######################## find shortest route between two points ########################
+namespace std {
+    template <>
+    struct hash<EDGE>{
+        std::size_t operator()(const EDGE& k) const
+        {
+        using std::size_t;
+        using std::hash;
+        using std::string;
+
+        // Compute individual hash values for first,
+        // second and third and combine them using XOR
+        // and bit shifting:
+
+        return ((hash<string>()(k.fromV)
+                ^ (hash<string>()(k.toV) << 1)) >> 1)
+                ^ (hash<int>()(k.weight) << 1);
+        }
+    };
+}
+
 void rfind(std::string start, std::string end, std::unordered_map<std::string, std::vector<EDGE>> &rtdict, std::vector<EDGE> &rt, std::vector<EDGE> &route, std::unordered_map<std::string, int> &pointV, std::unordered_map<EDGE, int> &hasGoThrough){
     std::vector<EDGE> possible = rtdict[start];
     if(possible.size() == 0){
@@ -274,7 +295,6 @@ GRAPH shortestRoute(std::vector<EDGE> const &links, std::string start, std::stri
     std::unordered_map<EDGE, int> hasGoThrough;
     std::unordered_map<std::string, std::vector<EDGE>> rtdict;
     std::vector<EDGE> rt, route;
-    int length = 0, vertexNum = 0;
 
     for(auto l : links){
         pointV.emplace(l.fromV, -2147483648);

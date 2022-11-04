@@ -47,7 +47,7 @@ class AUDIO{
             bool emphasis[2];
 
             MP3();
-        }
+        };
 
         std::string fileName, subFileName;
         std::vector<uint8_t> data;
@@ -59,7 +59,7 @@ class AUDIO{
         AUDIO(const char* fileName);
 
         AUDIO open(const char* fileName);
-}
+};
 
 
 #endif

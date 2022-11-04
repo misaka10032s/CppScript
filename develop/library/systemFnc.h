@@ -2,12 +2,11 @@
 #ifndef LIB_SYSTEMS_H_
 #define LIB_SYSTEMS_H_
 
-#ifdef SYS_LINUX
+#if defined(SYS_LINUX)
     #include <unistd.h>
     #define PAUSE printf("Press Enter key to continue..."); fgetc(stdin);
     #define SLEEP(ms) usleep(ms*1000);
-#endif
-#ifdef SYS_WINDOWS
+#elif defined(SYS_WINDOWS)
 // #elif defined SYS_WINDOWS
     #define PAUSE system("pause");
     #define SLEEP(ms) Sleep(ms);
@@ -23,7 +22,7 @@
         }
     };
 
-    std::map<const char*, int, cmp_str> key;
+    std::map<const char*, int, cmp_str> keyCode;
 
     class SYS{
         private:
@@ -47,6 +46,7 @@
             SYS setWindow();
             void setKey(unsigned char key, unsigned char value);
             bool isEnable();
+            long int getNowtick();
             void keybd(const char* btn, char type);
             void mouseAction(int x, int y, char type, bool abs, DWORD dwFlags);
             // mouse position absolute

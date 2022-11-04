@@ -80,7 +80,7 @@ bool SUDOKU::suppose(char map[9][9], int numberLeft[9][9]){
     }
     while(map[si][sj]);
 
-    std::copy(std::begin(numberLeft), std::end(numberLeft), std::begin(origNF));
+    std::copy(&numberLeft[0][0], &numberLeft[8][8], &origNF[0][0]);
     for(int i=0; i<9; i++) {
         for(int j=0; j<9;j++) {
             origMap[i][j] = map[i][j];

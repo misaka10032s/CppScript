@@ -21,63 +21,63 @@
     void set_key_value(){
         for (int i = 2; i < 12; i++) {
             const char* a[] = { "1","2","3","4","5","6","7","8","9","0" };
-            key[a[i - 2]] = i;
+            keyCode[a[i - 2]] = i;
         }
         for (int i = 16; i < 26; i++) {
             const char* a[] = { "Q","W","E","R","T","Y","U","I","O","P" };
-            key[a[i - 16]] = i;
+            keyCode[a[i - 16]] = i;
         }
         for (int i = 30; i < 39; i++) {
             const char* a[] = { "A","S","D","F","G","H","J","K","L" };
-            key[a[i - 30]] = i;
+            keyCode[a[i - 30]] = i;
         }
         for (int i = 44; i < 51; i++) {
             const char* a[] = { "Z","X","C","V","B","N","M" };
-            key[a[i - 44]] = i;
+            keyCode[a[i - 44]] = i;
         }
         for (int i = 59; i < 69; i++) {
             const char* a[] = { "F1","F2","F3","F4","F5","F6","F7","F8","F9","F10" };
-            key[a[i - 59]] = i;
+            keyCode[a[i - 59]] = i;
         }
-        key["F11"] = 87;
-        key["F12"] = 88;
+        keyCode["F11"] = 87;
+        keyCode["F12"] = 88;
 
-        key["ESC"] = 1;
-        key["-"] = 12;
-        key["="] = 13;
-        key["BACKSPACE"] = 14;
-        key["TAB"] = 15;
-        key["ENTER"] = 28;
-        key["CTRL"] = 29;
-        key[";"] = 39;
-        key["\'"] = 40;
-        key["`"] = 41;
-        key["LSHIFT"] = 42;
-        key["\\"] = 43;
-        key["<"] = 51;
-        key[","] = 51;
-        key[">"] = 52;
-        key["."] = 52;
-        key["/"] = 53;
-        key["RSHIFT"] = 54;
-        key["*"] = 55;
-        key["ALT"] = 56;
-        key["SPACE"] = 57;
-        key["CAPSLOCK"] = 58;
-        key["NUMLOCK"] = 69;
-        key["SCRLOCK"] = 70;
+        keyCode["ESC"] = 1;
+        keyCode["-"] = 12;
+        keyCode["="] = 13;
+        keyCode["BACKSPACE"] = 14;
+        keyCode["TAB"] = 15;
+        keyCode["ENTER"] = 28;
+        keyCode["CTRL"] = 29;
+        keyCode[";"] = 39;
+        keyCode["\'"] = 40;
+        keyCode["`"] = 41;
+        keyCode["LSHIFT"] = 42;
+        keyCode["\\"] = 43;
+        keyCode["<"] = 51;
+        keyCode[","] = 51;
+        keyCode[">"] = 52;
+        keyCode["."] = 52;
+        keyCode["/"] = 53;
+        keyCode["RSHIFT"] = 54;
+        keyCode["*"] = 55;
+        keyCode["ALT"] = 56;
+        keyCode["SPACE"] = 57;
+        keyCode["CAPSLOCK"] = 58;
+        keyCode["NUMLOCK"] = 69;
+        keyCode["SCRLOCK"] = 70;
 
-        key["LEFT"] = 75;
-        key["RIGHT"] = 77;
-        key["UP"] = 72;
-        key["DOWN"] = 80;
+        keyCode["LEFT"] = 75;
+        keyCode["RIGHT"] = 77;
+        keyCode["UP"] = 72;
+        keyCode["DOWN"] = 80;
 
-        key["PGU"] = 201;
-        key["PGD"] = 209;
-        key["INS"] = 210;
-        key["DEL"] = 211;
-        key["HOME"] = 199;
-        key["END"] = 207;
+        keyCode["PGU"] = 201;
+        keyCode["PGD"] = 209;
+        keyCode["INS"] = 210;
+        keyCode["DEL"] = 211;
+        keyCode["HOME"] = 199;
+        keyCode["END"] = 207;
     };
 
     SYS::SYS(const char* window){
@@ -173,13 +173,18 @@
         return this->enable;
     };
 
+    long int SYS::getNowtick(){
+        gettimeofday(&this->timestamp, NULL);
+        return this->timestamp.tv_sec * 1000 + this->timestamp.tv_usec / 1000;
+    };
+
     void SYS::keybd(const char* btn, char type){
         INPUT ip;
         ip.type = INPUT_KEYBOARD;
         ip.ki.time = 0;
         ip.ki.wVk = 0;
         ip.ki.dwExtraInfo = 0;
-        ip.ki.wScan = key[btn];
+        ip.ki.wScan = keyCode[btn];
 
         if(type & 1) {
             ip.ki.dwFlags = KEYEVENTF_SCANCODE;
