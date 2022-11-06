@@ -10,14 +10,21 @@
     // INPUT struct
     // https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-input
 
-#ifdef SYS_LINUX
+#if defined(SYS_LINUX)
     
-#endif
-#ifdef SYS_WINDOWS
+#elif defined(SYS_WINDOWS)
     #include <map>
     #include <windows.h>
     #include <iostream>
 
+    struct cmp_str{
+        bool operator()(char const *a, char const *b) const
+        {
+            return strcmp(a, b) < 0;
+        }
+    };
+
+    std::map<const char*, int, cmp_str> keyCode;
     void set_key_value(){
         for (int i = 2; i < 12; i++) {
             const char* a[] = { "1","2","3","4","5","6","7","8","9","0" };
@@ -85,6 +92,8 @@
         GetWindowRect(GetDesktopWindow(), &this->rctScreen);
         this->targetWND = FindWindow(NULL, (LPCSTR)window);
 
+        this->enable = 0;
+
         this->switchKey = VK_F10;
         this->maximizeKey = VK_F3;
         this->minimizeKey = VK_F4;
@@ -92,6 +101,7 @@
         this->setForegroundWindow = VK_F2;
 
         this->timeCountDown = -1;
+        set_key_value();
     }
 
     void SYS::GetFocusWindowText(){
@@ -329,7 +339,7 @@
         long int st = this->timestamp.tv_sec * 1000 + this->timestamp.tv_usec / 1000, ed;
         bool frontIsTarget, numLockOn;
 
-        if(this->timeCountDown <= st){
+        if(this->timeCountDown != -1 && this->timeCountDown <= st){
             this->enable = 0;
             this->timeCountDown = -1;
         }

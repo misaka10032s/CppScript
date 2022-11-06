@@ -15,15 +15,6 @@
     #include <windows.h>
     #include <iostream>
 
-    struct cmp_str{
-        bool operator()(char const *a, char const *b) const
-        {
-            return strcmp(a, b) < 0;
-        }
-    };
-
-    std::map<const char*, int, cmp_str> keyCode;
-
     class SYS{
         private:
             HWND targetWND;

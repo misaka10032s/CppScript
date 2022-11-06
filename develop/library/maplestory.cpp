@@ -442,10 +442,10 @@ void SolveWheel(SYS &script){
     std::string filename = script.gettimestring();
     PICTURE puzz(500, 150, "MapleStory");
     map<int, const char *> UDLR;
-    UDLR[2] = "D";
-    UDLR[4] = "L";
-    UDLR[6] = "R";
-    UDLR[8] = "U";
+    UDLR[2] = "DOWN";
+    UDLR[4] = "LEFT";
+    UDLR[6] = "RIGHT";
+    UDLR[8] = "UP";
     int x = 450, y = 130, way[4];
     for (int i = 0; i < 4;i++) way[i] = 0;
     puzz.screenShot(x, y);
@@ -458,7 +458,7 @@ void SolveWheel(SYS &script){
     }
     Sleep(30);
     for (int i = 0; i < 4;i++) {
-        filename += (string)" " + UDLR[way[i]];
+        filename += (string)" " + UDLR[way[i]][0];
     }
     cv::imwrite((string)"ringRECORD/" + filename + (string)".jpg", cv::Mat(puzz.height, puzz.width, puzz.bit == 4 ? CV_8UC4 : CV_8UC3, &puzz.Pixels[0]));
 }

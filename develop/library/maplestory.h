@@ -5,6 +5,7 @@
 
 #include "picture.h"
 #include "systemOS.h"
+#include "systemFnc.h"
 
 #ifndef LIB_MAPLESTORY_H_
 #define LIB_MAPLESTORY_H_
@@ -26,5 +27,6 @@ void matchway(PICTURE &targetPic, int way[4]);
 void getpos(PICTURE &targetPic, pointMS &charpos, pointMS &ringpos, bool &isOther);
 void getNPC(PICTURE &targetPic, bool *isNPC);
 int takenoko(PICTURE &targetPic, int ref[15][30][3]);
+void SolveWheel(SYS &script);
 
 #endif

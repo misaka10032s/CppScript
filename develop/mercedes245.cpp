@@ -25,11 +25,14 @@ class skilloption {
         skilloption(std::string sn, std::initializer_list<std::string> Kn, std::initializer_list<int> Kd, std::initializer_list<float> rt, int c){
             skillname = sn;
             KBDname = Kn;
-            KBDdelay = Kd;
-            rate = rt;
-            sknum = std::min(std::min(Kn.size(), Kd.size()), rt.size());
+            // KBDdelay = Kd;
+            // rate = rt;
+            sknum = (int)Kn.size();
             cd = c;
             lastuse = -1;
+
+            for(int i=0; i<sknum; i++) KBDdelay.push_back(*(Kd.begin() + i%((int)Kd.size())));
+            for(int i=0; i<sknum; i++) rate.push_back(*(rt.begin() + i%((int)rt.size())));
         };
 };
 
@@ -57,7 +60,8 @@ class MSsetting{
             now_action = 1;
             direction = -1;
             to = {-1, -1};
-            hikikae = {55, 115};
+            hikikae[0] = 55;
+            hikikae[1] = 115;
             pickCD = 999 * 3 * 60 * 1000;
             ringCD = 15 * 60 * 1000 + 5000;
             lastpick = -1;
@@ -84,7 +88,7 @@ skilloption javelin("javelin", {"C", "C", "X", "PGD", "PGD"}, {150, 200, 420, 20
 skilloption senpuu("senpuu", {"C", "C", "X", "V", "V"}, {1150, 200, 400, 200, 1000}, {100, 100, 100}, 220 * 1000);
 skilloption lightning("lightning", {"C", "C", "X", "V", "B", "CTRL", "ALT"}, {150, 250, 500, 1000, 600, 1000, 600}, {100, 100, 100}, 250 * 1000);
 skilloption normal("normal", {"C", "C", "X"}, {100, 200, 600}, {100, 100, 100}, 0);
-skilloption cycle("cycle", {"DEL", "DEL"}, {300, 1000}, {100, 100, 100}, 300 * 1000);
+skilloption cycle("cycle", {"DEL", "DEL"}, {300, 1000}, {100, 100}, 300 * 1000);
 
 int main(){
     const char* targetWnd = "MapleStory";
@@ -99,7 +103,7 @@ int main(){
         if(scriptMS.isEnable()){
             std::cout<<"action: " << infoMS.now_action << "\n";
             if(infoMS.now_action) {
-                mapImg.ScreenShot(5, 18);
+                mapImg.screenShot(5, 18);
                 getpos(mapImg, infoMS.charpos, infoMS.ringpos, infoMS.isOther);
             }
 
@@ -134,7 +138,7 @@ int main(){
                         infoMS.now_action = 4;
                     }
                     else if(nowtick - infoMS.lastpick > infoMS.pickCD){
-                        infoMS.infoMS.to.x = {anyway, 60};
+                        infoMS.to = {anyway, 60};
                         infoMS.now_action = 4;
                     }
                     else if(infoMS.charpos.y > 0 && infoMS.charpos.y < 35){
@@ -150,7 +154,7 @@ int main(){
                         scriptMS.wait(400);
                     }
                     else if(infoMS.charpos.y > 50){
-                        infoMS.infoMS.to.x = {anyway, 60};
+                        infoMS.to = {anyway, 47};
                         infoMS.now_action = 4;
                     }
                     else{
@@ -184,14 +188,14 @@ int main(){
 
                                 infoMS.skills[i].lastuse = nowtick + rand()%(infoMS.skills[i].cd / 20 + 1);
 
-                                for (int i = 0; i < val.sknum; i++){
-                                    mapImg.ScreenShot(5, 18);
+                                for (int j = 0; j < infoMS.skills[i].sknum; j++){
+                                    mapImg.screenShot(5, 18);
                                     getpos(mapImg, infoMS.charpos, infoMS.ringpos, infoMS.isOther);
-                                    scriptMS.keybd(infoMS.skills[i].KBDname[i].data(), 3);
+                                    scriptMS.keybd(infoMS.skills[i].KBDname[j].data(), 3);
 
-                                    if (rand() % 100 < 50 && (val.skillname == "angryangel" || val.skillname == "javelin")){
-                                        if (infoMS.charpos.x > hikikae[1]) infoMS.direction = 0;
-                                        else if (infoMS.charpos.x > hikikae[0]) infoMS.direction = 1;
+                                    if (rand() % 100 < 50 && (infoMS.skills[i].skillname == "angryangel" || infoMS.skills[i].skillname == "javelin")){
+                                        if (infoMS.charpos.x > infoMS.hikikae[1]) infoMS.direction = 0;
+                                        else if (infoMS.charpos.x < infoMS.hikikae[0]) infoMS.direction = 1;
 
                                         if (infoMS.direction == 1){
                                             scriptMS.keybd("LEFT", 2);
@@ -202,8 +206,8 @@ int main(){
                                             scriptMS.keybd("LEFT", 1);
                                         }
                                     }
-
-                                    scriptMS.wait(infoMS.skills[i].KBDdelay[i]);
+std::cout<<"wait: "<<infoMS.skills[i].KBDdelay[j]<<"\n";
+                                    scriptMS.wait(infoMS.skills[i].KBDdelay[j]);
                                 }
                                 break;
                             }
@@ -214,7 +218,7 @@ int main(){
                 case 2: // solve ring
                     scriptMS.keybd("Y", 3);
                     scriptMS.wait(400);
-                    SolveWheel();
+                    SolveWheel(scriptMS);
                     infoMS.lastring = nowtick;
                     infoMS.now_action = 1;
                     infoMS.isring = 0;
@@ -228,28 +232,54 @@ int main(){
                     }
                     else{
                         infoMS.timecount = 0;
-                        mapImg.ScreenShot(5, 18);
-                        getpos(mapImg, infoMS.charpos, infoMS.ringpos, infoMS.isOther);
 
                         if(abs(infoMS.to.y - infoMS.charpos.y) > 3){
-                        if(infoMS.to.y > infoMS.charpos.y + 8){
-                            scriptMS.keybd("DOWN", 1);
-                            scriptMS.wait(100);
-                            scriptMS.keybd("C", 3);
-                            scriptMS.wait(100);
-                            scriptMS.keybd("C", 3);
-                            scriptMS.wait(100);
-                            scriptMS.keybd("DOWN", 2);
-                            scriptMS.wait(500);
-                        }
-                        else{
-                            if((infoMS.to.x != anyway && infoMS.charpos.x > infoMS.to.x) || (infoMS.to.x == anyway && infoMS.charpos.x > hikikae[1])){
-                                infoMS.direction = 0;
+                            if(infoMS.to.y > infoMS.charpos.y + 8){
+                                scriptMS.keybd("DOWN", 1);
+                                scriptMS.wait(100);
+                                scriptMS.keybd("C", 3);
+                                scriptMS.wait(100);
+                                scriptMS.keybd("C", 3);
+                                scriptMS.wait(100);
+                                scriptMS.keybd("DOWN", 2);
+                                scriptMS.wait(500);
                             }
-                            else if((infoMS.to.x != anyway && infoMS.charpos.x < infoMS.to.x) || (infoMS.to.x == anyway && infoMS.charpos.x < hikikae[0])){
-                                infoMS.direction = 1;
-                            }
+                            else{
+                                if((infoMS.to.x != anyway && infoMS.charpos.x > infoMS.to.x) || (infoMS.to.x == anyway && infoMS.charpos.x > infoMS.hikikae[1])){
+                                    infoMS.direction = 0;
+                                }
+                                else if((infoMS.to.x != anyway && infoMS.charpos.x < infoMS.to.x) || (infoMS.to.x == anyway && infoMS.charpos.x < infoMS.hikikae[0])){
+                                    infoMS.direction = 1;
+                                }
 
+                                if(infoMS.direction == 1){
+                                    scriptMS.keybd("LEFT", 2);
+                                    scriptMS.keybd("RIGHT", 1);
+                                }
+                                else if(infoMS.direction == 0){
+                                    scriptMS.keybd("RIGHT", 2);
+                                    scriptMS.keybd("LEFT", 1);
+                                }
+                                scriptMS.keybd("C", 3);
+                                scriptMS.wait(200);
+                                scriptMS.keybd("C", 3);
+                                scriptMS.wait(100);
+                                scriptMS.keybd("X", 3);
+                                scriptMS.wait(400);
+                            }
+                        }
+
+                        mapImg.screenShot(5, 18);
+                        getpos(mapImg, infoMS.charpos, infoMS.ringpos, infoMS.isOther);
+
+                        if((infoMS.to.x != anyway && infoMS.charpos.x > infoMS.to.x) || (infoMS.to.x == anyway && infoMS.charpos.x > infoMS.hikikae[1])){
+                            infoMS.direction = 0;
+                        }
+                        else if((infoMS.to.x != anyway && infoMS.charpos.x < infoMS.to.x) || (infoMS.to.x == anyway && infoMS.charpos.x < infoMS.hikikae[0])){
+                            infoMS.direction = 1;
+                        }
+
+                        if(infoMS.to.x != anyway){
                             if(infoMS.direction == 1){
                                 scriptMS.keybd("LEFT", 2);
                                 scriptMS.keybd("RIGHT", 1);
@@ -258,16 +288,75 @@ int main(){
                                 scriptMS.keybd("RIGHT", 2);
                                 scriptMS.keybd("LEFT", 1);
                             }
-                            scriptMS.keybd("C", "ALL");
-                            scriptMS.wait(200);
-                            scriptMS.keybd("C", "ALL");
-                            scriptMS.wait(100);
-                            scriptMS.keybd("X", "ALL");
-                            scriptMS.wait(400);
                         }
+
+                        if(abs(infoMS.charpos.x - infoMS.to.x) > 35 && infoMS.to.x != anyway){
+                            scriptMS.keybd("C", 1);
+                            scriptMS.wait(100);
+                            scriptMS.keybd("UP", 3);
+                            scriptMS.wait(100);
+                            scriptMS.keybd("C", 3);
+                            scriptMS.wait(100);
+                            scriptMS.keybd("C", 3);
+                            scriptMS.wait(150);
+                        }
+                        else{
+                            scriptMS.wait(300);
+                        }
+                        
+                        scriptMS.keybd("RIGHT", 2);
+                        scriptMS.keybd("LEFT", 2);
+                    }
+                    if(infoMS.isring && infoMS.ringpos.x == infoMS.ringpos.y && infoMS.ringpos.x == -1){
+                        infoMS.now_action = 2;
+                        break;
                     }
 
+                    if( infoMS.timecount > 0){
+                        infoMS.timecount = 0;
+                        infoMS.to.x = anyway;
+                        if(infoMS.isring) infoMS.now_action = 2;
+                        else if(nowtick - infoMS.lastpick > infoMS.pickCD) infoMS.now_action = 5;
+                        else infoMS.now_action = 1;
                     }
+                    break;
+                case 5: // pick money
+                    infoMS.lastpick = scriptMS.getNowtick();
+
+                    while(infoMS.charpos.y < 55){
+                        scriptMS.keybd("DOWN", 1);
+                        scriptMS.wait(50);
+                        scriptMS.keybd("C", 3);
+                        scriptMS.wait(50);
+                        scriptMS.keybd("C", 3);
+                        scriptMS.wait(50);
+                        scriptMS.keybd("DOWN", 2);
+                        scriptMS.wait(430);
+                        mapImg.screenShot(5, 18);
+                        getpos(mapImg, infoMS.charpos, infoMS.ringpos, infoMS.isOther);
+                    }
+                    
+                    if(infoMS.charpos.x < 90){
+                        scriptMS.keybd("RIGHT", 1);
+                    }
+                    else{
+                        scriptMS.keybd("LEFT", 1);
+                    }
+
+                    while(infoMS.charpos.x > 30 && infoMS.charpos.x < 140){
+                        scriptMS.keybd("C", 3);
+                        scriptMS.wait(160);
+                        scriptMS.keybd("C", 3);
+                        scriptMS.wait(250);
+                        scriptMS.keybd("X", 3);
+                        scriptMS.wait(680);
+                        mapImg.screenShot(5, 18);
+                        getpos(mapImg, infoMS.charpos, infoMS.ringpos, infoMS.isOther);
+                    }
+
+                    scriptMS.keybd("RIGHT", 2);
+                    scriptMS.keybd("LEFT", 2);
+                    infoMS.now_action = 1;
                     break;
             }
         }

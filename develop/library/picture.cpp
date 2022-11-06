@@ -564,29 +564,25 @@ PICTURE PICTURE::matrixTrans(PICTURE &targetPic, int posx, int posy, double mat[
     return targetPic;
 };
 PICTURE PICTURE::rotateD(PICTURE &targetPic, int posx, int posy, double deg, RANGE range){
-    double c = cos(deg*M_PI/180), s = sin(deg*M_PI/180), mat[4] = {c, -s, s, c};
-    matrixTrans(targetPic, posx, posy, mat, range);
+    double c = cos(deg*M_PI/180.0), s = sin(deg*M_PI/180.0), mat[4] = {c, -s, s, c};
+    this->matrixTrans(targetPic, posx, posy, mat, range);
     return targetPic;
 };
 
 PICTURE PICTURE::rotateQ(PICTURE &targetPic, int qNum){
-    int i, j, *I, *J, ti, tj;
+    int ti, tj;
     qNum = qNum < 0 ? qNum%4 + 4 : qNum%4;
     if(qNum%2) {
         targetPic.resize(this->height, this->width, this->bit);
-        I = &j;
-        J = &i;
     }
     else{
         targetPic.resize(this->width, this->height, this->bit);
-        I = &i;
-        J = &j;
     }
-    for(j=0; j<=this->height; j++){
-        for(i=0; i<=this->width; i++){
+    for(int j=0; j<this->height; j++){
+        for(int i=0; i<this->width; i++){
             for(int k=0;k<3;k++){
-                ti = qNum/2 ? targetPic.width - *I - 1 : *I;
-                tj = qNum/2 ? targetPic.height - *J - 1 : *J;
+                ti = qNum%2 ? (qNum/2 ? j : targetPic.width - j - 1) : (qNum/2 ? targetPic.width - i - 1 : i);
+                tj = qNum%2 ? (qNum/2 ? targetPic.height - i - 1 : i) : (qNum/2 ? targetPic.height - j - 1 : j);
                 targetPic.Pixels[ti*targetPic.bit + tj*targetPic.width*targetPic.bit + k] = this->Pixels[i*this->bit + j*this->width*this->bit + k];
             }
         }
@@ -597,8 +593,8 @@ PICTURE PICTURE::rotateQ(PICTURE &targetPic, int qNum){
 PICTURE PICTURE::ripple(PICTURE &targetPic, int posx, int posy, double density){
     double newx, newy, r, dr;
     targetPic.resize(this->width, this->height, this->bit);
-    for(int j=0; j<=this->height; j++){
-        for(int i=0; i<=this->width; i++){
+    for(int j=0; j<this->height; j++){
+        for(int i=0; i<this->width; i++){
             r = sqrt((i-posx) * (i-posx) + (j-posy) * (j-posy));
             // \sin\left(\frac{3200\pi}{2\left(xd+100\right)}\right)e^{-\frac{x}{5d}}
             dr = sin((3200.0 * M_PI) / (2*r*density + 200.0)) * exp(-r/(5*density));
@@ -647,8 +643,8 @@ PICTURE PICTURE::copyPaste(PICTURE &targetPic, RANGE oRange, int pX, int pY){
 PICTURE PICTURE::rgbMatrixTrans(PICTURE &targetPic, int mtx[9]){
     int tmp;
     targetPic.resize(this->width, this->height, this->bit);
-    for(int j=0; j<=this->height; j++){
-        for(int i=0; i<=this->width; i++){
+    for(int j=0; j<this->height; j++){
+        for(int i=0; i<this->width; i++){
             for(int k=0;k<3;k++){
                 tmp = 0;
                 for(int l=0; l<3; l++){
