@@ -20,6 +20,20 @@ class pointMS{
         pointMS(std::initializer_list<int> pos);
 };
 
+class skilloption {
+    public:
+        std::string skillname;
+        std::vector<std::string> KBDname;
+        std::vector<int> KBDdelay;
+        std::vector<float> rate;
+        int sknum;
+        int cd;
+        long int lastuse;
+
+        skilloption();
+        skilloption(std::string sn, std::initializer_list<std::string> Kn, std::initializer_list<int> Kd, std::initializer_list<float> rt, int c);
+};
+
 int GetEigenvalue(PICTURE &targetPic);
 int GetEigenvalue2(PICTURE &targetPic);
 void findarrow(PICTURE &targetPic, int way[4]);
@@ -27,6 +41,6 @@ void matchway(PICTURE &targetPic, int way[4]);
 void getpos(PICTURE &targetPic, pointMS &charpos, pointMS &ringpos, bool &isOther);
 void getNPC(PICTURE &targetPic, bool *isNPC);
 int takenoko(PICTURE &targetPic, int ref[15][30][3]);
-void SolveWheel(SYS &script);
-
+void solveWheel(SYS &script);
+void actSkill(skilloption &skill, SYS &script);
 #endif

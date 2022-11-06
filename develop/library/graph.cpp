@@ -137,14 +137,13 @@ GRAPH MST_P(std::vector<EDGE> const &links){
     vertexMinWeight[nowVertex] = -2147483648;
     vertexIsVisited[nowVertex] = 1;
 
-    int minV, vertexNumAdded = 0, costTmp;
+    int minV, vertexNumAdded = 0;
     std::string minDest, minOrig;
     NODE tmpEdge;
 
     while(vertexNumAdded < vertexNum - 1){
         for(auto [v,w]:vertexTo[nowVertex]){
             if(vertexIsVisited[v]) continue;
-            costTmp = w;
 
             if(w < vertexMinWeight[v]){
                 minHEAP.push(v, w);

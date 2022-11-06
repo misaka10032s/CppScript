@@ -116,10 +116,8 @@ inline bool compareAbs(BIGNUM const &NUM0, BIGNUM const &NUM1, int exp){ // abs(
     if(dig0 - NUM0.point != dig1 - NUM1.point + exp) return dig0 - NUM0.point < dig1 - NUM1.point + exp;
 
     int size0, size1;
-    long long int modNUM0, tmpNUM0_0, tmpNUM0_1, tmpNUM1_0, tmpNUM1_1;
-    int NUM1point;
+    long long int modNUM0, tmpNUM1_0, tmpNUM1_1;
 
-    NUM1point = NUM1.point - exp;
     exp = quick_pow10(std::max(exp + NUM0.point - NUM1.point, 0) % DIGITNUM);
 
 
@@ -129,8 +127,8 @@ inline bool compareAbs(BIGNUM const &NUM0, BIGNUM const &NUM1, int exp){ // abs(
     modNUM0 = quick_pow10(getDigAll(NUM0.value[size0-1]));
 
     for(int i=1; i<=size0; i++){
-        tmpNUM0_0 = (0 <= size0 - i && size0 - i < size0) ? (NUM0.value[size0 - i] % modNUM0) * (DIGIT10/modNUM0) : 0;
-        tmpNUM0_1 = (0 <= size0 - i - 1 && size0 - i - 1 < size0) ? NUM0.value[size0 - i - 1] / modNUM0 : 0;
+        // tmpNUM0_0 = (0 <= size0 - i && size0 - i < size0) ? (NUM0.value[size0 - i] % modNUM0) * (DIGIT10/modNUM0) : 0;
+        // tmpNUM0_1 = (0 <= size0 - i - 1 && size0 - i - 1 < size0) ? NUM0.value[size0 - i - 1] / modNUM0 : 0;
 
         tmpNUM1_0 = (0 <= size1 - i && size1 - i < size1) ? (long long int)NUM1.value[size1 - i] * (long long int)exp : 0;
         if(tmpNUM1_0 > DIGIT10){
@@ -142,14 +140,12 @@ inline bool compareAbs(BIGNUM const &NUM0, BIGNUM const &NUM1, int exp){ // abs(
         }
         
 
-// std::cout<<"compareAbs!: "<<tmpNUM0_0 <<", "<< tmpNUM0_1<<", "<<tmpNUM1_0<<", "<<tmpNUM1_1<<", "<<exp<<"\n";
         if(i==1) {
             if(NUM0.value[size0 - i] != (tmpNUM1_0 + tmpNUM1_1) % modNUM0) return NUM0.value[size0 - i] < (tmpNUM1_0 + tmpNUM1_1) % modNUM0;
         }
         else {
             if(NUM0.value[size0 - i] != tmpNUM1_0 + tmpNUM1_1) return NUM0.value[size0 - i] < tmpNUM1_0 + tmpNUM1_1;
         }
-        // if(tmpNUM0_0 + tmpNUM0_1 != tmpNUM1_0 + tmpNUM1_1) return tmpNUM0_0 + tmpNUM0_1 < tmpNUM1_0 + tmpNUM1_1;
     }
     return 0;
 }
@@ -619,7 +615,6 @@ BIGNUM BIGNUM::divideBy(BIGNUM const &NUM1, BIGNUM &res){
     BIGNUM NUM0;
     DIGITDATATYPE digitNUM0, digitNUM1, digitExact, nowDigit;
     int rangeL, f0, f1, tmp, digit;
-    int initPointNUM0;
 
     if(isZero(NUM1)) {
         res.isInf = 1;
@@ -638,7 +633,6 @@ BIGNUM BIGNUM::divideBy(BIGNUM const &NUM1, BIGNUM &res){
     NUM0.sign = this->sign;
     NUM0.isInf = this->isInf;
     NUM0.point = this->point;
-    initPointNUM0 = NUM0.point;
 
     res.sign = this->sign ^ NUM1.sign;
     res.point = digitExact;
@@ -893,7 +887,7 @@ BIGNUM BIGNUM::operator <<= (DIGITDATATYPE NUM1){
 };
 BIGNUM BIGNUM::operator >>= (DIGITDATATYPE NUM1){
     if(NUM1 <= 0 || this->isInf) return *this;
-    DIGITDATATYPE zero = 0, digitSet, digitShift, digitUnit, idx;
+    DIGITDATATYPE zero = 0, digitSet, digitShift, digitUnit;
     int dig, multiple, origSize = this->value.size();
 
     if(!(this->value[0]%10)){
@@ -912,7 +906,6 @@ BIGNUM BIGNUM::operator >>= (DIGITDATATYPE NUM1){
     digitSet = zero / DIGITNUM;
     digitUnit = zero % DIGITNUM;
     digitShift = digitSet + (digitUnit ? 1 : 0);
-    idx = (getDigAll(*this) - NUM1 + zero - 1) / DIGITNUM + 1;
     multiple = quick_pow10(DIGITNUM - digitUnit);
 
     for(int i=0; i<origSize; i++){

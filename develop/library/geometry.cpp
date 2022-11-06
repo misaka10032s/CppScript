@@ -437,11 +437,15 @@ double POLYGON::getArea(){
     return this->area;
 };
 POINT2D POLYGON::getCenter(){
+    POINT2D C;
     this->center.X = this->center.Y = 0;
     for(int i=0; i<this->vertexNum; i++){
         this->center.X += this->vertex[i].X / (double)this->vertexNum;
         this->center.Y += this->vertex[i].Y / (double)this->vertexNum;
     }
+    C.X = this->center.X;
+    C.Y = this->center.Y;
+    return C;
 };
 POLYGON POLYGON::update(){
     this->vertexNum = this->vertex.size();

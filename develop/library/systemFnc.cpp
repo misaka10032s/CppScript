@@ -340,6 +340,7 @@
         bool frontIsTarget, numLockOn;
 
         if(this->timeCountDown != -1 && this->timeCountDown <= st){
+            std::cout << "time's up\n";
             this->enable = 0;
             this->timeCountDown = -1;
         }

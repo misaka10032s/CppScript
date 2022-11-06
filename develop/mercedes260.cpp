@@ -11,31 +11,6 @@
 #include "library/systemFnc.h"
 #include "library/maplestory.h"
 
-class skilloption {
-    public:
-        std::string skillname;
-        std::vector<std::string> KBDname;
-        std::vector<int> KBDdelay;
-        std::vector<float> rate;
-        int sknum;
-        int cd;
-        long int lastuse;
-
-        skilloption(){};
-        skilloption(std::string sn, std::initializer_list<std::string> Kn, std::initializer_list<int> Kd, std::initializer_list<float> rt, int c){
-            skillname = sn;
-            KBDname = Kn;
-            // KBDdelay = Kd;
-            // rate = rt;
-            sknum = (int)Kn.size();
-            cd = c;
-            lastuse = -1;
-
-            for(int i=0; i<sknum; i++) KBDdelay.push_back(*(Kd.begin() + i%((int)Kd.size())));
-            for(int i=0; i<sknum; i++) rate.push_back(*(rt.begin() + i%((int)rt.size())));
-        };
-};
-
 class MSsetting{
     public:
         int now_action;
@@ -50,6 +25,7 @@ class MSsetting{
         std::vector<skilloption> skills;
         pointMS charpos;
         pointMS ringpos;
+        pointMS charStay;
         bool isOther;
         bool isring;
         int errorpos;
@@ -60,8 +36,8 @@ class MSsetting{
             now_action = 1;
             direction = -1;
             to = {-1, -1};
-            hikikae[0] = 55;
-            hikikae[1] = 115;
+            hikikae[0] = 70;
+            hikikae[1] = 105;
             pickCD = 999 * 3 * 60 * 1000;
             ringCD = 15 * 60 * 1000 + 5000;
             lastpick = -1;
@@ -70,6 +46,7 @@ class MSsetting{
             skills = sks;
             charpos = {-1, -1};
             ringpos = {-1, -1};
+            charStay = {0, 38};
             isOther = 0;
             isring = 0;
             errorpos = 0;
@@ -83,10 +60,10 @@ skilloption knight("knight", {"8", "8"}, {500, 1500}, {100, 100}, 175 * 1000);
 skilloption spider("spider", {"9", "9"}, {500, 800}, {100, 100}, 240 * 1000);
 skilloption supernova("supernova", {"0", "0"}, {500, 800}, {100, 100}, 35 * 1000);
 skilloption arrow("arrow", {",", ","}, {500, 500}, {100, 100}, 999 * 200 * 1000);
-skilloption angryangel("angryangel", {"C", "C", "X", "RSHIFT", "RSHIFT"}, {100, 200, 120, 200, 500}, {100, 100, 100, 100, 100}, 12 * 1000);
-skilloption javelin("javelin", {"C", "C", "X", "PGD", "PGD"}, {150, 200, 420, 200, 950}, {100, 100, 100}, 7 * 1000);
-skilloption senpuu("senpuu", {"C", "C", "X", "V", "V"}, {1150, 200, 400, 200, 1000}, {100, 100, 100}, 220 * 1000);
-skilloption lightning("lightning", {"C", "C", "X", "V", "B", "CTRL", "ALT"}, {150, 250, 500, 1000, 600, 1000, 600}, {100, 100, 100}, 250 * 1000);
+skilloption angryangel("angryangel", {"C", "C", "X", "RSHIFT", "RSHIFT"}, {100, 200, 120, 200, 500}, {100, 100, 100, 100, 100}, 9 * 1000);
+skilloption javelin("javelin", {"C", "C", "X", "PGD", "PGD"}, {150, 200, 420, 200, 950}, {100, 100, 100}, 5 * 1000);
+skilloption senpuu("senpuu", {"C", "C", "X", "V", "V"}, {1150, 200, 400, 200, 1000}, {100, 100, 100}, 400 * 1000);
+skilloption lightning("lightning", {"C", "C", "X", "V", "B", "CTRL", "ALT"}, {150, 250, 500, 1000, 600, 1000, 600}, {100, 100, 100}, 450 * 1000);
 skilloption normal("normal", {"C", "C", "X"}, {100, 200, 600}, {100, 100, 100}, 0);
 skilloption cycle("cycle", {"DEL", "DEL"}, {300, 1000}, {100, 100}, 300 * 1000);
 
@@ -94,7 +71,7 @@ int main(){
     const char* targetWnd = "MapleStory";
     SYS scriptMS(targetWnd);
     MSsetting infoMS({cycle, arrow, spider, supernova, knight, sakura, senpuu, angryangel, javelin, normal});
-    PICTURE mapImg(175, 82, targetWnd);
+    PICTURE mapImg(170, 82, targetWnd);
     long int nowtick;
     int anyway = 10000;
 
@@ -141,7 +118,7 @@ int main(){
                         infoMS.to = {anyway, 60};
                         infoMS.now_action = 4;
                     }
-                    else if(infoMS.charpos.y > 0 && infoMS.charpos.y < 35){
+                    else if(infoMS.charpos.y > 0 && infoMS.charpos.y < infoMS.charStay.y - 12){
                         scriptMS.keybd("DOWN", 1);
                         scriptMS.wait(100);
                         scriptMS.keybd("C", 3);
@@ -153,8 +130,8 @@ int main(){
                         scriptMS.keybd("X", 3);
                         scriptMS.wait(400);
                     }
-                    else if(infoMS.charpos.y > 50){
-                        infoMS.to = {anyway, 47};
+                    else if(infoMS.charpos.y > infoMS.charStay.y + 3){
+                        infoMS.to = {anyway, infoMS.charStay.y};
                         infoMS.now_action = 4;
                     }
                     else{
@@ -206,7 +183,6 @@ int main(){
                                             scriptMS.keybd("LEFT", 1);
                                         }
                                     }
-std::cout<<"wait: "<<infoMS.skills[i].KBDdelay[j]<<"\n";
                                     scriptMS.wait(infoMS.skills[i].KBDdelay[j]);
                                 }
                                 break;
@@ -218,7 +194,7 @@ std::cout<<"wait: "<<infoMS.skills[i].KBDdelay[j]<<"\n";
                 case 2: // solve ring
                     scriptMS.keybd("Y", 3);
                     scriptMS.wait(400);
-                    SolveWheel(scriptMS);
+                    solveWheel(scriptMS);
                     infoMS.lastring = nowtick;
                     infoMS.now_action = 1;
                     infoMS.isring = 0;
@@ -261,11 +237,13 @@ std::cout<<"wait: "<<infoMS.skills[i].KBDdelay[j]<<"\n";
                                     scriptMS.keybd("LEFT", 1);
                                 }
                                 scriptMS.keybd("C", 3);
-                                scriptMS.wait(200);
-                                scriptMS.keybd("C", 3);
                                 scriptMS.wait(100);
-                                scriptMS.keybd("X", 3);
-                                scriptMS.wait(400);
+                                scriptMS.keybd("UP", 1);
+                                scriptMS.wait(300);
+                                scriptMS.keybd("C", 3);
+                                scriptMS.wait(200);
+                                scriptMS.keybd("UP", 2);
+                                scriptMS.wait(500);
                             }
                         }
 
@@ -292,8 +270,6 @@ std::cout<<"wait: "<<infoMS.skills[i].KBDdelay[j]<<"\n";
 
                         if(abs(infoMS.charpos.x - infoMS.to.x) > 35 && infoMS.to.x != anyway){
                             scriptMS.keybd("C", 1);
-                            scriptMS.wait(100);
-                            scriptMS.keybd("UP", 3);
                             scriptMS.wait(100);
                             scriptMS.keybd("C", 3);
                             scriptMS.wait(100);

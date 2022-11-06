@@ -29,6 +29,20 @@ pointMS::pointMS(std::initializer_list<int> pos){
     }
 };
 
+skilloption::skilloption(){};
+skilloption::skilloption(std::string sn, std::initializer_list<std::string> Kn, std::initializer_list<int> Kd, std::initializer_list<float> rt, int c){
+    skillname = sn;
+    KBDname = Kn;
+    // KBDdelay = Kd;
+    // rate = rt;
+    sknum = (int)Kn.size();
+    cd = c;
+    lastuse = -1;
+
+    for(int i=0; i<sknum; i++) KBDdelay.push_back(*(Kd.begin() + i%((int)Kd.size())));
+    for(int i=0; i<sknum; i++) rate.push_back(*(rt.begin() + i%((int)rt.size())));
+};
+
 
 int GetEigenvalue(PICTURE &targetPic){
     int e = 0;
@@ -438,7 +452,7 @@ void getNPC(PICTURE &targetPic, bool *isNPC){
     // waitKey(0);
 }
 
-void SolveWheel(SYS &script){
+void solveWheel(SYS &script){
     std::string filename = script.gettimestring();
     PICTURE puzz(500, 150, "MapleStory");
     map<int, const char *> UDLR;
@@ -504,3 +518,12 @@ int takenoko(PICTURE &targetPic, int type){
     }
     return diff;
 }
+
+void actSkill(skilloption &skill, SYS &script){
+    int nowtick = script.getNowtick();
+
+    for (int i=0; i<skill.sknum; i++){
+        scriptMS.keybd(skill.KBDname[i].data(), 3);
+        scriptMS.wait(skill.KBDdelay[i]);
+    }
+};

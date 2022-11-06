@@ -147,6 +147,9 @@ int main(){
     // MS.ripple(effect, 100, 150, 10).display();
     // MS.copyPaste(effect, RANGE(50, 150, 50, 250), 60, 70).display();
 
+    PICTURE mapImg(170, 82, "MapleStory");
+    mapImg.screenShot(5, 18).display();
+
     SYS MYSYS("MapleStory");
     while(1){
         MYSYS.wait(50);
