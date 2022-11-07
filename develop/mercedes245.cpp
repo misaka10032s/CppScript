@@ -11,50 +11,6 @@
 #include "library/systemFnc.h"
 #include "library/maplestory.h"
 
-class MSsetting{
-    public:
-        int now_action;
-        int direction;
-        pointMS to;
-        int hikikae[2];
-        int pickCD;
-        int ringCD;
-        long int lastpick;
-        long int lastbuff;
-        long int lastring;
-        std::vector<skilloption> skills;
-        pointMS charpos;
-        pointMS ringpos;
-        pointMS charStay;
-        bool isOther;
-        bool isring;
-        int errorpos;
-        int isOthertimecount;
-        int timecount;
-
-        MSsetting(std::initializer_list<skilloption> sks){
-            now_action = 1;
-            direction = -1;
-            to = {-1, -1};
-            hikikae[0] = 75;
-            hikikae[1] = 115;
-            pickCD = 999 * 3 * 60 * 1000;
-            ringCD = 15 * 60 * 1000 + 5000;
-            lastpick = -1;
-            lastbuff = -1;
-            lastring = -1;
-            skills = sks;
-            charpos = {-1, -1};
-            ringpos = {-1, -1};
-            charStay = {0, 47};
-            isOther = 0;
-            isring = 0;
-            errorpos = 0;
-            isOthertimecount = 0;
-            timecount = 0;
-        }
-};
-
 skilloption sakura("sakura", {"1", "1"}, {500, 1000}, {100, 100}, 175 * 1000);
 skilloption knight("knight", {"8", "8"}, {500, 1500}, {100, 100}, 175 * 1000);
 skilloption spider("spider", {"9", "9"}, {500, 800}, {100, 100}, 240 * 1000);
@@ -66,12 +22,14 @@ skilloption senpuu("senpuu", {"C", "C", "X", "V", "V"}, {1150, 200, 400, 200, 10
 skilloption lightning("lightning", {"C", "C", "X", "V", "B", "CTRL", "ALT"}, {150, 250, 500, 1000, 600, 1000, 600}, {100, 100, 100}, 250 * 1000);
 skilloption normal("normal", {"C", "C", "X"}, {100, 150, 600}, {100, 100, 100}, 0);
 skilloption cycle("cycle", {"DEL", "DEL"}, {300, 1000}, {100, 100}, 300 * 1000);
+skilloption jumpup0("jumpup0", {"DEL", "DEL"}, {300, 1000}, {100, 100}, 300 * 1000);
+skilloption jumpup1("jumpup1", {"DEL", "DEL"}, {300, 1000}, {100, 100}, 300 * 1000);
 
 int main(){
     const char* targetWnd = "MapleStory";
     SYS scriptMS(targetWnd);
-    MSsetting infoMS({cycle, arrow, spider, supernova, knight, sakura, senpuu, angryangel, javelin, normal});
-    PICTURE mapImg(175, 82, targetWnd);
+    MSsetting infoMS({75, 115}, 999 * 3 * 60 * 1000, {0, 47}, {175, 82}, {cycle, arrow, spider, supernova, knight, sakura, senpuu, angryangel, javelin, normal});
+    PICTURE mapImg(infoMS.miniMapSize.x, infoMS.miniMapSize.y, targetWnd);
     long int nowtick;
     int anyway = 10000;
 
@@ -80,7 +38,6 @@ int main(){
         if(scriptMS.isEnable()){
             std::cout<<"action: " << infoMS.now_action << "\n";
             if(infoMS.now_action) {
-                mapImg.screenShot(5, 18);
                 getpos(mapImg, infoMS.charpos, infoMS.ringpos, infoMS.isOther);
             }
 
@@ -94,7 +51,7 @@ int main(){
 
             std::cout << "char pos: " << infoMS.charpos.x << " " << infoMS.charpos.y << " ring pos: " << infoMS.ringpos.x << " " << infoMS.ringpos.y
             << " togo: " << infoMS.to.x << " " << infoMS.to.y << " dir: " << infoMS.direction << "\n";
-            if(infoMS.direction == -1) infoMS.direction = infoMS.charpos.x > 90 ? 0 : 1;
+            infoMS.setDirection();
 
             nowtick = scriptMS.getNowtick();
             if(infoMS.lastpick == -1) infoMS.lastpick = nowtick;
@@ -135,8 +92,7 @@ int main(){
                         infoMS.now_action = 4;
                     }
                     else{
-                        if(infoMS.charpos.x > infoMS.hikikae[1]) infoMS.direction = 0;
-                        else if(infoMS.charpos.x < infoMS.hikikae[0]) infoMS.direction = 1;
+                        infoMS.setDirection();
                         
                         if(infoMS.direction == 1){
                             scriptMS.keybd("LEFT", 2);
@@ -166,13 +122,11 @@ int main(){
                                 infoMS.skills[i].lastuse = nowtick + rand()%(infoMS.skills[i].cd / 20 + 1);
 
                                 for (int j = 0; j < infoMS.skills[i].sknum; j++){
-                                    mapImg.screenShot(5, 18);
                                     getpos(mapImg, infoMS.charpos, infoMS.ringpos, infoMS.isOther);
                                     scriptMS.keybd(infoMS.skills[i].KBDname[j].data(), 3);
 
                                     if (rand() % 100 < 50 && (infoMS.skills[i].skillname == "angryangel" || infoMS.skills[i].skillname == "javelin")){
-                                        if (infoMS.charpos.x > infoMS.hikikae[1]) infoMS.direction = 0;
-                                        else if (infoMS.charpos.x < infoMS.hikikae[0]) infoMS.direction = 1;
+                                        infoMS.setDirection();
 
                                         if (infoMS.direction == 1){
                                             scriptMS.keybd("LEFT", 2);
@@ -247,7 +201,6 @@ int main(){
                             }
                         }
 
-                        mapImg.screenShot(5, 18);
                         getpos(mapImg, infoMS.charpos, infoMS.ringpos, infoMS.isOther);
 
                         if((infoMS.to.x != anyway && infoMS.charpos.x > infoMS.to.x) || (infoMS.to.x == anyway && infoMS.charpos.x > infoMS.hikikae[1])){
@@ -308,7 +261,6 @@ int main(){
                         scriptMS.wait(50);
                         scriptMS.keybd("DOWN", 2);
                         scriptMS.wait(430);
-                        mapImg.screenShot(5, 18);
                         getpos(mapImg, infoMS.charpos, infoMS.ringpos, infoMS.isOther);
                     }
                     
@@ -326,7 +278,6 @@ int main(){
                         scriptMS.wait(250);
                         scriptMS.keybd("X", 3);
                         scriptMS.wait(680);
-                        mapImg.screenShot(5, 18);
                         getpos(mapImg, infoMS.charpos, infoMS.ringpos, infoMS.isOther);
                     }
 

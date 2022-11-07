@@ -3,6 +3,7 @@
 #include <cmath>
 #include <functional>
 #include <opencv2/opencv.hpp>
+#include <direct.h>
 
 #include "systemOS.h"
 #include "maplestory.h"
@@ -30,17 +31,59 @@ pointMS::pointMS(std::initializer_list<int> pos){
 };
 
 skilloption::skilloption(){};
-skilloption::skilloption(std::string sn, std::initializer_list<std::string> Kn, std::initializer_list<int> Kd, std::initializer_list<float> rt, int c){
-    skillname = sn;
-    KBDname = Kn;
-    // KBDdelay = Kd;
-    // rate = rt;
-    sknum = (int)Kn.size();
-    cd = c;
-    lastuse = -1;
+skilloption::skilloption(std::string _skillname, std::initializer_list<std::string> _KBDname, std::initializer_list<int> _KBDdelay, std::initializer_list<float> _rate, int _cd){
+    this->skillname = _skillname;
+    this->KBDname = _KBDname;
+    // KBDdelay = _KBDname;
+    // rate = _rate;
+    this->sknum = (int)_KBDname.size();
+    this->cd = _cd;
+    this->lastuse = -1;
 
-    for(int i=0; i<sknum; i++) KBDdelay.push_back(*(Kd.begin() + i%((int)Kd.size())));
-    for(int i=0; i<sknum; i++) rate.push_back(*(rt.begin() + i%((int)rt.size())));
+    for(int i=0; i<sknum; i++) this->KBDdelay.push_back(*(_KBDdelay.begin() + i%((int)_KBDdelay.size())));
+    for(int i=0; i<sknum; i++) this->rate.push_back(*(_rate.begin() + i%((int)_rate.size())));
+};
+skilloption::skilloption(std::string _skillname, std::vector<std::string> _KBDname, std::vector<int> _KBDdelay, std::vector<float> _rate, int _cd){
+    this->skillname = _skillname;
+    this->KBDname = _KBDname;
+    // KBDdelay = _KBDname;
+    // rate = _rate;
+    this->sknum = (int)_KBDname.size();
+    this->cd = _cd;
+    this->lastuse = -1;
+
+    for(int i=0; i<sknum; i++) this->KBDdelay.push_back(_KBDdelay[i%((int)_KBDdelay.size())]);
+    for(int i=0; i<sknum; i++) this->rate.push_back(_rate[i%((int)_rate.size())]);
+};
+
+MSsetting::MSsetting(std::initializer_list<int> _hikikae, int _pickCD, pointMS _charStay, pointMS _miniMapSize, std::initializer_list<skilloption> _skills){
+    this->now_action = 1;
+    this->direction = -1;
+    this->to = {-1, -1};
+    this->hikikae[0] = *(_hikikae.begin());
+    this->hikikae[1] = *(_hikikae.begin() + 1);
+    this->pickCD = _pickCD;
+    this->ringCD = 15 * 60 * 1000 + 5000;
+    this->lastpick = -1;
+    this->lastbuff = -1;
+    this->lastring = -1;
+    this->skills = _skills;
+    for(int i=0; i<(int)this->skills.size(); i++)this->skillsOrder.push_back(this->skills[i].skillname);
+    this->charpos = {-1, -1};
+    this->ringpos = {-1, -1};
+    this->charStay = _charStay;
+    this->miniMapSize = _miniMapSize;
+    this->isOther = 0;
+    this->isring = 0;
+    this->errorpos = 0;
+    this->isOthertimecount = 0;
+    this->timecount = 0;
+}
+
+void MSsetting::setDirection(){
+    if(this->direction == -1) this->direction = this->charpos.x > this->miniMapSize.x/2 ? 0 : 1;
+    else if (this->charpos.x > this->hikikae[1]) this->direction = 0;
+    else if (this->charpos.x < this->hikikae[0]) this->direction = 1;
 };
 
 
@@ -261,6 +304,7 @@ void getpos(PICTURE &targetPic, pointMS &charpos, pointMS &ringpos, bool &isOthe
         range[type].left = range[type].right = range[type].top = range[type].bottom = -1;
     }
     // cout << BitsPerPixel << "\n";
+    targetPic.screenShot(5, 18);
     matchPic.resize(targetPic.width, targetPic.height, targetPic.bit);
     targetPic.GaussBlur(filterPic, 1);
     // imshow("Display blur", Mat(targetPic.height, targetPic.width, BitsPerPixel > 24 ? CV_8UC4 : CV_8UC3, &filterPic.Pixels[0]));
@@ -472,9 +516,9 @@ void solveWheel(SYS &script){
     }
     Sleep(30);
     for (int i = 0; i < 4;i++) {
-        filename += (string)" " + UDLR[way[i]][0];
+        filename += (std::string)" " + UDLR[way[i]][0];
     }
-    cv::imwrite((string)"ringRECORD/" + filename + (string)".jpg", cv::Mat(puzz.height, puzz.width, puzz.bit == 4 ? CV_8UC4 : CV_8UC3, &puzz.Pixels[0]));
+    cv::imwrite((std::string)"ringRECORD/" + filename + (std::string)".jpg", cv::Mat(puzz.height, puzz.width, puzz.bit == 4 ? CV_8UC4 : CV_8UC3, &puzz.Pixels[0]));
 }
 
 int herb[15][30][3] = {{{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}};
@@ -519,11 +563,257 @@ int takenoko(PICTURE &targetPic, int type){
     return diff;
 }
 
-void actSkill(skilloption &skill, SYS &script){
-    int nowtick = script.getNowtick();
+void actSkill(skilloption &skill, SYS &script, MSsetting &myMSinfo){
+    // for(int i=0; i<(int)skill.forbidZone.size(); i++) if(skill.forbidZone[i].left<=myMSinfo.charpos.x && myMSinfo.charpos.x<=skill.forbidZone[i].right && skill.forbidZone[i].top<=myMSinfo.charpos.y && myMSinfo.charpos.y<=skill.forbidZone[i].bottom) return;
+
+    int nowtick = script.getNowtick(), skIndex;
 
     for (int i=0; i<skill.sknum; i++){
-        scriptMS.keybd(skill.KBDname[i].data(), 3);
-        scriptMS.wait(skill.KBDdelay[i]);
+        script.keybd(skill.KBDname[i].data(), 3);
+        script.wait(skill.KBDdelay[i]);
     }
+
+    skill.lastuse = nowtick + rand()%(skill.cd / 20 + 1);
+
+    // for(auto [sk, val] : skill.skillBind){
+    //     skIndex = myMSinfo.skillsOrder.find(sk);
+    //     if(skIndex != -1){
+    //         myMSinfo.skills[skIndex].lastuse = MAX(nowtick - val, myMSinfo.skills[skIndex].lastuse);
+    //     }
+    // }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+std::vector<std::string> codenameList;
+
+bool dirExists(const std::string& dirName_in){
+    DWORD ftyp = GetFileAttributesA(dirName_in.c_str());
+    if (ftyp == INVALID_FILE_ATTRIBUTES)
+        return false;  //something is wrong with your path!
+
+    if (ftyp & FILE_ATTRIBUTE_DIRECTORY)
+        return true;   // this is a directory!
+
+    return false;    // this is not a directory!
+}
+const std::vector<std::string> split(const std::string& str, const std::string& pattern) {
+    std::vector<std::string> result;
+    std::string::size_type begin, end;
+
+    end = str.find(pattern);
+    begin = 0;
+
+    while (end != std::string::npos) {
+        if (end - begin != 0) {
+            result.push_back(str.substr(begin, end-begin)); 
+        }    
+        begin = end + pattern.size();
+        end = str.find(pattern, begin);
+    }
+
+    if (begin != str.length()) {
+        result.push_back(str.substr(begin));
+    }
+    return result;        
+}
+std::string LTrim( std::string& srcStr , const std::string& charList){
+    std::string tagStr = srcStr;
+    tagStr.erase( 0 , tagStr.find_first_not_of( charList.c_str() ) );
+    return tagStr;
+}
+std::string RTrim( std::string& srcStr , const std::string& charList){
+    std::string tagStr = srcStr;
+    tagStr.erase( tagStr.find_last_not_of( charList.c_str() ) + 1 );
+    return tagStr;
+}
+std::string Trim( std::string& srcStr , const std::string& charList ){
+    std::string s = LTrim( srcStr , charList );
+    return RTrim( s , charList );
+}
+
+bool replace(std::string& str, const std::string& from, const std::string& to) {
+    size_t start_pos = str.find(from);
+    if(start_pos == std::string::npos)
+        return false;
+    str.replace(start_pos, from.length(), to);
+    return true;
+}
+
+void replaceAll(std::string& str, const std::string& from, const std::string& to) {
+    if(from.empty())
+        return;
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    }
+}
+
+int readFile(std::string fname, std::string type, std::string* data){
+    FILE *f;
+    char* buff;
+    long lSize;
+    size_t result;
+    
+    f = fopen(fname.data(), type.data());
+    if(f == NULL){
+        return 1;
+    }
+
+    fseek (f , 0 , SEEK_END);
+    lSize = ftell(f);
+    rewind (f);
+
+    buff = (char*) malloc (sizeof(char)*lSize);
+    if (buff == NULL) {
+        return 2;
+    }
+
+    result = fread (buff, 1, lSize, f);
+    if ((long)result != lSize) {
+        return 3;
+    }
+
+    data -> assign(buff);
+    fclose (f);
+    free(buff);
+    return 0;
+}
+
+int getCodename(){
+    int idx = 0;
+    std::string path = "scripts/";
+    WIN32_FIND_DATA data;
+    HANDLE hFind = FindFirstFile("scripts/", &data);
+    if(hFind != INVALID_HANDLE_VALUE){
+        do{
+            if((std::string)data.cFileName == "." || (std::string)data.cFileName == "..") continue;
+            std::cout << idx++ << ":\t" << data.cFileName << "\n";
+            codenameList.push_back(data.cFileName);
+        }
+        while(FindNextFile(hFind, &data));
+        FindClose(hFind);
+    }
+    else{
+        // https://stackoverflow.com/questions/23427804/cant-find-mkdir-function-in-dirent-h-for-windows
+        // https://www.796t.com/post/YTRkNXM=.html
+        // https://stackoverflow.com/questions/41404711/how-to-list-files-in-a-directory-using-the-windows-api
+        _mkdir("scripts/");
+        cout << "make dir scripts\n";
+        return 1;
+    }
+
+    return 0;
+}
+
+int initSkillSet(std::map<std::string, std::vector<std::string>> &setData, MSsetting &myMSsetting){
+    if(setData.find("charStay") == setData.end()){
+        myMSsetting.charStay = {35, 50};
+    }
+    else{
+        myMSsetting.charStay = {stoi(setData["stayFloor"][0]), stoi(setData["stayFloor"][1])};
+    }
+
+    if(setData.find("pickCD") == setData.end()){
+        myMSsetting.pickCD = 1800000;
+    }
+    else{
+        myMSsetting.pickCD = stoi(setData["pickCD"][0]);
+    }
+
+    if(setData.find("miniMapSize") == setData.end()){
+        // getMiniMapSize(mySkillSet.miniMapSize);
+        myMSsetting.miniMapSize = {300, 100};
+    }
+    else{
+        myMSsetting.miniMapSize = {stoi(setData["miniMapSize"][0]), stoi(setData["miniMapSize"][1])};
+    }
+
+    if(setData.find("hikikae") == setData.end()){
+        myMSsetting.hikikae[0] = myMSsetting.miniMapSize.x * 0.3;
+        myMSsetting.hikikae[1] = myMSsetting.miniMapSize.y * 0.7;
+    }
+    else{
+        myMSsetting.hikikae[0] = stoi(setData["hikikae"][0]);
+        myMSsetting.hikikae[1] = stoi(setData["hikikae"][1]);
+    }
+
+    if(setData.find("skilloption") == setData.end()){
+        return 2;
+    }
+    else{
+        // name cd KBDname KBDdelay rate
+        // ex: buff_200_100_5-4-\_1000-1000-1000_100-100-100
+        skilloption soTmp;
+        std::vector<std::string> tmpStr, tmpStr2;
+        std::vector<int> _KBDdelay;
+        std::vector<float> _rate;
+        int L;
+        for(auto fl : setData["skilloption"]){
+            tmpStr = split(fl, "_");
+            L = tmpStr.size();
+            if(L < 5) return 3;
+            tmpStr2 = split(tmpStr[3], "-");
+            for(int i=0; i<(int)tmpStr2.size(); i++) _KBDdelay.push_back(stoi(tmpStr2[i]));
+            tmpStr2 = split(tmpStr[4], "-");
+            for(int i=0; i<(int)tmpStr2.size(); i++) _rate.push_back(std::stof(tmpStr2[i]));
+            soTmp = skilloption(tmpStr[0], split(tmpStr[2], "-"), _KBDdelay, _rate, stoi(tmpStr[1]) * 1000);
+
+            myMSsetting.skills.push_back(soTmp);
+            myMSsetting.skillsOrder.push_back(tmpStr[0]);
+        }
+    }
+    
+    // @@@@
+    // use A skill then set B skill lastuse to specific value;
+    if(setData.find("skillbind") != setData.end()){
+        std::vector<std::string> tmpStr;
+        std::vector<std::string>::iterator skIdx;
+        for(auto fl : setData["skillbind"]){
+            tmpStr = split(fl, "_");
+            skIdx = std::find(myMSsetting.skillsOrder.begin(), myMSsetting.skillsOrder.end(), tmpStr[0]);
+            if(skIdx != myMSsetting.skillsOrder.end()){
+                myMSsetting.skills[skIdx - myMSsetting.skillsOrder.begin()].skillBind.emplace(tmpStr[1], stoi(tmpStr[2]));
+            }
+        }
+    }
+
+    return 0;
+}
+
+int readScript(int cn, MSsetting &myMSsetting){
+    std::string data, tmp = "";
+    std::vector<std::string> lines, lineTmp;
+    std::map<std::string, std::vector<std::string>> keyValue;
+    if(cn < 0 || cn >= (int)codenameList.size()) return 1;
+    
+    if (readFile((std::string) "scripts/" + codenameList[cn], "r", &data)){
+        cout << codenameList[cn] << " not found.\n";
+        return 1;
+    }
+    replaceAll(data, " ", "");
+    replaceAll(data, "\n", "");
+    replaceAll(data, "\t", "");
+    lines = split(data, ";");
+    for(auto line : lines){
+        lineTmp = split(line, ":");
+        keyValue[lineTmp[0]] = split(lineTmp[1], ",");
+    }
+    
+    initSkillSet(keyValue, myMSsetting);
+    return 0;
+}

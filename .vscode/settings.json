@@ -82,6 +82,7 @@
       "cinttypes": "cpp",
       "*.rh": "cpp",
       "list": "cpp",
-      "*.tpp": "cpp"
+      "*.tpp": "cpp",
+      "codecvt": "cpp"
     }
   }

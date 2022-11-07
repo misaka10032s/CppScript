@@ -29,9 +29,41 @@ class skilloption {
         int sknum;
         int cd;
         long int lastuse;
+        std::map<std::string, int> skillBind;
+        std::vector<RANGE> forbidZone;
 
         skilloption();
-        skilloption(std::string sn, std::initializer_list<std::string> Kn, std::initializer_list<int> Kd, std::initializer_list<float> rt, int c);
+        skilloption(std::string _skillname, std::initializer_list<std::string> _KBDname, std::initializer_list<int> _KBDdelay, std::initializer_list<float> _rate, int _cd);
+        skilloption(std::string _skillname, std::vector<std::string> _KBDname, std::vector<int> _KBDdelay, std::vector<float> _rate, int _cd);
+        // skilloption(std::string _skillname, std::vector<std::string> _KBDname, std::vector<int> _KBDdelay, std::vector<float> _rate, int _cd, std::map<std::string, int> _skillBind, std::vector<RANGE> _forbidZone);
+};
+
+class MSsetting{
+    public:
+        int now_action;
+        int direction;
+        pointMS to;
+        int hikikae[2];
+        int pickCD;
+        int ringCD;
+        long int lastpick;
+        long int lastbuff;
+        long int lastring;
+        std::vector<skilloption> skills;
+        std::vector<std::string> skillsOrder;
+        pointMS charpos;
+        pointMS ringpos;
+        pointMS charStay;
+        pointMS miniMapSize;
+        bool isOther;
+        bool isring;
+        int errorpos;
+        int isOthertimecount;
+        int timecount;
+
+        MSsetting(std::initializer_list<int> _hikikae, int _pickCD, pointMS _charStay, pointMS _miniMapSize, std::initializer_list<skilloption> _skills);
+
+        void setDirection();
 };
 
 int GetEigenvalue(PICTURE &targetPic);
