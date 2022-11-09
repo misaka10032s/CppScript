@@ -55,7 +55,34 @@ skilloption::skilloption(std::string _skillname, std::vector<std::string> _KBDna
     for(int i=0; i<sknum; i++) this->KBDdelay.push_back(_KBDdelay[i%((int)_KBDdelay.size())]);
     for(int i=0; i<sknum; i++) this->rate.push_back(_rate[i%((int)_rate.size())]);
 };
+bool skilloption::canUse(int nowtick){
+    return (nowtick - this->lastuse > this->cd);
+};
 
+
+MSsetting::MSsetting(){
+    this->now_action = 1;
+    this->direction = -1;
+    this->to = {-1, -1};
+    this->hikikae[0] = -1;
+    this->hikikae[1] = -1;
+    this->pickCD = 5 * 60 * 1000;
+    this->ringCD = 15 * 60 * 1000 + 5000;
+    this->lastpick = -1;
+    this->lastbuff = -1;
+    this->lastring = -1;
+    
+    
+    this->charpos = {-1, -1};
+    this->ringpos = {-1, -1};
+    this->charStay = {-1, -1};
+    this->miniMapSize = {-1, -1};
+    this->isOther = 0;
+    this->isring = 0;
+    this->errorpos = 0;
+    this->isOthertimecount = 0;
+    this->timecount = 0;
+}
 MSsetting::MSsetting(std::initializer_list<int> _hikikae, int _pickCD, pointMS _charStay, pointMS _miniMapSize, std::initializer_list<skilloption> _skills){
     this->now_action = 1;
     this->direction = -1;
@@ -564,7 +591,31 @@ int takenoko(PICTURE &targetPic, int type){
 }
 
 void actSkill(skilloption &skill, SYS &script, MSsetting &myMSinfo){
-    // for(int i=0; i<(int)skill.forbidZone.size(); i++) if(skill.forbidZone[i].left<=myMSinfo.charpos.x && myMSinfo.charpos.x<=skill.forbidZone[i].right && skill.forbidZone[i].top<=myMSinfo.charpos.y && myMSinfo.charpos.y<=skill.forbidZone[i].bottom) return;
+    for(int i=0; i<(int)skill.forbidZone.size(); i++) if(skill.forbidZone[i].left<=myMSinfo.charpos.x && myMSinfo.charpos.x<=skill.forbidZone[i].right && skill.forbidZone[i].top<=myMSinfo.charpos.y && myMSinfo.charpos.y<=skill.forbidZone[i].bottom) return;
+
+    int nowtick = script.getNowtick();
+        std::vector<std::string>::iterator skIdx;
+
+    for (int i=0; i<skill.sknum; i++){
+        script.keybd(skill.KBDname[i].data(), 3);
+        script.wait(skill.KBDdelay[i]);
+    }
+
+    skill.lastuse = nowtick + rand()%(skill.cd / 20 + 1);
+
+    for(auto [sk, val] : skill.skillBind){
+        skIdx = std::find(myMSinfo.skillsOrder.begin(), myMSinfo.skillsOrder.end(), sk);
+        if(skIdx == myMSinfo.skillsOrder.end()) continue;
+        myMSinfo.skills[myMSinfo.skillsOrder.end() - skIdx].lastuse = MAX(nowtick - val, myMSinfo.skills[myMSinfo.skillsOrder.end() - skIdx].lastuse);
+    }
+};
+void actSkill(std::string skillName, SYS &script, MSsetting &myMSinfo){
+    std::vector<std::string>::iterator skIdx;
+    skIdx = std::find(myMSinfo.skillsOrder.begin(), myMSinfo.skillsOrder.end(), skillName);
+    if(skIdx == myMSinfo.skillsOrder.end()) return;
+    skilloption &skill = myMSinfo.skills[skIdx - myMSinfo.skillsOrder.begin()];
+
+    for(int i=0; i<(int)skill.forbidZone.size(); i++) if(skill.forbidZone[i].left<=myMSinfo.charpos.x && myMSinfo.charpos.x<=skill.forbidZone[i].right && skill.forbidZone[i].top<=myMSinfo.charpos.y && myMSinfo.charpos.y<=skill.forbidZone[i].bottom) return;
 
     int nowtick = script.getNowtick(), skIndex;
 
@@ -575,12 +626,11 @@ void actSkill(skilloption &skill, SYS &script, MSsetting &myMSinfo){
 
     skill.lastuse = nowtick + rand()%(skill.cd / 20 + 1);
 
-    // for(auto [sk, val] : skill.skillBind){
-    //     skIndex = myMSinfo.skillsOrder.find(sk);
-    //     if(skIndex != -1){
-    //         myMSinfo.skills[skIndex].lastuse = MAX(nowtick - val, myMSinfo.skills[skIndex].lastuse);
-    //     }
-    // }
+    for(auto [sk, val] : skill.skillBind){
+        skIdx = std::find(myMSinfo.skillsOrder.begin(), myMSinfo.skillsOrder.end(), sk);
+        if(skIdx == myMSinfo.skillsOrder.end()) continue;
+        myMSinfo.skills[myMSinfo.skillsOrder.end() - skIdx].lastuse = MAX(nowtick - val, myMSinfo.skills[myMSinfo.skillsOrder.end() - skIdx].lastuse);
+    }
 };
 
 
@@ -788,6 +838,18 @@ int initSkillSet(std::map<std::string, std::vector<std::string>> &setData, MSset
             skIdx = std::find(myMSsetting.skillsOrder.begin(), myMSsetting.skillsOrder.end(), tmpStr[0]);
             if(skIdx != myMSsetting.skillsOrder.end()){
                 myMSsetting.skills[skIdx - myMSsetting.skillsOrder.begin()].skillBind.emplace(tmpStr[1], stoi(tmpStr[2]));
+            }
+        }
+    }
+
+    if(setData.find("forbidzone") != setData.end()){
+        std::vector<std::string> tmpStr;
+        std::vector<std::string>::iterator skIdx;
+        for(auto fl : setData["forbidzone"]){
+            tmpStr = split(fl, "_");
+            skIdx = std::find(myMSsetting.skillsOrder.begin(), myMSsetting.skillsOrder.end(), tmpStr[0]);
+            if(skIdx != myMSsetting.skillsOrder.end()){
+                myMSsetting.skills[skIdx - myMSsetting.skillsOrder.begin()].forbidZone.push_back({stoi(tmpStr[1]), stoi(tmpStr[2]), stoi(tmpStr[3]), stoi(tmpStr[4])});
             }
         }
     }
