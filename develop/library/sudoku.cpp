@@ -39,28 +39,28 @@ int SUDOKU::write(char map[9][9], int numberLeft[9][9]){
             if(numberLeft[i][j] == 0){
                 return -2;
             }
-            if(this->map[i][j] != 0){
+            if(map[i][j] != 0){
                 filledNum++;
                 continue;
             }
 
             tmp = numberLeft[i][j];
             for(int l=0; l<9; l++){
-                if(this->map[i][l] != 0){
-                    numberLeft[i][j] &= (quick_pow2(10) - 2 - quick_pow2(this->map[i][l]));
+                if(map[i][l] != 0){
+                    numberLeft[i][j] &= ((1<<10)-2 - (1<<map[i][l]));
                 }
-                if(this->map[l][j] != 0){
-                    numberLeft[i][j] &= (quick_pow2(10) - 2 - quick_pow2(this->map[l][j]));
+                if(map[l][j] != 0){
+                    numberLeft[i][j] &= ((1<<10)-2 - (1<<map[l][j]));
                 }
-                if(this->map[(i/3)*3 + l/3][(j/3)*3 + l%3] != 0){
-                    numberLeft[i][j] &= (quick_pow2(10) - 2 - quick_pow2(this->map[(i/3)*3 + l/3][(j/3)*3 + l%3]));
+                if(map[(i/3)*3 + l/3][(j/3)*3 + l%3] != 0){
+                    numberLeft[i][j] &= ((1<<10)-2 - (1<<map[(i/3)*3 + l/3][(j/3)*3 + l%3]));
                 }
             }
             if(tmp != numberLeft[i][j]) updateN++;
 
             for(int k=1; k<10; k++){
-                if(numberLeft[i][j] == quick_pow2(k)){
-                    this->map[i][j] = k;
+                if(numberLeft[i][j] ==(1<<k)){
+                    map[i][j] = k;
                     updateN++;
                     filledNum++;
                     break;
@@ -73,35 +73,29 @@ int SUDOKU::write(char map[9][9], int numberLeft[9][9]){
     return updateN;
 }
 bool SUDOKU::suppose(char map[9][9], int numberLeft[9][9]){
-    int res, si = rand()%9, sj = rand()%9, origNF[9][9], origMap[9][9];
+    int res, si = rand()%9, sj = rand()%9, supNF[9][9];
+    char supMap[9][9];
     do{
         sj = (sj+1)%9;
         if(!sj) si = (si+1)%9;
     }
     while(map[si][sj]);
 
-    std::copy(&numberLeft[0][0], &numberLeft[8][8], &origNF[0][0]);
     for(int i=0; i<9; i++) {
         for(int j=0; j<9;j++) {
-            origMap[i][j] = map[i][j];
-            origNF[i][j] = numberLeft[i][i];
+            supMap[i][j] = map[i][j];
+            supNF[i][j] = numberLeft[i][i];
         }
     }
 
     for(int sv=1; sv<10; sv++){
-        if(!(numberLeft[si][sj] & quick_pow2(sv))) continue;
-        for(int i=0; i<9; i++) {
-            for(int j=0; j<9;j++) {
-                map[i][j] = origMap[i][j];
-                numberLeft[i][j] = origNF[i][i];
-            }
-        }
-        map[si][sj] = sv;
+        if(!(numberLeft[si][sj] & (1<<sv))) continue;
+        supMap[si][sj] = sv;
         while(1){
-            res = this->write(map, numberLeft);
-            if(!res) this->suppose(map, numberLeft);
+            res = this->write(supMap, supNF);
+            if(!res) this->suppose(supMap, supNF);
             else if(res == -1){
-                for(int i=0; i<9; i++) for(int j=0; j<9;j++) this->map[i][j] = map[i][j];
+                for(int i=0; i<9; i++) for(int j=0; j<9;j++) this->map[i][j] = supMap[i][j];
                 this->status = 1;
                 return 1;
             }
@@ -117,8 +111,8 @@ SUDOKU SUDOKU::solve(){
     int numberLeft[9][9] = {0}, res;
     for(int i=0; i<9; i++) {
         for(int j=0; j<9;j++) {
-            if(this->map[i][j] == 0) numberLeft[i][j] = quick_pow2(10) - 2;
-            else numberLeft[i][j] = quick_pow2(this->map[i][j]);
+            if(this->map[i][j] == 0) numberLeft[i][j] = (1<<10) - 2;
+            else numberLeft[i][j] = 1<<(this->map[i][j]);
         }
     }
     while(1){

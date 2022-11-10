@@ -339,6 +339,7 @@
         long int st = this->timestamp.tv_sec * 1000 + this->timestamp.tv_usec / 1000, ed;
         bool frontIsTarget, numLockOn;
 
+        this->waiting = 1;
         if(this->timeCountDown != -1 && this->timeCountDown <= st){
             std::cout << "time's up\n";
             this->enable = 0;
@@ -351,6 +352,7 @@
             ed = this->timestamp.tv_sec * 1000 + this->timestamp.tv_usec / 1000;
             // std::cout<<this->enable<<", "<<GetForegroundWindow()<<", "<<this->targetWND<<", "<<frontIsTarget<<", "<<numLockOn<<"\n";
             if(ed - st > dur && this->enable && (frontIsTarget || !this->check_WHD) && (this->timeCountDown == -1 || this->timeCountDown > st)){
+                this->waiting = 0;
                 if(ed - st > dur + 1000) SLEEP(100);
                 break;
             }

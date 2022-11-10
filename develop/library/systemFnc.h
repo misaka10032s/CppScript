@@ -19,7 +19,7 @@
         private:
             HWND targetWND;
             struct timeval timestamp;
-            bool enable, check_WHD=1;
+            bool enable, waiting, check_WHD=1;
             unsigned char switchKey, maximizeKey, minimizeKey, focusKey, setForegroundWindow;
             int timeCountDown;
 

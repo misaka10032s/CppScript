@@ -550,7 +550,9 @@ void solveWheel(SYS &script){
 
 int herb[15][30][3] = {{{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}};
 int mineral[15][30][3] = {{{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {{0, 0, 255}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}};
-int takenoko(PICTURE &targetPic, int type){
+pointMS bulb = {35, 355}, takenoko = {460, 400}, mission = {625, 625};
+
+int takenokoCheck(PICTURE &targetPic, int type){
     int diff = 0;
     int ref[15][30][3];
     switch(type){
@@ -564,32 +566,333 @@ int takenoko(PICTURE &targetPic, int type){
             std::copy(&herb[0][0][0], &herb[14][29][2], &ref[0][0][0]);
             break;
     }
-    std::vector<uint8_t> koPixels;
-    koPixels.resize(targetPic.width * targetPic.height * targetPic.bit);
 
     for(int y=0;y<targetPic.height;y++){
         for(int x=0;x<targetPic.width;x++){
             for(int k=0;k<3;k++){
-                koPixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + k] = 15 * (targetPic.Pixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + k]/15);
+                targetPic.Pixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + k] = 15 * (targetPic.Pixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + k]/15);
             }
 
-            if(koPixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + 2] >= 165 && abs(koPixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + 0] - koPixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + 1]) <= 45 && abs(koPixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + 2] - koPixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + 1]) >= 60){
-                koPixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + 0] = 0;
-                koPixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + 1] = 0;
-                koPixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + 2] = 255;
+            if(targetPic.Pixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + 2] >= 165 && abs(targetPic.Pixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + 0] - targetPic.Pixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + 1]) <= 45 && abs(targetPic.Pixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + 2] - targetPic.Pixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + 1]) >= 60){
+                targetPic.Pixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + 0] = 0;
+                targetPic.Pixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + 1] = 0;
+                targetPic.Pixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + 2] = 255;
             }
             else{
-                for(int k=0;k<3;k++) koPixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + k] = 0;
+                for(int k=0;k<3;k++) targetPic.Pixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + k] = 0;
             }
 
             for(int k=0;k<3;k++){
-                if(koPixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + k] != ref[y][x][k]) diff++;
+                if(targetPic.Pixels[x*targetPic.bit + y*targetPic.width*targetPic.bit + k] != ref[y][x][k]) diff++;
             }
         }
     }
     return diff;
 }
+void openTakenoko(SYS &script){
+    script.wait(200);
+    script.mouseLC(bulb.x, bulb.y, 3);
+    script.wait(200);
+    script.mouseLC(bulb.x, bulb.y, 3);
+    script.wait(200);
+    script.mouseLC(bulb.x, bulb.y, 3);
+    script.wait(200);
 
+    for (int i = 0; i < 15;i++){
+        script.keybd("DOWN", 3);
+        script.wait(30);
+    }
+
+    script.keybd("ENTER", 3);
+    script.wait(600);
+    script.mouseLC(takenoko.x, takenoko.y, 3);
+    script.wait(200);
+};
+bool matchTakenoko(SYS &script, int type, int maxTrytime){
+    PICTURE takenokoPic(30, 15, "MapleStory");
+    int dxmax = 12, diffV = 0, tryTimes = 0;
+    bool matched;
+    while(1){
+        script.mouseLC(mission.x, mission.y, 3);
+        script.wait(500);
+        script.keybd("Y", 3);
+        script.wait(500);
+        script.keybd("Y", 3);
+        script.wait(500);
+        for(int i=0; i<dxmax; i++){
+            takenokoPic.screenShot(527 + i*16, 675);
+            diffV = takenokoCheck(takenokoPic, type);
+            if(diffV < 30) {
+                matched = 1;
+                break;
+            }
+        }
+        if(matched){
+            script.mouseLC(615, 715, 3);
+            script.wait(500);
+            script.mouseLC(1025, 785, 3);
+            script.wait(500);
+            script.mouseLC(815, 785, 3);
+            script.wait(500);
+            script.keybd("ESC", 3);
+            script.wait(500);
+            return 0;
+        }
+        else{
+            script.keybd("ESC", 3);
+        }
+        tryTimes++;
+        if(tryTimes > maxTrytime) return 1;
+    }
+}
+void getTakenoko(SYS &script){
+    script.mouseLC(bulb.x, bulb.y, 3);
+    script.wait(500);
+    script.keybd("ENTER", 3);
+    script.wait(500);
+    script.mouseLC(735, 778, 3);
+    script.wait(500);
+}
+
+
+// ---------------------------------------------------
+int makeItem(SYS &script, std::vector<int> itemIndex){
+    int itemCount = std::min((int)itemIndex.size(), 11), recipeY[11] = {185, 202, 219, 236, 253, 271, 290, 305, 322, 340, 355}, minCD = 0;
+    for(int i=0; i<itemCount; i++){
+        script.mouseLC(100, recipeY[itemIndex[i]], 3);
+        script.wait(400);
+        script.keybd("ENTER", 3);
+        script.wait(3000);
+        minCD += 2500;
+    }
+    return minCD;
+}
+
+
+// ---------------------------------------------------
+pointMS getInventoryPos(int itemIndex, bool isLarge, int invPos){
+    pointMS bag;
+    switch(invPos){
+        case 0: // left-top
+            bag = {27, 90};
+            break;
+        case 1: // right-top
+            bag = {27, 90}; // @@@@
+            break;
+        case 2: // left-bottom
+            bag = {27, 90}; // @@@@
+            break;
+        case 3:// right-bottom
+            bag = {27, 90}; // @@@@
+            break;
+        default:
+            bag = {27, 90};
+            break;
+    }
+
+    if(itemIndex < 0){
+        return {bag.x + 23 - itemIndex * 10, bag.y - 30}; // @@@@
+    }
+
+    if(isLarge) itemIndex = min(itemIndex, 127);
+    else itemIndex = min(itemIndex, 23);
+
+    return {bag.x + 43 * ((itemIndex / 32) * 4 + itemIndex % 4), bag.y + (itemIndex % 32) * 43};
+}
+
+bool checkcost(PICTURE &costPic){
+    int e = 0, val = 55845; // $100000 => 47430, $15000 => 55845
+    for(int j=0; j<15; j++){
+        for(int i=0; i<4; i++){
+            for(int k=0; k<3; k++){
+                e += costPic.Pixels[(64+i) * costPic.bit + j * costPic.width * costPic.bit + k];
+            }
+        }
+    }
+    return abs(e - val) > 30 ? 0 : 1;
+}
+
+void washItem(SYS &script, std::vector<int> itemIndex, bool isLarge, int invPos){
+    PICTURE costPic(160, 15, "MapleStory");
+    pointMS itemPos;
+    int itemCount = itemIndex.size(), maxIndex = isLarge ? 127 : 31;
+    for(int i=0; i<itemCount; i++){
+        if(itemIndex[i] > maxIndex) continue;
+        itemPos = getInventoryPos(itemIndex[i], isLarge, invPos);
+        script.mouseLC(itemPos.x, itemPos.y, 3); // grab item
+        script.wait(200);
+        script.mouseLC(680, 480, 3); // put item
+        script.wait(400);
+        while(1){
+            costPic.screenShot(605, 408);
+            if(checkcost(costPic)){
+                std::cout<< "rare\n";
+                break;
+            }
+            else{
+                script.mouseLC(660, 530, 3); // wash btn
+                script.wait(400);
+                script.keybd("ENTER", 3);
+                script.wait(2000);
+            }
+        }
+    }
+}
+
+int statistics[2][12] = {{0}, {0}}, totalCube = 0;
+int checkfit(PICTURE &costPic){
+    /*          6%      3%      3%
+        str     372262          369885
+        dex     374908          373424
+        int     373257          371039
+        int             372810
+        luk     372582          370580
+        luk             370172
+        all     433772        
+        ap      492323  490098
+        ad                   
+
+                6%      3%      3%      6%      6%
+        str     373558  371603  371450  373507
+        dex     376533  374816  374731  376720
+        int     374714  372810  372776
+        luk     374085  372198  372181  374102
+        all     436968
+        ad      500888  499188  498916
+        ap      497199  495431  495244  497335
+        總adp   462077  459952  460054
+                3%      3%      3%
+
+
+
+        600 427 160 14
+        600 441 160 14
+        600 455 160 14
+    */
+    int table[12][3] = {
+        {373558, 371603, 371450}, // str
+        {376533, 374816, 374731}, // dex
+        {374714, 372810, 372776}, // int
+        {374085, 372198, 372181}, // luk
+        {436968, 436968, 436968}, // all
+        {421804, 419713, 420053}, // hp
+        {500888, 499188, 498916}, // ad
+        {497199, 495431, 495244}, // ap
+        {462077, 459952, 460054}, // adp
+        {588336, 588183, 588302}, // -def
+        {0, 492184, 491997}, // static ad
+        {0, 488427, 488325}, // static ap
+    };
+    int attr[12] = {0}, gate[12] = {9, 9, 9, 9, 6, 12, 9, 9, 12, 100, 100, 100};
+
+    int e = 0;
+    int rowHeight = 14, minV, row, col, anotherOK;
+
+    for (int dy = 0; dy < 3; dy++){
+        e = GetEigenvalue(costPic);
+        std::cout << e << "\n";
+        //  4%cri   4%cri   8%cri
+        //  495040  495397  495703
+        if(e == 495040 || e == 495397 || e == 495703) continue;
+
+        minV = 999999;
+        row = col = -1;
+        for (int i = 0; i < 12; i++) {
+            for (int j = 0; j < 3; j++) {
+                if(abs(table[i][j] - e) < min(minV, 500)){
+                    minV = abs(table[i][j] - e);
+                    row = i;
+                    col = j;
+                }
+            }
+        }
+        if(row >= 0){
+            if(col == 0) statistics[0][row]++;
+            else statistics[1][row]++;
+            if (row == 4) {
+                for (int i = 0; i < 5; i++)
+                attr[i] += 3;
+            }
+            else if(row == 9){
+                attr[9] += 15;
+            }
+            else if(row == 10 || row == 11){
+                attr[row] += 12;
+            }
+            else {
+                attr[row] += col == 0 ? 6 : 3;
+            }
+        }
+    }
+    totalCube++;
+    // imshow("Display w", Mat(rowHeight, width, BitsPerPixel > 24 ? CV_8UC4 : CV_8UC3, &test[0]));
+    // waitKey(0);
+
+    for (int i = 0; i < 12; i++) std::cout << attr[i] << " ";
+    std::cout << "\n";
+    for (int i = 0; i < 12; i++) std::cout << statistics[0][i] << " ";
+    std::cout << "\n";
+    for (int i = 0; i < 12; i++) std::cout << statistics[1][i] << " ";
+    std::cout << "/ " << totalCube << "\n";
+
+    if(attr[4] >= 6) return 4;
+    anotherOK = (attr[8] >= 3) + ((attr[9] >= 15) || (attr[0] >= 3) || (attr[1] >= 3) || (attr[3] >= 3) || (attr[10] >= 12));
+    if(attr[6] >=6 && anotherOK >= 2) return 6;
+    anotherOK = (attr[8] >= 3) + ((attr[9] >= 15) || (attr[2] >= 3) || (attr[11] >= 12));
+    if(attr[7] >=6 && anotherOK >= 2) return 7;
+    for (int i = 0; i < 12; i++) if(attr[i] >= gate[i]) return i;
+    return -1;
+    // 1 0 2 7
+}
+
+void washItemAyashii(SYS &script, std::vector<int> itemIndex, std::vector<bool> isWeapon, int invPos, int cubeIdx){
+    PICTURE costPic(160, 42, "MapleStory");
+    pointMS itemPos, consumePos, cubePos;
+    int itemCount = min(itemIndex.size(), isWeapon.size()), result;
+    string resList[] = {"str", "dex", "int", "luk", "all", "hp", "ad", "ap", "adp"};
+
+    consumePos = getInventoryPos(-2, 0, invPos);
+    cubePos = getInventoryPos(cubeIdx, 0, invPos);
+
+    for(int i=0; i<itemCount; i++){
+        if(itemIndex[i] > 31) continue;
+        itemPos = getInventoryPos(itemIndex[i], 0, invPos);
+        script.mouseLC(consumePos.x, consumePos.y, 3);
+        script.wait(400);
+        script.mouseLC(cubePos.x, cubePos.y, 3);
+        script.wait(100);
+        script.mouseLC(cubePos.x, cubePos.y, 3);
+        script.wait(400);
+        script.mouseLC(itemPos.x, itemPos.y, 3);
+        script.wait(400);
+        for(int e=0; e<4; e++){
+            script.keybd("ENTER", 3);
+            script.wait(100);
+        }
+        script.wait(2000);
+        while(1){
+            costPic.screenShot(600, 427);
+            result = checkfit(costPic);
+            std::cout << itemIndex[i] << " " << result << "\n";
+            if (isWeapon[i] ? (result == 6 || result == 7) : (result >= 0)){
+                std::cout << result << ", " << resList[result] << "\n";
+                script.wait(1500);
+                script.mouseLC(750, 535, 3); // click close btn
+                break;
+            }
+            else{
+                script.mouseLC(660, 530, 3); // click wash btn
+                for (int i = 0; i<4; i++){
+                    script.wait(100);
+                    script.keybd("ENTER", 3);
+                }
+                script.wait(2000);
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------
 void actSkill(skilloption &skill, SYS &script, MSsetting &myMSinfo){
     for(int i=0; i<(int)skill.forbidZone.size(); i++) if(skill.forbidZone[i].left<=myMSinfo.charpos.x && myMSinfo.charpos.x<=skill.forbidZone[i].right && skill.forbidZone[i].top<=myMSinfo.charpos.y && myMSinfo.charpos.y<=skill.forbidZone[i].bottom) return;
 
@@ -763,7 +1066,7 @@ int getCodename(){
         // https://www.796t.com/post/YTRkNXM=.html
         // https://stackoverflow.com/questions/41404711/how-to-list-files-in-a-directory-using-the-windows-api
         _mkdir("scripts/");
-        cout << "make dir scripts\n";
+        std::cout << "make dir scripts\n";
         return 1;
     }
 
@@ -864,7 +1167,7 @@ int readScript(int cn, MSsetting &myMSsetting){
     if(cn < 0 || cn >= (int)codenameList.size()) return 1;
     
     if (readFile((std::string) "scripts/" + codenameList[cn], "r", &data)){
-        cout << codenameList[cn] << " not found.\n";
+        std::cout << codenameList[cn] << " not found.\n";
         return 1;
     }
     replaceAll(data, " ", "");

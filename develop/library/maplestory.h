@@ -74,8 +74,14 @@ void findarrow(PICTURE &targetPic, int way[4]);
 void matchway(PICTURE &targetPic, int way[4]);
 void getpos(PICTURE &targetPic, pointMS &charpos, pointMS &ringpos, bool &isOther);
 void getNPC(PICTURE &targetPic, bool *isNPC);
-int takenoko(PICTURE &targetPic, int ref[15][30][3]);
 void solveWheel(SYS &script);
+void openTakenoko(SYS &script);
+bool matchTakenoko(SYS &script, int type, int maxTrytime);
+void getTakenoko(SYS &script);
+int makeItem(SYS &script, std::vector<int> itemIndex);
+pointMS getInventoryPos(int itemIndex, bool isLarge, int invPos);
+void washItem(SYS &script, std::vector<int> itemIndex, bool isLarge, int invPos);
+void washItemAyashii(SYS &script, std::vector<int> itemIndex, std::vector<bool> isWeapon, int invPos, int cubeIdx);
 void actSkill(skilloption &skill, SYS &script);
 void actSkill(MSsetting &myMSsetting, std::string skillName, SYS &script);
 
