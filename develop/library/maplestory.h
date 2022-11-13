@@ -82,8 +82,8 @@ int makeItem(SYS &script, std::vector<int> itemIndex);
 pointMS getInventoryPos(int itemIndex, bool isLarge, int invPos);
 void washItem(SYS &script, std::vector<int> itemIndex, bool isLarge, int invPos);
 void washItemAyashii(SYS &script, std::vector<int> itemIndex, std::vector<bool> isWeapon, int invPos, int cubeIdx);
-void actSkill(skilloption &skill, SYS &script);
-void actSkill(MSsetting &myMSsetting, std::string skillName, SYS &script);
+void actSkill(skilloption &skill, SYS &script, MSsetting &myMSsetting);
+void actSkill(std::string skillName, SYS &script, MSsetting &myMSsetting);
 
 int getCodename();
 int readScript(int cn, MSsetting &myMSsetting);

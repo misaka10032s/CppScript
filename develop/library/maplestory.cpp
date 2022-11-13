@@ -786,7 +786,7 @@ int checkfit(PICTURE &costPic){
     int attr[12] = {0}, gate[12] = {9, 9, 9, 9, 6, 12, 9, 9, 12, 100, 100, 100};
 
     int e = 0;
-    int rowHeight = 14, minV, row, col, anotherOK;
+    int minV, row, col, anotherOK;
 
     for (int dy = 0; dy < 3; dy++){
         e = GetEigenvalue(costPic);
@@ -825,6 +825,7 @@ int checkfit(PICTURE &costPic){
         }
     }
     totalCube++;
+    // int rowHeight = 14;
     // imshow("Display w", Mat(rowHeight, width, BitsPerPixel > 24 ? CV_8UC4 : CV_8UC3, &test[0]));
     // waitKey(0);
 
@@ -920,7 +921,7 @@ void actSkill(std::string skillName, SYS &script, MSsetting &myMSinfo){
 
     for(int i=0; i<(int)skill.forbidZone.size(); i++) if(skill.forbidZone[i].left<=myMSinfo.charpos.x && myMSinfo.charpos.x<=skill.forbidZone[i].right && skill.forbidZone[i].top<=myMSinfo.charpos.y && myMSinfo.charpos.y<=skill.forbidZone[i].bottom) return;
 
-    int nowtick = script.getNowtick(), skIndex;
+    int nowtick = script.getNowtick();
 
     for (int i=0; i<skill.sknum; i++){
         script.keybd(skill.KBDname[i].data(), 3);

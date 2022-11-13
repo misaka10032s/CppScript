@@ -1,0 +1,3 @@
+forbid zone
+javelin 90~100
+angryangel 100~110

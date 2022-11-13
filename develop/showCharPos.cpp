@@ -19,7 +19,7 @@ int main(){
     MSsetting infoMS;
     PICTURE mapImg(targetWnd);
 
-    std::cout << "input map width and height";
+    std::cout << "input map width and height\n";
     std::cin >> mapSize.x >> mapSize.y;
     mapImg.resize(mapSize.x, mapSize.y, 4);
     while(1){

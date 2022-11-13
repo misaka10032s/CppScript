@@ -3,7 +3,7 @@
 	"tasks": [
 	  {
 		"label": "Compile", 
-		"command": "clang++", 
+		"command": "g++", 
 		"args": [
 		  "${file}",
 		  "-o",
@@ -12,7 +12,7 @@
 		  "-Wall",
 		//   "-static-libgcc",
 		//   "-fcolor-diagnostics",
-		  "--target=x86_64-w64-mingw",
+		//   "--target=x86_64-w64-mingw",
 		  "-std=c++17" ,
 		  "develop/library/*.cpp",
 		//   "-I","C:/C++extend/OpenSSL-Win64/include",
@@ -28,15 +28,14 @@
 		//   "-L", "C:/Program Files/LLVM/x86_64-w64-mingw32/lib",
 		//   "-I", "C:/C++extend/mingw64/x86_64-w64-mingw32/include",
 		//   "-L", "C:/C++extend/mingw64/x86_64-w64-mingw32/lib",
-		//   "-lopencv_imgproc452",
-		//   "-lopencv_videoio452",
-		//   "-lopencv_imgcodecs452",
-		//   "-lopencv_objdetect452",
-		//   "-lopencv_core452",
-		//   "-lopencv_highgui452",
-		//   "-lws2_32",
-		//   "-lgdi32"
-		"-std=gun99", // about M_PI
+		  "-lopencv_imgproc452",
+		  "-lopencv_videoio452",
+		  "-lopencv_imgcodecs452",
+		  "-lopencv_objdetect452",
+		  "-lopencv_core452",
+		  "-lopencv_highgui452",
+		  "-lws2_32",
+		  "-lgdi32"
 		], 
 		"type": "shell", 
 		"group": {

@@ -102,7 +102,7 @@ int main(){
                         for(int i=0; i<(int)infoMS.skills.size(); i++){
                             std::cout << nowtick << " " << infoMS.skills[i].skillname << " " << infoMS.skills[i].lastuse << "\n";
                             if(infoMS.skills[i].canUse(nowtick)){
-                                actSkill(infoMS.skills[i], scriptMS);
+                                actSkill(infoMS.skills[i], scriptMS, infoMS);
                                 break;
                             }
                         }
@@ -129,7 +129,7 @@ int main(){
 
                         if(abs(infoMS.to.y - infoMS.charpos.y) > 3){
                             if(infoMS.to.y > infoMS.charpos.y + 8){
-                                actSkill(infoMS, "downfloor", scriptMS);
+                                actSkill((std::string)"downfloor", scriptMS, infoMS);
                             }
                             else{
                                 if((infoMS.to.x != anyway && infoMS.charpos.x > infoMS.to.x) || (infoMS.to.x == anyway && infoMS.charpos.x > infoMS.hikikae[1])){
