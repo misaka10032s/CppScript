@@ -20,13 +20,13 @@ int main(){
     int anyway = 10000;
 
     int usedScriptId;
-    if(getCodename()) {
+    if(getCodename("scripts/")) {
         std::cout<<"please make scripts.\n";
         return 0;
     }
     std::cout<<"input script Id.\n";
     std::cin >> usedScriptId;
-    readScript(usedScriptId, infoMS);
+    initSkillSet(readScript("scripts/", usedScriptId), infoMS);
     mapImg.resize(infoMS.miniMapSize.x, infoMS.miniMapSize.y, 4);
 
     while(1){
@@ -101,7 +101,7 @@ int main(){
 
                         for(int i=0; i<(int)infoMS.skills.size(); i++){
                             std::cout << nowtick << " " << infoMS.skills[i].skillname << " " << infoMS.skills[i].lastuse << "\n";
-                            if(infoMS.skills[i].canUse(nowtick)){
+                            if(canUse(infoMS.skills[i], scriptMS)){
                                 actSkill(infoMS.skills[i], scriptMS, infoMS);
                                 break;
                             }
@@ -129,7 +129,13 @@ int main(){
 
                         if(abs(infoMS.to.y - infoMS.charpos.y) > 3){
                             if(infoMS.to.y > infoMS.charpos.y + 8){
-                                actSkill((std::string)"downfloor", scriptMS, infoMS);
+                                for(int i=0; i<(int)infoMS.downFloor.size(); i++){
+                                    std::cout << nowtick << " " << infoMS.downFloor[i] << "\n";
+                                    if(canUse(infoMS.downFloor[i], scriptMS)){
+                                        actSkill(infoMS.downFloor[i], scriptMS, infoMS);
+                                        break;
+                                    }
+                                }
                             }
                             else{
                                 if((infoMS.to.x != anyway && infoMS.charpos.x > infoMS.to.x) || (infoMS.to.x == anyway && infoMS.charpos.x > infoMS.hikikae[1])){
@@ -147,14 +153,13 @@ int main(){
                                     scriptMS.keybd("RIGHT", 2);
                                     scriptMS.keybd("LEFT", 1);
                                 }
-                                scriptMS.keybd("C", 3);
-                                scriptMS.wait(100);
-                                scriptMS.keybd("UP", 1);
-                                scriptMS.wait(300);
-                                scriptMS.keybd("C", 3);
-                                scriptMS.wait(200);
-                                scriptMS.keybd("UP", 2);
-                                scriptMS.wait(500);
+                                for(int i=0; i<(int)infoMS.upFloor.size(); i++){
+                                    std::cout << nowtick << " " << infoMS.upFloor[i] << "\n";
+                                    if(canUse(infoMS.upFloor[i], scriptMS)){
+                                        actSkill(infoMS.upFloor[i], scriptMS, infoMS);
+                                        break;
+                                    }
+                                }
                             }
                         }
 

@@ -11,22 +11,23 @@
 #include "library/systemFnc.h"
 #include "library/maplestory.h"
 
-skilloption sakura("sakura", {"1", "1"}, {500, 1000}, {100, 100}, 175 * 1000);
-skilloption knight("knight", {"8", "8"}, {500, 1500}, {100, 100}, 175 * 1000);
-skilloption spider("spider", {"9", "9"}, {500, 800}, {100, 100}, 240 * 1000);
-skilloption supernova("supernova", {"0", "0"}, {500, 800}, {100, 100}, 35 * 1000);
-skilloption arrow("arrow", {",", ","}, {500, 500}, {100, 100}, 999 * 200 * 1000);
-skilloption angryangel("angryangel", {"C", "C", "X", "RSHIFT", "RSHIFT"}, {100, 200, 120, 200, 500}, {100, 100, 100, 100, 100}, 9 * 1000);
-skilloption javelin("javelin", {"C", "C", "X", "PGD", "PGD"}, {150, 200, 420, 200, 950}, {100, 100, 100}, 5 * 1000);
-skilloption senpuu("senpuu", {"C", "C", "X", "V", "V"}, {1150, 200, 400, 200, 1000}, {100, 100, 100}, 400 * 1000);
-skilloption lightning("lightning", {"C", "C", "X", "V", "B", "CTRL", "ALT"}, {150, 250, 500, 1000, 600, 1000, 600}, {100, 100, 100}, 450 * 1000);
-skilloption normal("normal", {"C", "C", "X"}, {100, 200, 600}, {100, 100, 100}, 0);
-skilloption cycle("cycle", {"DEL", "DEL"}, {300, 1000}, {100, 100}, 300 * 1000);
+skilloption sakura("sakura", {"1", "1"}, {500, 1000}, 100, 175 * 1000);
+skilloption knight("knight", {"8", "8"}, {500, 1500}, 100, 175 * 1000);
+skilloption spider("spider", {"9", "9"}, {500, 800}, 100, 240 * 1000);
+skilloption supernova("supernova", {"0", "0"}, {500, 800}, 100, 35 * 1000);
+skilloption arrow("arrow", {",", ","}, {500, 500}, 100, 999 * 200 * 1000);
+skilloption angryangel("angryangel", {"C", "C", "X", "RSHIFT", "RSHIFT"}, {100, 200, 120, 200, 500}, 100, 9 * 1000);
+skilloption javelin("javelin", {"C", "C", "X", "PGD", "PGD"}, {150, 200, 420, 200, 950}, 100, 5 * 1000);
+skilloption senpuu("senpuu", {"C", "C", "X", "V", "V"}, {1150, 200, 400, 200, 1000}, 100, 400 * 1000);
+skilloption lightning("lightning", {"C", "C", "X", "V", "B", "CTRL", "ALT"}, {150, 250, 500, 1000, 600, 1000, 600}, 100, 450 * 1000);
+skilloption normal("normal", {"C", "C", "X"}, {100, 200, 600}, 100, 0);
+skilloption normal2("normal2", {"C", "C", "X", "X", "X", "X"}, {100, 200, 300, 300, 300, 300}, 50, 0);
+skilloption cycle("cycle", {"DEL", "DEL"}, {300, 1000}, 100, 300 * 1000);
 
 int main(){
     const char* targetWnd = "MapleStory";
     SYS scriptMS(targetWnd);
-    MSsetting infoMS({70, 105}, 999 * 3 * 60 * 1000, {0, 38}, {170, 82}, {cycle, arrow, spider, supernova, knight, sakura, senpuu, angryangel, javelin, normal});
+    MSsetting infoMS({70, 105}, 999 * 3 * 60 * 1000, {0, 38}, {170, 82}, {cycle, arrow, spider, supernova, knight, sakura, senpuu, angryangel, javelin, normal2, normal});
     PICTURE mapImg(infoMS.miniMapSize.x, infoMS.miniMapSize.y, targetWnd);
     long int nowtick;
     int anyway = 10000;
@@ -191,8 +192,12 @@ int main(){
                                 scriptMS.keybd("C", 3);
                                 scriptMS.wait(100);
                                 scriptMS.keybd("UP", 1);
-                                scriptMS.wait(300);
+                                scriptMS.wait(250);
                                 scriptMS.keybd("C", 3);
+                                if(rand()%100 < 60){
+                                    scriptMS.wait(50);
+                                    scriptMS.keybd("X", 3);
+                                }
                                 scriptMS.wait(200);
                                 scriptMS.keybd("UP", 2);
                                 scriptMS.wait(500);

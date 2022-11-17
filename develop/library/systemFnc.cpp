@@ -272,8 +272,8 @@
     };
     void SYS::mouseMV(int x, int y){
         this->mouseAction(x, y, 0, 1, 0);
-        GetWindowRect(this->targetWND, &this->targetWNDsize);
-	    mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->targetWNDsize.left + x) * 65536 / this->rctScreen.right, (this->targetWNDsize.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
+        // GetWindowRect(this->targetWND, &this->targetWNDsize);
+	    // mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, (this->targetWNDsize.left + x) * 65536 / this->rctScreen.right, (this->targetWNDsize.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
     };
     // mouse position relative
     void SYS::mouseRCr(int dx, int dy, char type){
@@ -329,8 +329,8 @@
     };
     void SYS::mouseMVr(int dx, int dy){
         this->mouseAction(dx, dy, 0, 0, 0);
-        GetWindowRect(this->targetWND, &this->targetWNDsize);
-	    mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
+        // GetWindowRect(this->targetWND, &this->targetWNDsize);
+	    // mouse_event(MOUSEEVENTF_MOVE, dx * 65536 / this->rctScreen.right, dy * 65536 / this->rctScreen.bottom, 0, 0);
     };
 
 
@@ -400,8 +400,10 @@
             keybd("NUMLOCK", 3);
             SLEEP(50);
         }
+        std::cout << "pause\n";
+        this->wait(10);
     };
-    void SYS::setCountdown(int time){
+    void SYS::setCountdown(long int time){
         gettimeofday(&this->timestamp, NULL);
         this->timeCountDown = this->timestamp.tv_sec * 1000 + this->timestamp.tv_usec / 1000 + time;
     };

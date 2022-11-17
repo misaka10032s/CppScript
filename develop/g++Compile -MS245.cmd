@@ -1,2 +1,0 @@
-g++ -o mercedes245.exe mercedes245.cpp -Wall -std=c++17 library/*.cpp -I C:/C++extend/opencvMingw/include -L C:/C++extend/opencvMingw/x64/mingw/lib -lopencv_imgproc452 -lopencv_videoio452 -lopencv_imgcodecs452 -lopencv_objdetect452 -lopencv_core452 -lopencv_highgui452 -lws2_32 -lgdi32
-pause

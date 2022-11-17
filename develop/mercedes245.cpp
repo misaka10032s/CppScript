@@ -11,19 +11,19 @@
 #include "library/systemFnc.h"
 #include "library/maplestory.h"
 
-skilloption sakura("sakura", {"1", "1"}, {500, 1000}, {100, 100}, 175 * 1000);
-skilloption knight("knight", {"8", "8"}, {500, 1500}, {100, 100}, 175 * 1000);
-skilloption spider("spider", {"9", "9"}, {500, 800}, {100, 100}, 240 * 1000);
-skilloption supernova("supernova", {"0", "0"}, {500, 500}, {100, 100}, 35 * 1000);
-skilloption arrow("arrow", {",", ","}, {500, 500}, {100, 100}, 999 * 200 * 1000);
-skilloption angryangel("angryangel", {"C", "C", "X", "RSHIFT", "RSHIFT"}, {100, 150, 120, 200, 500}, {100, 100, 100, 100, 100}, 9 * 1000);
-skilloption javelin("javelin", {"C", "C", "X", "PGD", "PGD"}, {150, 150, 350, 200, 900}, {100, 100, 100}, 5 * 1000);
-skilloption senpuu("senpuu", {"C", "C", "X", "V", "V"}, {1150, 200, 400, 200, 1000}, {100, 100, 100}, 220 * 1000);
-skilloption lightning("lightning", {"C", "C", "X", "V", "B", "CTRL", "ALT"}, {150, 250, 500, 1000, 600, 1000, 600}, {100, 100, 100}, 250 * 1000);
-skilloption normal("normal", {"C", "C", "X"}, {100, 150, 600}, {100, 100, 100}, 0);
-skilloption cycle("cycle", {"DEL", "DEL"}, {300, 1000}, {100, 100}, 300 * 1000);
-skilloption jumpup0("jumpup0", {"DEL", "DEL"}, {300, 1000}, {100, 100}, 300 * 1000);
-skilloption jumpup1("jumpup1", {"DEL", "DEL"}, {300, 1000}, {100, 100}, 300 * 1000);
+skilloption sakura("sakura", {"1", "1"}, {500, 1000}, 100, 175 * 1000);
+skilloption knight("knight", {"8", "8"}, {500, 1500}, 100, 175 * 1000);
+skilloption spider("spider", {"9", "9"}, {500, 800}, 100, 240 * 1000);
+skilloption supernova("supernova", {"0", "0"}, {500, 500}, 100, 35 * 1000);
+skilloption arrow("arrow", {",", ","}, {500, 500}, 100, 999 * 200 * 1000);
+skilloption angryangel("angryangel", {"C", "C", "X", "RSHIFT", "RSHIFT"}, {100, 150, 120, 200, 500}, 100, 9 * 1000);
+skilloption javelin("javelin", {"C", "C", "X", "PGD", "PGD"}, {150, 150, 350, 200, 900}, 100, 5 * 1000);
+skilloption senpuu("senpuu", {"C", "C", "X", "V", "V"}, {1150, 200, 400, 200, 1000}, 100, 220 * 1000);
+skilloption lightning("lightning", {"C", "C", "X", "V", "B", "CTRL", "ALT"}, {150, 250, 500, 1000, 600, 1000, 600}, 100, 250 * 1000);
+skilloption normal("normal", {"C", "C", "X"}, {100, 150, 600}, 100, 0);
+skilloption cycle("cycle", {"DEL", "DEL"}, {300, 1000}, 100, 300 * 1000);
+skilloption jumpup0("jumpup0", {"DEL", "DEL"}, {300, 1000}, 100, 300 * 1000);
+skilloption jumpup1("jumpup1", {"DEL", "DEL"}, {300, 1000}, 100, 300 * 1000);
 
 int main(){
     const char* targetWnd = "MapleStory";

@@ -21,7 +21,7 @@
             struct timeval timestamp;
             bool enable, waiting, check_WHD=1;
             unsigned char switchKey, maximizeKey, minimizeKey, focusKey, setForegroundWindow;
-            int timeCountDown;
+            long int timeCountDown;
 
         public:
             SYS(const char* window);
@@ -58,7 +58,7 @@
             void maximize();
             void focus();
             void pause();
-            void setCountdown(int time);
+            void setCountdown(long int time);
     };
 #endif
 
