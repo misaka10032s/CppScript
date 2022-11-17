@@ -31,7 +31,7 @@ pointMS::pointMS(std::initializer_list<int> pos){
 };
 
 skilloption::skilloption(){};
-skilloption::skilloption(std::string _skillname, std::initializer_list<std::string> _KBDname, std::initializer_list<int> _KBDdelay, float _rate, int _cd){
+skilloption::skilloption(std::string _skillname, std::vector<std::string> _KBDname, std::vector<int> _KBDdelay, float _rate, int _cd){
     this->skillname = _skillname;
     this->KBDname = _KBDname;
     // KBDdelay = _KBDname;
@@ -40,20 +40,8 @@ skilloption::skilloption(std::string _skillname, std::initializer_list<std::stri
     this->cd = _cd;
     this->lastuse = -1;
 
-    for(int i=0; i<sknum; i++) this->KBDdelay.push_back(*(_KBDdelay.begin() + i%((int)_KBDdelay.size())));
+    for(int i=0; i<sknum; i++) this->KBDdelay.push_back(_KBDdelay[i%((int)_KBDdelay.size())]);
 };
-// skilloption::skilloption(std::string _skillname, std::vector<std::string> _KBDname, std::vector<int> _KBDdelay, std::vector<float> _rate, int _cd){
-//     this->skillname = _skillname;
-//     this->KBDname = _KBDname;
-//     // KBDdelay = _KBDname;
-//     // rate = _rate;
-//     this->sknum = (int)_KBDname.size();
-//     this->cd = _cd;
-//     this->lastuse = -1;
-
-//     for(int i=0; i<sknum; i++) this->KBDdelay.push_back(_KBDdelay[i%((int)_KBDdelay.size())]);
-//     for(int i=0; i<sknum; i++) this->rate.push_back(_rate[i%((int)_rate.size())]);
-// };
 bool skilloption::canUse(int nowtick){
     return (nowtick - this->lastuse > this->cd);
 };
@@ -660,17 +648,20 @@ void getTakenoko(SYS &script){
 // ---------------------------------------------------
 int makeItem(SYS &script, std::vector<int> itemIndex, int menuPos){
     if(menuPos < 0 || menuPos > 3) menuPos = 0;
-    int itemCount = std::min((int)itemIndex.size(), 11), recipeY[11] = {185, 202, 219, 236, 253, 271, 290, 305, 322, 340, 355}, minCD = 0;
-    pointMS menuShift(menuPos%2 ? 0 : 123, menuPos/2 ? 0 : 123); // @@@@ pos + itemcount
+    int itemCount = (int)itemIndex.size(), recipeY[11] = {185, 202, 219, 236, 253, 271, 290, 305, 322, 340, 355}, minusCD = 0, checkDuplicated = 2147483647;
+    pointMS menuShift(menuPos%2 ? 0 : 780, menuPos/2 ? 0 : 355); // @@@@ pos + itemcount
     for(int i=0; i<itemCount; i++){
-        if(itemIndex[i] < 0 || itemIndex[i] > 15) continue;
-        script.mouseLC(100, 185 + 17 * itemIndex[i], 3);
+        if(itemIndex[i] < 0 || itemIndex[i] > 13 || !(checkDuplicated & (1<<itemIndex[i]))) continue;
+        script.mouseLC(100 + menuShift.x, 185 + 17 * itemIndex[i] + menuShift.y, 3);
+        script.wait(400);
+        script.mouseLC(539 + menuShift.x, 349 + menuShift.y, 3);
         script.wait(400);
         script.keybd("ENTER", 3);
         script.wait(3000);
-        minCD += 2500;
+        minusCD += 2500;
+        checkDuplicated ^= (1<<itemIndex[i]);
     }
-    return minCD;
+    return minusCD;
 }
 
 
@@ -942,24 +933,24 @@ void actSkill(std::string skillName, SYS &script, MSsetting &myMSinfo){
         myMSinfo.skills[myMSinfo.skillsOrder.end() - skIdx].lastuse = MAX(nowtick - val, myMSinfo.skills[myMSinfo.skillsOrder.end() - skIdx].lastuse);
     }
 };
-bool canUse(skilloption &skill, SYS &script){
+bool canUse(skilloption &skill, SYS &script, MSsetting &myMSinfo){
     return (script.getNowtick() - skill.lastuse > skill.cd);
 };
-bool canUse(std::string skillName, SYS &script){
+bool canUse(std::string skillName, SYS &script, MSsetting &myMSinfo){
     std::vector<std::string>::iterator skIdx;
     skIdx = std::find(myMSinfo.skillsOrder.begin(), myMSinfo.skillsOrder.end(), skillName);
-    if(skIdx == myMSinfo.skillsOrder.end()) return;
+    if(skIdx == myMSinfo.skillsOrder.end()) return 0;
     skilloption &skill = myMSinfo.skills[skIdx - myMSinfo.skillsOrder.begin()];
     
     return (script.getNowtick() - skill.lastuse > skill.cd);
 };
-bool canUseR(skilloption &skill, SYS &script){
+bool canUseR(skilloption &skill, SYS &script, MSsetting &myMSinfo){
     return (script.getNowtick() - skill.lastuse > skill.cd) && (rand()%100 < skill.rate);
 };
-bool canUseR(std::string skillName, SYS &script){
+bool canUseR(std::string skillName, SYS &script, MSsetting &myMSinfo){
     std::vector<std::string>::iterator skIdx;
     skIdx = std::find(myMSinfo.skillsOrder.begin(), myMSinfo.skillsOrder.end(), skillName);
-    if(skIdx == myMSinfo.skillsOrder.end()) return;
+    if(skIdx == myMSinfo.skillsOrder.end()) return 0;
     skilloption &skill = myMSinfo.skills[skIdx - myMSinfo.skillsOrder.begin()];
     
     return (script.getNowtick() - skill.lastuse > skill.cd) && (rand()%100 < skill.rate);
@@ -1049,7 +1040,8 @@ int readFile(std::string fname, std::string type, std::string* data){
     char* buff;
     long lSize;
     size_t result;
-    
+    int CRLFtimes = 0;
+    std::cout << fname << "\n";
     f = fopen(fname.data(), type.data());
     if(f == NULL){
         return 1;
@@ -1065,7 +1057,9 @@ int readFile(std::string fname, std::string type, std::string* data){
     }
 
     result = fread (buff, 1, lSize, f);
-    if ((long)result != lSize) {
+    for(int i=0; i<result; i++) if(buff[i] == '\n') CRLFtimes++;
+    
+    if ((long)result != lSize - CRLFtimes) {
         return 3;
     }
 
@@ -1078,7 +1072,7 @@ int readFile(std::string fname, std::string type, std::string* data){
 int getCodename(const char *path){
     int idx = 0;
     WIN32_FIND_DATA data;
-    HANDLE hFind = FindFirstFile(path, &data);
+    HANDLE hFind = FindFirstFile(((std::string)path + "*.*").c_str(), &data);
     if(hFind != INVALID_HANDLE_VALUE){
         do{
             if((std::string)data.cFileName == "." || (std::string)data.cFileName == "..") continue;
@@ -1184,10 +1178,10 @@ int initSkillSet(std::map<std::string, std::vector<std::string>> &setData, MSset
     }
     
     if(setData.find("downFloor") != setData.end()){
-        myMSsetting.downFloor = split(setData["downFloor"], "_");
+        myMSsetting.downFloor = setData["downFloor"];
     }
     if(setData.find("upFloor") != setData.end()){
-        myMSsetting.upFloor = split(setData["upFloor"], "_");
+        myMSsetting.upFloor = setData["upFloor"];
     }
 
     return 0;

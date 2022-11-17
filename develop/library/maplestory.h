@@ -33,8 +33,7 @@ class skilloption {
         std::vector<RANGE> forbidZone;
 
         skilloption();
-        skilloption(std::string _skillname, std::initializer_list<std::string> _KBDname, std::initializer_list<int> _KBDdelay, float _rate, int _cd);
-        // skilloption(std::string _skillname, std::vector<std::string> _KBDname, std::vector<int> _KBDdelay, std::vector<float> _rate, int _cd);
+        skilloption(std::string _skillname, std::vector<std::string> _KBDname, std::vector<int> _KBDdelay, float _rate, int _cd);
         // skilloption(std::string _skillname, std::vector<std::string> _KBDname, std::vector<int> _KBDdelay, std::vector<float> _rate, int _cd, std::map<std::string, int> _skillBind, std::vector<RANGE> _forbidZone);
         bool canUse(int nowtick);
         void bind(std::string _skillName, int _cd);
@@ -87,10 +86,10 @@ void washItem(SYS &script, std::vector<int> itemIndex, bool isLarge, int invPos)
 void washItemAyashii(SYS &script, std::vector<int> itemIndex, std::vector<bool> isWeapon, int invPos, int cubeIdx);
 void actSkill(skilloption &skill, SYS &script, MSsetting &myMSsetting);
 void actSkill(std::string skillName, SYS &script, MSsetting &myMSsetting);
-bool canUse(skilloption &skill, SYS &script);
-bool canUse(std::string skillName, SYS &script);
-bool canUseR(skilloption &skill, SYS &script);
-bool canUseR(std::string skillName, SYS &script);
+bool canUse(skilloption &skill, SYS &script, MSsetting &myMSinfo);
+bool canUse(std::string skillName, SYS &script, MSsetting &myMSinfo);
+bool canUseR(skilloption &skill, SYS &script, MSsetting &myMSinfo);
+bool canUseR(std::string skillName, SYS &script, MSsetting &myMSinfo);
 
 int getCodename(const char *path);
 int initSkillSet(std::map<std::string, std::vector<std::string>> &setData, MSsetting &myMSsetting);
