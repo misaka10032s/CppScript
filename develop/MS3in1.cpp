@@ -139,6 +139,7 @@ int main(){
         countDown = isFind("countDown") ? stoi(scriptConfig["countDown"][0]) : -1;
         cd = isFind("cd") ? stoi(scriptConfig["cd"][0]) : 5;
         totemKey = isFind("totemKey") ? scriptConfig["totemKey"][0] : "DEL";
+        if(countDown == -1) std::cin >> countDown;
 
         if(countDown > 0) scriptMS.setCountdown(countDown);
         while(1){

@@ -1,0 +1,7 @@
+scriptType: make;
+makeTimes: 999;
+itemIndex: -1;
+cd: 5;
+menuPos: 0;
+eatNum: 0.4;
+eatKey: INS;

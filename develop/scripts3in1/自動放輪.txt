@@ -1,0 +1,4 @@
+scriptType: totem;
+cd: 5;
+totemKey: DEL;
+countDown: -1;

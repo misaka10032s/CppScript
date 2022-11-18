@@ -602,6 +602,7 @@ bool matchTakenoko(SYS &script, int type, int maxTrytime){
     PICTURE takenokoPic(30, 15, "MapleStory");
     int dxmax = 12, diffV = 0, tryTimes = 0;
     bool matched;
+    type = max(type, 1);
     while(1){
         script.mouseLC(mission.x, mission.y, 3);
         script.wait(500);
@@ -609,14 +610,20 @@ bool matchTakenoko(SYS &script, int type, int maxTrytime){
         script.wait(500);
         script.keybd("Y", 3);
         script.wait(500);
-        for(int i=0; i<dxmax; i++){
-            takenokoPic.screenShot(527 + i*16, 675);
-            diffV = takenokoCheck(takenokoPic, type);
-            if(diffV < 30) {
-                matched = 1;
-                break;
+
+        for(int t=0; t<2; t++){
+            if(!(type & (1<<t))) continue;
+            for(int i=0; i<dxmax; i++){
+                takenokoPic.screenShot(527 + i*16, 675);
+                diffV = takenokoCheck(takenokoPic, t);
+                if(diffV < 30) {
+                    matched = 1;
+                    t = 999;
+                    break;
+                }
             }
         }
+        
         if(matched){
             script.mouseLC(615, 715, 3);
             script.wait(500);
@@ -648,18 +655,20 @@ void getTakenoko(SYS &script){
 // ---------------------------------------------------
 int makeItem(SYS &script, std::vector<int> itemIndex, int menuPos){
     if(menuPos < 0 || menuPos > 3) menuPos = 0;
-    int itemCount = (int)itemIndex.size(), recipeY[11] = {185, 202, 219, 236, 253, 271, 290, 305, 322, 340, 355}, minusCD = 0, checkDuplicated = 2147483647;
+    int itemCount = (int)itemIndex.size(), minusCD = 0, checkDuplicated = 2147483647;
     pointMS menuShift(menuPos%2 ? 0 : 780, menuPos/2 ? 0 : 355); // @@@@ pos + itemcount
     for(int i=0; i<itemCount; i++){
-        if(itemIndex[i] < 0 || itemIndex[i] > 13 || !(checkDuplicated & (1<<itemIndex[i]))) continue;
-        script.mouseLC(100 + menuShift.x, 185 + 17 * itemIndex[i] + menuShift.y, 3);
-        script.wait(400);
+        if(itemIndex[i] < -1 || itemIndex[i] > 13 || !(checkDuplicated & (1<<itemIndex[i]))) continue;
+        if(itemIndex[i] >= 0){
+            script.mouseLC(100 + menuShift.x, 185 + 17 * itemIndex[i] + menuShift.y, 3);
+            script.wait(400);
+        }
         script.mouseLC(539 + menuShift.x, 349 + menuShift.y, 3);
         script.wait(400);
         script.keybd("ENTER", 3);
         script.wait(3000);
         minusCD += 2500;
-        checkDuplicated ^= (1<<itemIndex[i]);
+        if(itemIndex[i] >= 0) checkDuplicated ^= (1<<itemIndex[i]);
     }
     return minusCD;
 }
@@ -915,13 +924,17 @@ void actSkill(std::string skillName, SYS &script, MSsetting &myMSinfo){
     skIdx = std::find(myMSinfo.skillsOrder.begin(), myMSinfo.skillsOrder.end(), skillName);
     if(skIdx == myMSinfo.skillsOrder.end()) return;
     skilloption &skill = myMSinfo.skills[skIdx - myMSinfo.skillsOrder.begin()];
+    int keybdType;
 
     for(int i=0; i<(int)skill.forbidZone.size(); i++) if(skill.forbidZone[i].left<=myMSinfo.charpos.x && myMSinfo.charpos.x<=skill.forbidZone[i].right && skill.forbidZone[i].top<=myMSinfo.charpos.y && myMSinfo.charpos.y<=skill.forbidZone[i].bottom) return;
 
     int nowtick = script.getNowtick();
 
     for (int i=0; i<skill.sknum; i++){
-        script.keybd(skill.KBDname[i].data(), 3);
+        if(skill.KBDname[i].back() == "+") keybdType = 1;
+        else if(skill.KBDname[i].back() == "-") keybdType = 2;
+        else keybdType = 3;
+        script.keybd(skill.KBDname[i].data(), keybdType);
         script.wait(skill.KBDdelay[i]);
     }
 
@@ -1095,6 +1108,8 @@ int getCodename(const char *path){
 }
 
 int initSkillSet(std::map<std::string, std::vector<std::string>> &setData, MSsetting &myMSsetting){
+    // a: q_0_1, w_2_3, e_4_5;
+    // setData = { a: ["q_0_1", "w_2_3", "e_4_5"] }
     if(setData.find("charStay") == setData.end()){
         myMSsetting.charStay = {35, 50};
     }
@@ -1131,7 +1146,9 @@ int initSkillSet(std::map<std::string, std::vector<std::string>> &setData, MSset
     }
     else{
         // name cd KBDname KBDdelay rate
-        // ex: buff_200_100_5-4-\_1000-1000-1000_100
+        // ex: buff_200_5|4|\_1000|1000|1000_100
+        // KBDname "Q+" = Q down, "Q-" = Q up
+        // skilloption std::string _skillname, std::vector<std::string> _KBDname, std::vector<int> _KBDdelay, float _rate, int _cd
         skilloption soTmp;
         std::vector<std::string> tmpStr, tmpStr2;
         std::vector<int> _KBDdelay;
@@ -1141,10 +1158,10 @@ int initSkillSet(std::map<std::string, std::vector<std::string>> &setData, MSset
             tmpStr = split(fl, "_");
             L = tmpStr.size();
             if(L < 5) return 3;
-            tmpStr2 = split(tmpStr[3], "-");
+            tmpStr2 = split(tmpStr[3], "|");
             for(int i=0; i<(int)tmpStr2.size(); i++) _KBDdelay.push_back(stoi(tmpStr2[i]));
             _rate = std::stof(tmpStr[4]);
-            soTmp = skilloption(tmpStr[0], split(tmpStr[2], "-"), _KBDdelay, _rate, stoi(tmpStr[1]) * 1000);
+            soTmp = skilloption(tmpStr[0], split(tmpStr[2], "|"), _KBDdelay, _rate, stoi(tmpStr[1]) * 1000);
 
             myMSsetting.skills.push_back(soTmp);
             myMSsetting.skillsOrder.push_back(tmpStr[0]);
