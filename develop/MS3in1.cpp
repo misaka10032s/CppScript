@@ -38,12 +38,11 @@ int main(){
     std::vector<bool> isWeapon;
     std::string eatKey, totemKey;
     bool isLarge;
-    int cubeIdx, invPos, makeTimes, cd, menuPos, type;
+    int cubeIdx, invPos, makeTimes, cd, menuPos, type, minusCD;
     long int countDown;
     float eatNum, eatNumCount = 0;
 
     if(isFind("scriptType")) scriptType = scriptConfig["scriptType"][0];
-    std::cout<<scriptType<<", "<<scriptConfig["scriptType"][0]<<", "<<scriptConfig["makeTimes"][0]<<"\n";
 
     if(scriptType == "wash"){
         // std::vector<int> itemIndex;
@@ -60,6 +59,8 @@ int main(){
         invPos = isFind("invPos") ? stoi(scriptConfig["invPos"][0]) : 0;
         isLarge = isFind("isLarge") ? stoi(scriptConfig["isLarge"][0]) : 0;
         for(auto i: scriptConfig["itemIndex"]) itemIndex.push_back(stoi(i));
+
+        scriptMS.wait(200);
         washItem(scriptMS, itemIndex, isLarge, invPos);
     }
     else if(scriptType == "washayashii"){
@@ -77,6 +78,8 @@ int main(){
         invPos = isFind("invPos") ? stoi(scriptConfig["invPos"][0]) : 0;
         for(auto i: scriptConfig["isWeapon"]) isWeapon.push_back(stoi(i));
         for(auto i: scriptConfig["itemIndex"]) itemIndex.push_back(stoi(i));
+
+        scriptMS.wait(200);
         washItemAyashii(scriptMS, itemIndex, isWeapon, invPos, cubeIdx);
     }
     else if(scriptType == "make"){
@@ -98,14 +101,19 @@ int main(){
         eatKey = isFind("eatKey") ? scriptConfig["eatKey"][0] : "INS";
         for(auto i: scriptConfig["itemIndex"]) itemIndex.push_back(stoi(i));
 
+        scriptMS.wait(200);
         for(int i=0; i<makeTimes; i++){
-            scriptMS.wait(cd * 60000 - makeItem(scriptMS, itemIndex, menuPos));
+            minusCD = makeItem(scriptMS, itemIndex, menuPos);
+            scriptMS.wait(100);
+            scriptMS.mouseLC(600, 30, 3); // click outside to eat
+            scriptMS.wait(100);
             eatNumCount += eatNum;
             while(eatNumCount >= 1){
                 scriptMS.wait(300);
                 scriptMS.keybd(eatKey.c_str(), 3);
                 eatNumCount--;
             }
+            scriptMS.wait(cd * 60000 - minusCD);
         }
     }
     else if(scriptType == "takenoko"){
@@ -142,6 +150,8 @@ int main(){
         if(countDown == -1) std::cin >> countDown;
 
         if(countDown > 0) scriptMS.setCountdown(countDown);
+
+        scriptMS.wait(200);
         while(1){
             scriptMS.keybd(totemKey.c_str(), 3);
             scriptMS.keybd(totemKey.c_str(), 3);

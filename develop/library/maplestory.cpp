@@ -601,7 +601,7 @@ void openTakenoko(SYS &script){
 bool matchTakenoko(SYS &script, int type, int maxTrytime){
     PICTURE takenokoPic(30, 15, "MapleStory");
     int dxmax = 12, diffV = 0, tryTimes = 0;
-    bool matched;
+    bool matched = 0;
     type = max(type, 1);
     while(1){
         script.mouseLC(mission.x, mission.y, 3);
@@ -656,7 +656,7 @@ void getTakenoko(SYS &script){
 int makeItem(SYS &script, std::vector<int> itemIndex, int menuPos){
     if(menuPos < 0 || menuPos > 3) menuPos = 0;
     int itemCount = (int)itemIndex.size(), minusCD = 0, checkDuplicated = 2147483647;
-    pointMS menuShift(menuPos%2 ? 0 : 780, menuPos/2 ? 0 : 355); // @@@@ pos + itemcount
+    pointMS menuShift(menuPos%2 ? 780 : 0, menuPos/2 ? 355 : 0); // @@@@ pos + itemcount
     for(int i=0; i<itemCount; i++){
         if(itemIndex[i] < -1 || itemIndex[i] > 13 || !(checkDuplicated & (1<<itemIndex[i]))) continue;
         if(itemIndex[i] >= 0){
@@ -931,8 +931,8 @@ void actSkill(std::string skillName, SYS &script, MSsetting &myMSinfo){
     int nowtick = script.getNowtick();
 
     for (int i=0; i<skill.sknum; i++){
-        if(skill.KBDname[i].back() == "+") keybdType = 1;
-        else if(skill.KBDname[i].back() == "-") keybdType = 2;
+        if(*(skill.KBDname[i].end()-1) == '+') keybdType = 1;
+        else if(*(skill.KBDname[i].end()-1) == '-') keybdType = 2;
         else keybdType = 3;
         script.keybd(skill.KBDname[i].data(), keybdType);
         script.wait(skill.KBDdelay[i]);
