@@ -27,7 +27,7 @@ skilloption cycle("cycle", {"DEL", "DEL"}, {300, 1000}, 100, 300 * 1000);
 int main(){
     const char* targetWnd = "MapleStory";
     SYS scriptMS(targetWnd);
-    MSsetting infoMS({70, 105}, 999 * 3 * 60 * 1000, {0, 38}, {170, 82}, {cycle, arrow, spider, supernova, knight, sakura, senpuu, angryangel, javelin, normal2, normal});
+    MSsetting infoMS({70, 105}, 999 * 3 * 60 * 1000, {0, 38}, {170, 82}, {cycle, arrow, spider, supernova, knight, sakura, senpuu, angryangel, javelin, normal});
     PICTURE mapImg(infoMS.miniMapSize.x, infoMS.miniMapSize.y, targetWnd);
     long int nowtick;
     int anyway = 10000;
@@ -55,6 +55,7 @@ int main(){
             nowtick = scriptMS.getNowtick();
             if(infoMS.lastpick == -1) infoMS.lastpick = nowtick;
             if(infoMS.lastring == -1) infoMS.lastring = nowtick - infoMS.ringCD;
+            for(int i=0; i<(int)infoMS.skills.size(); i++) if(infoMS.skills[i].lastuse == -1) infoMS.skills[i].lastuse = nowtick - infoMS.skills[i].cd - 100;
 
             switch (infoMS.now_action){
                 case 0:

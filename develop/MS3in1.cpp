@@ -32,6 +32,7 @@ int main(){
 
     int usedScriptId;
     while(1){
+        system("cls");
         if(getCodename("scripts3in1/")) {
             std::cout<<"please make scripts.\n";
             system("pause");
@@ -41,7 +42,6 @@ int main(){
         std::cout << "input script Id.\n";
         std::cin >> usedScriptId;
         scriptConfig = readScript("scripts3in1/", usedScriptId);
-        system("cls");
 
         // wash, washayashii, auto make, takenoko, auto totem
 
