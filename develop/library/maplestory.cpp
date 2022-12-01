@@ -128,7 +128,7 @@ int GetEigenvalue2(PICTURE &targetPic){
     return e;
 }
 
-void findarrow(PICTURE &targetPic, int way[4]){
+PICTURE findarrow(PICTURE &targetPic, int way[4]){
     int idx=0, dy, dx, mdx, mdy, wi = 0;
     float pointNum, judgeL, judgeR, judgeT, judgeB, symX, symY;
     bool isreced, rangeup;
@@ -280,10 +280,11 @@ void findarrow(PICTURE &targetPic, int way[4]){
             else way[wi++] = 4;
         }
     }
+    return arrowPic;
     // imshow("Display orig", Mat(targetPic.height, targetPic.width, BitsPerPixel > 24 ? CV_8UC4 : CV_8UC3, &arrowPic.Pixels[0]));
 }
 
-void matchway(PICTURE &targetPic, int way[4]){
+PICTURE matchway(PICTURE &targetPic, int way[4]){
     PICTURE blurPic;
     bool want;
 
@@ -305,7 +306,7 @@ void matchway(PICTURE &targetPic, int way[4]){
         }
     }
     
-    findarrow(blurPic, way);
+    return findarrow(blurPic, way);
 }
 
 void getpos(PICTURE &targetPic, pointMS &charpos, pointMS &ringpos, bool &isOther){

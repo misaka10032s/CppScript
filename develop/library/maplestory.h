@@ -72,8 +72,8 @@ class MSsetting{
 
 int GetEigenvalue(PICTURE &targetPic);
 int GetEigenvalue2(PICTURE &targetPic);
-void findarrow(PICTURE &targetPic, int way[4]);
-void matchway(PICTURE &targetPic, int way[4]);
+PICTURE findarrow(PICTURE &targetPic, int way[4]);
+PICTURE matchway(PICTURE &targetPic, int way[4]);
 void getpos(PICTURE &targetPic, pointMS &charpos, pointMS &ringpos, bool &isOther);
 void getNPC(PICTURE &targetPic, bool *isNPC);
 void solveWheel(SYS &script);

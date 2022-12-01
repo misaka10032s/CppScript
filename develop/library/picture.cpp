@@ -184,6 +184,15 @@ BITMAPINFOHEADER createBitmapHeader(int width, int height){
     return bi;
 };
 
+bool PICTURE::open(std::string fileName){
+    cv::Mat I = cv::imread(fileName, cv::IMREAD_ANYDEPTH | cv::IMREAD_ANYCOLOR);
+    if(!I.empty()){
+        this->Pixels.assign(I.data, I.data + I.total()*I.channels());
+        this->resize(I.cols, I.rows, I.channels());
+        return 1;
+    }
+    return 0;
+};
 PICTURE PICTURE::screenShot(int dx, int dy){
     cv::Mat src;
     RECT MSwh;
@@ -231,7 +240,13 @@ PICTURE PICTURE::screenShot(int dx, int dy){
 void PICTURE::display(){
     cv::imshow("Display P", cv::Mat(this->height, this->width, this->bit > 3 ? CV_8UC4 : CV_8UC3, &this->Pixels[0]));
     cv::waitKey(0);
+    cv::destroyWindow("Display P");
 }
+void PICTURE::display(std::string windowName){
+    cv::imshow(windowName, cv::Mat(this->height, this->width, this->bit > 3 ? CV_8UC4 : CV_8UC3, &this->Pixels[0]));
+    cv::waitKey(0);
+    cv::destroyWindow(windowName);
+};
 PICTURE PICTURE::resize(int width, int height, int bit){
     if((int)this->Pixels.size() < width * height * bit) this->Pixels.resize(width * height * bit);
     this->width = width;

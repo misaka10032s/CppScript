@@ -52,9 +52,11 @@ class PICTURE{
         #endif
         
         void display();
+        void display(std::string windowName);
         PICTURE resize(int width, int height, int bit);
         PICTURE setWindow(char* window);
 
+        bool open(std::string fileName);
         PICTURE screenShot(int dx, int dy);
         PICTURE twoValue(PICTURE &targetPic, int gate);
         PICTURE GaussBlur(PICTURE &targetPic, double rate);
