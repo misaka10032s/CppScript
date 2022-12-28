@@ -104,12 +104,13 @@
         set_key_value();
     }
 
-    void SYS::GetFocusWindowText(){
+    std::string SYS::GetFocusWindowText(){
         HWND wnd = GetForegroundWindow();
         int len = GetWindowTextLength(wnd) + 1;
         std::string s;
         s.reserve(len);
-        GetWindowText(wnd, const_cast<char*>(s.c_str()), len - 1);
+        GetWindowText(wnd, const_cast<char*>(s.c_str()), len);
+        return s;
     }
 
     void SYS::SaveToClipboard(const char* str){

@@ -28,7 +28,7 @@
 
             RECT rctScreen, targetWNDsize;
 
-            static void GetFocusWindowText();
+            static std::string GetFocusWindowText();
             static void SaveToClipboard(const char* str);
             static int gettimeofday(struct timeval * tp, struct timezone * tzp);
             static std::string gettimestring();
