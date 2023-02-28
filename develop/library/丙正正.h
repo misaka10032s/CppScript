@@ -79,3 +79,5 @@
 #define 乘 *
 #define 除 /
 #define 模 %
+#define 賦予 =
+#define 等於 ==
