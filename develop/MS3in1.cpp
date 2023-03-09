@@ -110,11 +110,12 @@ int main(){
             for(int i=0; i<makeTimes; i++){
                 minusCD = makeItem(scriptMS, itemIndex, menuPos);
                 scriptMS.wait(100);
-                scriptMS.mouseLC(600, 30, 3); // click outside to eat
+                scriptMS.mouseLC(600, 50, 3); // click outside to eat
                 scriptMS.wait(100);
                 eatNumCount += eatNum;
+                std::cout << eatNumCount << "\n";
                 while(eatNumCount >= 1){
-                    scriptMS.wait(300);
+                    scriptMS.wait(500);
                     scriptMS.keybd(eatKey.c_str(), 3);
                     eatNumCount--;
                 }
