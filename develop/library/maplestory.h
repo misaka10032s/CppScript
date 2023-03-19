@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <functional>
+#include <windows.h>
 
 #include "picture.h"
 #include "systemOS.h"
@@ -70,6 +71,7 @@ class MSsetting{
         void setDirection();
 };
 
+int GetEigenvalue(PICTURE &targetPic, RECT range);
 int GetEigenvalue(PICTURE &targetPic);
 int GetEigenvalue2(PICTURE &targetPic);
 PICTURE findarrow(PICTURE &targetPic, int way[4]);

@@ -1,0 +1,5 @@
+scriptType: washayashii;
+itemIndex: 0,1,2;
+isWeapon: 1,1,1;
+cubeIdx: 0;
+invPos: 0;

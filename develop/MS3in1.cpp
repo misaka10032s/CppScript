@@ -79,7 +79,7 @@ int main(){
                 return 0;
             }
 
-            cubeIdx = stoi(scriptConfig["scriptType"][0]);
+            cubeIdx = stoi(scriptConfig["cubeIdx"][0]);
             invPos = isFind("invPos") ? stoi(scriptConfig["invPos"][0]) : 0;
             for(auto i: scriptConfig["isWeapon"]) isWeapon.push_back(stoi(i));
             for(auto i: scriptConfig["itemIndex"]) itemIndex.push_back(stoi(i));

@@ -103,17 +103,21 @@ void MSsetting::setDirection(){
     else if (this->charpos.x < this->hikikae[0]) this->direction = 1;
 };
 
-
-int GetEigenvalue(PICTURE &targetPic){
+int GetEigenvalue(PICTURE &targetPic, RECT range){
     int e = 0;
-    for (int j=0; j<targetPic.height; j++) {
-        for(int i=0; i<targetPic.width; i++){
+    for (int j=range.top; j<range.bottom; j++) {
+        for(int i=range.left; i<range.right; i++){
             for(int k=0; k<3; k++){
                 e += targetPic.Pixels[i * targetPic.bit + j * targetPic.width * targetPic.bit + k];
             }
         }
     }
     return e;
+}
+
+int GetEigenvalue(PICTURE &targetPic){
+    RECT range = {0, 0, targetPic.width, targetPic.height};
+    return GetEigenvalue(targetPic, range);
 }
 
 int GetEigenvalue2(PICTURE &targetPic){
@@ -796,7 +800,8 @@ int checkfit(PICTURE &costPic){
     int minV, row, col, anotherOK;
 
     for (int dy = 0; dy < 3; dy++){
-        e = GetEigenvalue(costPic);
+        RECT range = {0, dy*14, costPic.width, (dy+1)*14};
+        e = GetEigenvalue(costPic, range);
         std::cout << e << "\n";
         //  4%cri   4%cri   8%cri
         //  495040  495397  495703
