@@ -864,6 +864,9 @@ void washItemAyashii(SYS &script, std::vector<int> itemIndex, std::vector<bool> 
     int itemCount = min(itemIndex.size(), isWeapon.size()), result;
     string resList[] = {"str", "dex", "int", "luk", "all", "hp", "ad", "ap", "adp"};
 
+    for(int i=0; i<2; i++) for(int j=0; j<12; j++) statistics[i][j] = 0;
+    totalCube = 0;
+
     consumePos = getInventoryPos(-2, 0, invPos);
     cubePos = getInventoryPos(cubeIdx, 0, invPos);
 
@@ -891,6 +894,7 @@ void washItemAyashii(SYS &script, std::vector<int> itemIndex, std::vector<bool> 
                 std::cout << result << ", " << resList[result] << "\n";
                 script.wait(1500);
                 script.mouseLC(750, 535, 3); // click close btn
+                script.wait(500);
                 break;
             }
             else{
