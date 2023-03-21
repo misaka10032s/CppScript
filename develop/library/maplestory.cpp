@@ -642,6 +642,7 @@ bool matchTakenoko(SYS &script, int type, int maxTrytime){
         }
         else{
             script.keybd("ESC", 3);
+            script.wait(500);
         }
         tryTimes++;
         if(tryTimes > maxTrytime) return 1;

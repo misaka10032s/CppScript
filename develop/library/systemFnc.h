@@ -62,4 +62,21 @@
     };
 #endif
 
+    class IO{
+        private:
+        public:
+            IO();
+
+            std::string path;
+
+            static short int read_file(std::string fname, std::string type, std::string &data);
+            static short int write_file(std::string fname, std::string type, std::string data);
+
+            IO operator / (IO &PATH1);
+            IO operator / (std::string &PATH1);
+            friend IO operator / (std::string PATH0, const IO &PATH1);
+
+            IO operator /= (IO &PATH1);
+            IO operator /= (std::string &PATH1);
+    }
 #endif

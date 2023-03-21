@@ -409,3 +409,75 @@
         this->timeCountDown = this->timestamp.tv_sec * 1000 + this->timestamp.tv_usec / 1000 + time;
     };
 #endif
+
+IO::IO(){}
+
+short int IO::read_file(std::string fname, std::string type, std::string &data){
+    FILE *f;
+    char* buff;
+    long lSize;
+    size_t result;
+    
+    f = fopen(fname.data(), type.data());
+    if(f == NULL){
+        // No such file or directory
+        return 1;
+    }
+
+    fseek (f , 0 , SEEK_END);
+    lSize = ftell(f);
+    rewind (f);
+
+    buff = (char*) malloc (sizeof(char)*lSize);
+    if (buff == NULL) {
+        // Memory error
+        return 2;
+    }
+
+    result = fread (buff, 1, lSize, f);
+    if (result != lSize) {
+        // Reading error
+        return 3;
+    }
+
+    data.assign(buff);
+    fclose (f);
+    free(buff);
+    
+    // succeess
+    return 0;
+}
+short int IO::write_file(std::string fname, std::string type, std::string data){
+    FILE *f;
+    
+    f = fopen(fname.data(), type.data());
+    if(f == NULL) {
+        // No such file or directory
+        return 1;
+    }
+
+    fwrite(data.data(), 1, sizeof(data), f);
+
+    fclose (f);
+    // success
+    return 0;
+}
+
+IO IO::operator / (IO &PATH1){
+    return this->path + "/" + PATH1.path;
+}
+IO IO::operator / (std::string &PATH1){
+    return this->path + "/" + PATH1;
+}
+IO operator / (std::string PATH0, const IO &PATH1){
+    return PATH0 + "/" + PATH1.path;
+}
+
+IO IO::operator /= (IO &PATH1){
+    this->path = this->path + "/" + PATH1.path;
+    return *this;
+}
+IO IO::operator /= (std::string &PATH1){
+    this->path = this->path + "/" + PATH1;
+    return *this;
+}
