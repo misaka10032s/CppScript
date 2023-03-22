@@ -463,14 +463,27 @@ short int IO::write_file(std::string fname, std::string type, std::string data){
     return 0;
 }
 
+short int IO::read_file(std::string type, std::string &data){
+    return IO::read_file(this->path, type, data);
+};
+short int IO::write_file(std::string type, std::string &data){
+    return IO::write_file(this->path, type, data);
+};
+
 IO IO::operator / (IO &PATH1){
-    return this->path + "/" + PATH1.path;
+    IO rtn;
+    rtn.path = this->path + "/" + PATH1.path;
+    return rtn;
 }
 IO IO::operator / (std::string &PATH1){
-    return this->path + "/" + PATH1;
+    IO rtn;
+    rtn.path = this->path + "/" + PATH1;
+    return rtn;
 }
 IO operator / (std::string PATH0, const IO &PATH1){
-    return PATH0 + "/" + PATH1.path;
+    IO rtn;
+    rtn.path = PATH0 + "/" + PATH1.path;
+    return rtn;
 }
 
 IO IO::operator /= (IO &PATH1){
