@@ -137,7 +137,19 @@ int main(){
             for(int i=0; i<makeTimes;){
                 std::cout<<i<<"\n";
                 openTakenoko(scriptMS);
-                if(matchTakenoko(scriptMS, type, 100)){}
+                if(matchTakenoko(scriptMS, type, 100)){
+                    scriptMS.keybd("ESC", 3);
+                    scriptMS.wait(500);
+                    scriptMS.keybd("ENTER", 3);
+                    scriptMS.wait(200);
+                    scriptMS.keybd("ENTER", 3); // change char
+                    scriptMS.wait(10000);
+
+                    scriptMS.keybd("ENTER", 3);
+                    scriptMS.wait(10000);
+                    scriptMS.mouseLC(1049, 167, 3); // close AD
+                    scriptMS.wait(500);
+                }
                 else {
                     scriptMS.wait(30 * 60 * 1000 + 10000);
                     getTakenoko(scriptMS);

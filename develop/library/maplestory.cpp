@@ -713,11 +713,12 @@ pointMS getInventoryPos(int itemIndex, bool isLarge, int invPos){
 }
 
 bool checkcost(PICTURE &costPic){
-    int e = 0, val = 55845; // $100000 => 47430, $15000 => 55845
+    int e = 0, val = 36261; // $100000 => 36261, $15000 => 44676
     for(int j=0; j<15; j++){
         for(int i=0; i<4; i++){
             for(int k=0; k<3; k++){
                 e += costPic.Pixels[(64+i) * costPic.bit + j * costPic.width * costPic.bit + k];
+                costPic.Pixels[(64+i) * costPic.bit + j * costPic.width * costPic.bit + k] = 0;
             }
         }
     }
