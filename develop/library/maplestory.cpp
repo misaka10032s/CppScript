@@ -671,6 +671,7 @@ int makeItem(SYS &script, std::vector<int> itemIndex, int menuPos){
         }
         script.mouseLC(539 + menuShift.x, 349 + menuShift.y, 3);
         script.wait(400);
+
         script.keybd("ENTER", 3);
         script.wait(3000);
         minusCD += 2500;

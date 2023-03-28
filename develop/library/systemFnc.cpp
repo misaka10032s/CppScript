@@ -214,9 +214,9 @@
     void SYS::mouseAction(int x, int y, char type, bool abs, DWORD dwFlags){
         GetWindowRect(this->targetWND, &this->targetWNDsize);
         mouse_event((abs ? MOUSEEVENTF_ABSOLUTE : 0) | MOUSEEVENTF_MOVE, (this->targetWNDsize.left + x) * 65536 / this->rctScreen.right, (this->targetWNDsize.top + y) * 65536 / this->rctScreen.bottom, 0, 0);
-        SLEEP(10);
+        SLEEP(20);
         if(type & 1) mouse_event(dwFlags, 0, 0, 0, 0);
-        if(type & 3) SLEEP(30);
+        if(type & 3) SLEEP(40);
         if(type & 2) mouse_event(dwFlags<<1, 0, 0, 0, 0);
     };
 
