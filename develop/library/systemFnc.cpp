@@ -202,7 +202,7 @@
             SendInput(1, &ip, sizeof(INPUT));
             //cout<<"DA\t"<<ip.ki.wScan<<"\t"<<type<<endl;
         }
-        if(type & 3) SLEEP(30);
+        if(type & 3) SLEEP(40);
         if(type & 2) {
             ip.ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
             SendInput(1, &ip, sizeof(INPUT));
