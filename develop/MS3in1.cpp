@@ -115,7 +115,7 @@ int main(){
                 eatNumCount += eatNum;
                 std::cout << eatNumCount << "\n";
                 while(eatNumCount >= 1){
-                    scriptMS.wait(500);
+                    scriptMS.wait(1000);
                     scriptMS.keybd(eatKey.c_str(), 3);
                     eatNumCount--;
                 }
