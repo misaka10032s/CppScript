@@ -714,7 +714,7 @@ pointMS getInventoryPos(int itemIndex, bool isLarge, int invPos){
 }
 
 bool checkcost(PICTURE &costPic){
-    int e = 0, val = 36261; // $100000 => 36261, $15000 => 44676
+    int e = 0, val = 44676; // $100000 => 36261, $15000 => 44676
     for(int j=0; j<15; j++){
         for(int i=0; i<4; i++){
             for(int k=0; k<3; k++){
@@ -723,7 +723,7 @@ bool checkcost(PICTURE &costPic){
             }
         }
     }
-    return abs(e - val) > 30 ? 0 : 1;
+    return abs(e - val) > 30 ? 1 : 0;
 }
 
 void washItem(SYS &script, std::vector<int> itemIndex, bool isLarge, int invPos){
