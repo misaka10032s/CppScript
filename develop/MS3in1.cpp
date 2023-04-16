@@ -18,6 +18,7 @@ inline bool isFind(const char *key){
 }
 
 int main(){
+    TCHAR szNewTitle[256] = "MS3in1";
     const char* targetWnd = "MapleStory";
     SYS scriptMS(targetWnd);
     std::string scriptType = "";
@@ -31,6 +32,9 @@ int main(){
     float eatNum, eatNumCount = 0;
 
     int usedScriptId;
+
+    SetConsoleTitle(szNewTitle);
+
     while(1){
         system("cls");
         if(getCodename("scripts3in1/")) {
