@@ -704,7 +704,7 @@ pointMS getInventoryPos(int itemIndex, bool isLarge, int invPos){
     }
 
     if(itemIndex < 0){
-        return {bag.x - (1 + itemIndex) * 30, bag.y - 30}; // @@@@
+        return {bag.x - (1 + itemIndex) * 31, bag.y - 30}; // @@@@
     }
 
     if(isLarge) itemIndex = min(itemIndex, 127);
