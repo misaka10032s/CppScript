@@ -11,15 +11,15 @@
 #include "library/systemFnc.h"
 #include "library/maplestory.h"
 
-skilloption sakura("sakura", {"4", "4"}, {500, 800}, 100, 180 * 1000);
-skilloption knight("knight", {"5", "5"}, {500, 1200}, 100, 180 * 1000);
-skilloption eternal("eternal", {"6", "6"}, {500, 2000}, 100, 360 * 1000);
+skilloption sakura("sakura", {"1", "1"}, {500, 800}, 100, 175 * 1000);
+skilloption knight("knight", {"8", "8"}, {500, 1200}, 100, 175 * 1000);
 skilloption spider("spider", {"9", "9"}, {500, 800}, 100, 240 * 1000);
-skilloption sun("sun", {"8", "8"}, {500, 800}, 100, 240 * 1000);
-skilloption supernova("supernova", {"7", "7"}, {500, 400}, 100, 60 * 1000);
+skilloption supernova("supernova", {"0", "0"}, {500, 400}, 100, 15 * 1000);
 skilloption arrow("arrow", {",", ","}, {500, 500}, 100, 999 * 200 * 1000);
-skilloption angryangel("angryangel", {"C", "C", "X", "RSHIFT", "RSHIFT"}, {100, 200, 120, 200, 450}, 100, 60 * 1000);
-skilloption javelin("javelin", {"C", "C", "X", "PGD", "PGD"}, {100, 200, 120, 120, 900}, 100, 30 * 1000);
+skilloption angryangel("angryangel", {"C", "C", "X", "RSHIFT", "RSHIFT"}, {100, 200, 120, 200, 450}, 100, 15 * 1000);
+skilloption angryangel2("angryangel2", {"C", "C", "X", "RSHIFT", "RSHIFT"}, {100, 350, 120, 200, 450}, 100, 30 * 1000);
+skilloption javelin("javelin", {"C", "C", "X", "PGD", "PGD"}, {100, 200, 120, 120, 900}, 100, 10 * 1000);
+skilloption javelin2("javelin2", {"C", "C", "X", "PGD", "X"}, {100, 350, 120, 120, 400}, 100, 30 * 1000);
 skilloption senpuu("senpuu", {"C", "C", "X", "V", "V"}, {1150, 200, 400, 200, 1000}, 100, 400 * 1000);
 skilloption lightning("lightning", {"C", "C", "X", "V", "B", "CTRL", "ALT"}, {150, 250, 500, 1000, 600, 1000, 600}, 100, 450 * 1000);
 skilloption normal("normal", {"C", "C", "X"}, {100, 350, 400}, 100, 0);
@@ -29,7 +29,7 @@ skilloption cycle("cycle", {"DEL", "DEL"}, {300, 1000}, 100, 300 * 1000);
 int main(){
     const char* targetWnd = "MapleStory";
     SYS scriptMS(targetWnd);
-    MSsetting infoMS({55, 110}, 999 * 3 * 60 * 1000, {0, 49}, {160, 65}, {cycle, spider, sun, supernova, knight, sakura, eternal, angryangel, javelin, normal});
+    MSsetting infoMS({75, 115}, 999 * 3 * 60 * 1000, {0, 47}, {170, 70}, {cycle, spider, supernova, knight, sakura, angryangel, javelin, angryangel2, javelin2, normal});
     PICTURE mapImg(infoMS.miniMapSize.x, infoMS.miniMapSize.y, targetWnd);
     long int nowtick;
     int anyway = 10000;
@@ -113,12 +113,12 @@ int main(){
 
                                 else if (infoMS.skills[i].skillname == "knight"){
                                     // infoMS.skills[5] == sakura
-                                    infoMS.skills[5].lastuse = MAX(nowtick - 121 * 1000, infoMS.skills[5].lastuse);
+                                    infoMS.skills[4].lastuse = MAX(nowtick - 121 * 1000, infoMS.skills[5].lastuse);
                                 }
 
                                 else if (infoMS.skills[i].skillname == "sakura"){
                                     // infoMS.skills[4] == knight
-                                    infoMS.skills[4].lastuse = MAX(nowtick - 61 * 1000, infoMS.skills[4].lastuse);
+                                    infoMS.skills[3].lastuse = MAX(nowtick - 61 * 1000, infoMS.skills[4].lastuse);
                                 }
 
                                 infoMS.skills[i].lastuse = nowtick + rand()%(infoMS.skills[i].cd / 20 + 1);
