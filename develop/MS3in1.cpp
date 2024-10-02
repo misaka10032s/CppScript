@@ -175,6 +175,7 @@ int main(){
 
             
             while(1){
+                std::cout << "totem\n";
                 scriptMS.keybd(totemKey.c_str(), 3);
                 scriptMS.keybd(totemKey.c_str(), 3);
                 scriptMS.wait(cd * 60 * 1000);
